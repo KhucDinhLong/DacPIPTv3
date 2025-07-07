@@ -1,0 +1,1 @@
+﻿<MenuForm Menu="Menu" HeaderText="Thêm thông tin menu" ButtonText="Lưu" OnvalidSubmit="@(() => HandleValidSubmit())" OnClose="Close" />

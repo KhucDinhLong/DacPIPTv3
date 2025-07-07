@@ -1,0 +1,23 @@
+﻿@page "/role-create"
+@using PIPTWeb.Client.Services
+@inject IRoleService roleService
+
+<RoleForm Role="Role" HeaderText="Thêm nhóm quyền" ButtonText="Lưu" OnvalidSubmit="@(() => HandleValidSubmit())" OnClose="Close" />
+
+@code {
+
+    [Parameter] public PIPTWeb.Shared.Models.SecRoles Role { get; set; }
+    [Parameter] public EventCallback OnvalidSubmit { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    public async Task HandleValidSubmit()
+    {
+        await roleService.CreateRole(Role);
+        await OnvalidSubmit.InvokeAsync();
+    }
+
+    public async Task Close()
+    {
+        await OnClose.InvokeAsync();
+    }
+}

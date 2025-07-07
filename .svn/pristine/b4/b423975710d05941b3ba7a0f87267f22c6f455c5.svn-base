@@ -1,0 +1,726 @@
+﻿namespace PIPT
+{
+    partial class frmDacProductWarehouse
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmDacProductWarehouse));
+            this.groupBoxProduct = new System.Windows.Forms.GroupBox();
+            this.chkPrintType = new System.Windows.Forms.CheckBox();
+            this.gridControlWarehouse = new DevExpress.XtraGrid.GridControl();
+            this.gridViewWarehouse = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.gridColumnID = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnOrder = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumProductCode = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnStockID = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnQuantity = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnCreatedDate = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumActive = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnDescription = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.panelAddDacCode = new System.Windows.Forms.Panel();
+            this.addSerialCodeButton = new System.Windows.Forms.Button();
+            this.ToSeriTextBox = new System.Windows.Forms.TextBox();
+            this.FrSeriTextBox = new System.Windows.Forms.TextBox();
+            this.ToSeriLabel = new System.Windows.Forms.Label();
+            this.FrSeriLabel = new System.Windows.Forms.Label();
+            this.buttonDetailDelete = new System.Windows.Forms.Button();
+            this.buttonUpdateDetail = new System.Windows.Forms.Button();
+            this.buttonEnter = new System.Windows.Forms.Button();
+            this.textBoxDacCode = new System.Windows.Forms.TextBox();
+            this.labelSearchCode = new System.Windows.Forms.Label();
+            this.panelInsertToWarehouse = new System.Windows.Forms.Panel();
+            this.gridLookUpEditDacStock = new DevExpress.XtraEditors.GridLookUpEdit();
+            this.gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.gridColumnCode = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnName = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.labelDacStock = new System.Windows.Forms.Label();
+            this.checkEditKeepOrder = new DevExpress.XtraEditors.CheckEdit();
+            this.gridLookUpEditProduct = new DevExpress.XtraEditors.GridLookUpEdit();
+            this.gridLookUpEditProductView = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.gridColCode = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColName = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.textBoxQuantity = new System.Windows.Forms.TextBox();
+            this.textBoxOrderNumber = new System.Windows.Forms.TextBox();
+            this.richTextBoxDescription = new System.Windows.Forms.RichTextBox();
+            this.dateTimePickerCreatedDate = new System.Windows.Forms.DateTimePicker();
+            this.labelDescription = new System.Windows.Forms.Label();
+            this.labelProduct = new System.Windows.Forms.Label();
+            this.labelCreatedDate = new System.Windows.Forms.Label();
+            this.labelQuantity = new System.Windows.Forms.Label();
+            this.labelOrderNumber = new System.Windows.Forms.Label();
+            this.dataGridViewDetails = new System.Windows.Forms.DataGridView();
+            this.ColumnId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.IsSelected = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.ColumnDistributorID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnDacCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.labelProductCount = new System.Windows.Forms.Label();
+            this.ucDataButtonProduct = new PIPT.ucDataButton();
+            this.groupBoxProduct.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridControlWarehouse)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridViewWarehouse)).BeginInit();
+            this.panelAddDacCode.SuspendLayout();
+            this.panelInsertToWarehouse.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridLookUpEditDacStock.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.checkEditKeepOrder.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridLookUpEditProduct.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridLookUpEditProductView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewDetails)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // groupBoxProduct
+            // 
+            this.groupBoxProduct.Controls.Add(this.chkPrintType);
+            this.groupBoxProduct.Controls.Add(this.gridControlWarehouse);
+            this.groupBoxProduct.Controls.Add(this.panelAddDacCode);
+            this.groupBoxProduct.Controls.Add(this.panelInsertToWarehouse);
+            this.groupBoxProduct.Controls.Add(this.dataGridViewDetails);
+            this.groupBoxProduct.Controls.Add(this.labelProductCount);
+            this.groupBoxProduct.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBoxProduct.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBoxProduct.Location = new System.Drawing.Point(0, 0);
+            this.groupBoxProduct.Name = "groupBoxProduct";
+            this.groupBoxProduct.Size = new System.Drawing.Size(804, 545);
+            this.groupBoxProduct.TabIndex = 3;
+            this.groupBoxProduct.TabStop = false;
+            this.groupBoxProduct.Text = "Nhập sản phẩm vào kho";
+            // 
+            // chkPrintType
+            // 
+            this.chkPrintType.AutoSize = true;
+            this.chkPrintType.Checked = true;
+            this.chkPrintType.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkPrintType.Location = new System.Drawing.Point(6, 158);
+            this.chkPrintType.Name = "chkPrintType";
+            this.chkPrintType.Size = new System.Drawing.Size(78, 17);
+            this.chkPrintType.TabIndex = 15;
+            this.chkPrintType.Text = "In theo SL ";
+            this.chkPrintType.UseVisualStyleBackColor = true;
+            // 
+            // gridControlWarehouse
+            // 
+            this.gridControlWarehouse.EmbeddedNavigator.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.gridControlWarehouse.Location = new System.Drawing.Point(6, 181);
+            this.gridControlWarehouse.MainView = this.gridViewWarehouse;
+            this.gridControlWarehouse.Name = "gridControlWarehouse";
+            this.gridControlWarehouse.Size = new System.Drawing.Size(479, 358);
+            this.gridControlWarehouse.TabIndex = 12;
+            this.gridControlWarehouse.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.gridViewWarehouse});
+            // 
+            // gridViewWarehouse
+            // 
+            this.gridViewWarehouse.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.gridColumnID,
+            this.gridColumnOrder,
+            this.gridColumProductCode,
+            this.gridColumnStockID,
+            this.gridColumnQuantity,
+            this.gridColumnCreatedDate,
+            this.gridColumActive,
+            this.gridColumnDescription});
+            this.gridViewWarehouse.GridControl = this.gridControlWarehouse;
+            this.gridViewWarehouse.Name = "gridViewWarehouse";
+            this.gridViewWarehouse.OptionsBehavior.Editable = false;
+            this.gridViewWarehouse.OptionsView.ShowAutoFilterRow = true;
+            this.gridViewWarehouse.OptionsView.ShowGroupPanel = false;
+            this.gridViewWarehouse.FocusedRowChanged += new DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventHandler(this.gridViewWarehouse_FocusedRowChanged);
+            // 
+            // gridColumnID
+            // 
+            this.gridColumnID.Caption = "ID";
+            this.gridColumnID.FieldName = "ID";
+            this.gridColumnID.Name = "gridColumnID";
+            this.gridColumnID.Visible = true;
+            this.gridColumnID.VisibleIndex = 0;
+            this.gridColumnID.Width = 47;
+            // 
+            // gridColumnOrder
+            // 
+            this.gridColumnOrder.Caption = "Mã Nhập";
+            this.gridColumnOrder.FieldName = "InsertNumber";
+            this.gridColumnOrder.Name = "gridColumnOrder";
+            this.gridColumnOrder.OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
+            this.gridColumnOrder.Visible = true;
+            this.gridColumnOrder.VisibleIndex = 1;
+            this.gridColumnOrder.Width = 60;
+            // 
+            // gridColumProductCode
+            // 
+            this.gridColumProductCode.Caption = "Mã SP";
+            this.gridColumProductCode.FieldName = "ProductCode";
+            this.gridColumProductCode.Name = "gridColumProductCode";
+            this.gridColumProductCode.OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
+            this.gridColumProductCode.Visible = true;
+            this.gridColumProductCode.VisibleIndex = 2;
+            this.gridColumProductCode.Width = 80;
+            // 
+            // gridColumnStockID
+            // 
+            this.gridColumnStockID.Caption = "Mã kho";
+            this.gridColumnStockID.FieldName = "StockID";
+            this.gridColumnStockID.Name = "gridColumnStockID";
+            this.gridColumnStockID.Visible = true;
+            this.gridColumnStockID.VisibleIndex = 3;
+            this.gridColumnStockID.Width = 63;
+            // 
+            // gridColumnQuantity
+            // 
+            this.gridColumnQuantity.Caption = "Số lượng";
+            this.gridColumnQuantity.FieldName = "Quantity";
+            this.gridColumnQuantity.Name = "gridColumnQuantity";
+            this.gridColumnQuantity.Visible = true;
+            this.gridColumnQuantity.VisibleIndex = 4;
+            this.gridColumnQuantity.Width = 83;
+            // 
+            // gridColumnCreatedDate
+            // 
+            this.gridColumnCreatedDate.Caption = "Ngày tạo";
+            this.gridColumnCreatedDate.FieldName = "CreatedDate";
+            this.gridColumnCreatedDate.Name = "gridColumnCreatedDate";
+            this.gridColumnCreatedDate.Visible = true;
+            this.gridColumnCreatedDate.VisibleIndex = 5;
+            this.gridColumnCreatedDate.Width = 77;
+            // 
+            // gridColumActive
+            // 
+            this.gridColumActive.Caption = "Active";
+            this.gridColumActive.FieldName = "Active";
+            this.gridColumActive.Name = "gridColumActive";
+            this.gridColumActive.Visible = true;
+            this.gridColumActive.VisibleIndex = 6;
+            this.gridColumActive.Width = 51;
+            // 
+            // gridColumnDescription
+            // 
+            this.gridColumnDescription.Caption = "Description";
+            this.gridColumnDescription.FieldName = "Description";
+            this.gridColumnDescription.Name = "gridColumnDescription";
+            // 
+            // panelAddDacCode
+            // 
+            this.panelAddDacCode.Controls.Add(this.addSerialCodeButton);
+            this.panelAddDacCode.Controls.Add(this.ToSeriTextBox);
+            this.panelAddDacCode.Controls.Add(this.FrSeriTextBox);
+            this.panelAddDacCode.Controls.Add(this.ToSeriLabel);
+            this.panelAddDacCode.Controls.Add(this.FrSeriLabel);
+            this.panelAddDacCode.Controls.Add(this.buttonDetailDelete);
+            this.panelAddDacCode.Controls.Add(this.buttonUpdateDetail);
+            this.panelAddDacCode.Controls.Add(this.buttonEnter);
+            this.panelAddDacCode.Controls.Add(this.textBoxDacCode);
+            this.panelAddDacCode.Controls.Add(this.labelSearchCode);
+            this.panelAddDacCode.Location = new System.Drawing.Point(491, 14);
+            this.panelAddDacCode.Name = "panelAddDacCode";
+            this.panelAddDacCode.Size = new System.Drawing.Size(306, 97);
+            this.panelAddDacCode.TabIndex = 10;
+            // 
+            // addSerialCodeButton
+            // 
+            this.addSerialCodeButton.Location = new System.Drawing.Point(271, 41);
+            this.addSerialCodeButton.Name = "addSerialCodeButton";
+            this.addSerialCodeButton.Size = new System.Drawing.Size(35, 23);
+            this.addSerialCodeButton.TabIndex = 8;
+            this.addSerialCodeButton.Text = "+";
+            this.addSerialCodeButton.UseVisualStyleBackColor = true;
+            this.addSerialCodeButton.Click += new System.EventHandler(this.addSerialCodeButton_Click);
+            // 
+            // ToSeriTextBox
+            // 
+            this.ToSeriTextBox.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ToSeriTextBox.Location = new System.Drawing.Point(173, 41);
+            this.ToSeriTextBox.Name = "ToSeriTextBox";
+            this.ToSeriTextBox.Size = new System.Drawing.Size(85, 23);
+            this.ToSeriTextBox.TabIndex = 7;
+            this.ToSeriTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ToSeriTextBox_KeyPress);
+            // 
+            // FrSeriTextBox
+            // 
+            this.FrSeriTextBox.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.FrSeriTextBox.Location = new System.Drawing.Point(51, 41);
+            this.FrSeriTextBox.Name = "FrSeriTextBox";
+            this.FrSeriTextBox.Size = new System.Drawing.Size(85, 23);
+            this.FrSeriTextBox.TabIndex = 6;
+            this.FrSeriTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.FrSeriTextBox_KeyPress);
+            // 
+            // ToSeriLabel
+            // 
+            this.ToSeriLabel.AutoSize = true;
+            this.ToSeriLabel.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ToSeriLabel.Location = new System.Drawing.Point(142, 46);
+            this.ToSeriLabel.Name = "ToSeriLabel";
+            this.ToSeriLabel.Size = new System.Drawing.Size(25, 13);
+            this.ToSeriLabel.TabIndex = 9;
+            this.ToSeriLabel.Text = "=>";
+            // 
+            // FrSeriLabel
+            // 
+            this.FrSeriLabel.AutoSize = true;
+            this.FrSeriLabel.Location = new System.Drawing.Point(4, 46);
+            this.FrSeriLabel.Name = "FrSeriLabel";
+            this.FrSeriLabel.Size = new System.Drawing.Size(41, 13);
+            this.FrSeriLabel.TabIndex = 10;
+            this.FrSeriLabel.Text = "Từ Seri";
+            // 
+            // buttonDetailDelete
+            // 
+            this.buttonDetailDelete.Image = global::PIPT.Properties.Resources.Delete1616;
+            this.buttonDetailDelete.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.buttonDetailDelete.Location = new System.Drawing.Point(201, 70);
+            this.buttonDetailDelete.Name = "buttonDetailDelete";
+            this.buttonDetailDelete.Size = new System.Drawing.Size(105, 24);
+            this.buttonDetailDelete.TabIndex = 5;
+            this.buttonDetailDelete.Text = "Xóa QRCode";
+            this.buttonDetailDelete.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.buttonDetailDelete.UseVisualStyleBackColor = true;
+            this.buttonDetailDelete.Click += new System.EventHandler(this.buttonDetailDelete_Click);
+            // 
+            // buttonUpdateDetail
+            // 
+            this.buttonUpdateDetail.Image = global::PIPT.Properties.Resources.update1616;
+            this.buttonUpdateDetail.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.buttonUpdateDetail.Location = new System.Drawing.Point(51, 70);
+            this.buttonUpdateDetail.Name = "buttonUpdateDetail";
+            this.buttonUpdateDetail.Size = new System.Drawing.Size(84, 24);
+            this.buttonUpdateDetail.TabIndex = 5;
+            this.buttonUpdateDetail.Text = "Cập nhật";
+            this.buttonUpdateDetail.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.buttonUpdateDetail.UseVisualStyleBackColor = true;
+            this.buttonUpdateDetail.Click += new System.EventHandler(this.buttonUpdateDetail_Click);
+            // 
+            // buttonEnter
+            // 
+            this.buttonEnter.Image = global::PIPT.Properties.Resources.submit1616;
+            this.buttonEnter.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.buttonEnter.Location = new System.Drawing.Point(244, 7);
+            this.buttonEnter.Name = "buttonEnter";
+            this.buttonEnter.Size = new System.Drawing.Size(62, 28);
+            this.buttonEnter.TabIndex = 5;
+            this.buttonEnter.Text = "Nhận";
+            this.buttonEnter.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.buttonEnter.UseVisualStyleBackColor = true;
+            this.buttonEnter.Click += new System.EventHandler(this.buttonEnter_Click);
+            // 
+            // textBoxDacCode
+            // 
+            this.textBoxDacCode.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBoxDacCode.Location = new System.Drawing.Point(110, 10);
+            this.textBoxDacCode.Name = "textBoxDacCode";
+            this.textBoxDacCode.Size = new System.Drawing.Size(127, 23);
+            this.textBoxDacCode.TabIndex = 0;
+            this.textBoxDacCode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxDacCode_KeyPress);
+            // 
+            // labelSearchCode
+            // 
+            this.labelSearchCode.AutoSize = true;
+            this.labelSearchCode.Location = new System.Drawing.Point(3, 15);
+            this.labelSearchCode.Name = "labelSearchCode";
+            this.labelSearchCode.Size = new System.Drawing.Size(101, 13);
+            this.labelSearchCode.TabIndex = 4;
+            this.labelSearchCode.Text = "Quét mã hoặc nhập";
+            // 
+            // panelInsertToWarehouse
+            // 
+            this.panelInsertToWarehouse.Controls.Add(this.gridLookUpEditDacStock);
+            this.panelInsertToWarehouse.Controls.Add(this.labelDacStock);
+            this.panelInsertToWarehouse.Controls.Add(this.checkEditKeepOrder);
+            this.panelInsertToWarehouse.Controls.Add(this.gridLookUpEditProduct);
+            this.panelInsertToWarehouse.Controls.Add(this.textBoxQuantity);
+            this.panelInsertToWarehouse.Controls.Add(this.textBoxOrderNumber);
+            this.panelInsertToWarehouse.Controls.Add(this.richTextBoxDescription);
+            this.panelInsertToWarehouse.Controls.Add(this.dateTimePickerCreatedDate);
+            this.panelInsertToWarehouse.Controls.Add(this.labelDescription);
+            this.panelInsertToWarehouse.Controls.Add(this.labelProduct);
+            this.panelInsertToWarehouse.Controls.Add(this.labelCreatedDate);
+            this.panelInsertToWarehouse.Controls.Add(this.labelQuantity);
+            this.panelInsertToWarehouse.Controls.Add(this.labelOrderNumber);
+            this.panelInsertToWarehouse.Location = new System.Drawing.Point(3, 14);
+            this.panelInsertToWarehouse.Name = "panelInsertToWarehouse";
+            this.panelInsertToWarehouse.Size = new System.Drawing.Size(482, 138);
+            this.panelInsertToWarehouse.TabIndex = 9;
+            // 
+            // gridLookUpEditDacStock
+            // 
+            this.gridLookUpEditDacStock.EditValue = "";
+            this.gridLookUpEditDacStock.Location = new System.Drawing.Point(287, 12);
+            this.gridLookUpEditDacStock.Name = "gridLookUpEditDacStock";
+            this.gridLookUpEditDacStock.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.gridLookUpEditDacStock.Properties.DisplayMember = "Name";
+            this.gridLookUpEditDacStock.Properties.ImmediatePopup = true;
+            this.gridLookUpEditDacStock.Properties.NullText = "";
+            this.gridLookUpEditDacStock.Properties.PopupFilterMode = DevExpress.XtraEditors.PopupFilterMode.Contains;
+            this.gridLookUpEditDacStock.Properties.PopupView = this.gridView1;
+            this.gridLookUpEditDacStock.Properties.ValueMember = "Code";
+            this.gridLookUpEditDacStock.Size = new System.Drawing.Size(192, 20);
+            this.gridLookUpEditDacStock.TabIndex = 14;
+            // 
+            // gridView1
+            // 
+            this.gridView1.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.gridColumnCode,
+            this.gridColumnName});
+            this.gridView1.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
+            this.gridView1.Name = "gridView1";
+            this.gridView1.OptionsSelection.EnableAppearanceFocusedCell = false;
+            this.gridView1.OptionsView.ShowAutoFilterRow = true;
+            this.gridView1.OptionsView.ShowGroupPanel = false;
+            // 
+            // gridColumnCode
+            // 
+            this.gridColumnCode.Caption = "Mã kho";
+            this.gridColumnCode.FieldName = "Code";
+            this.gridColumnCode.Name = "gridColumnCode";
+            this.gridColumnCode.OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
+            this.gridColumnCode.Visible = true;
+            this.gridColumnCode.VisibleIndex = 0;
+            this.gridColumnCode.Width = 35;
+            // 
+            // gridColumnName
+            // 
+            this.gridColumnName.Caption = "Tên kho";
+            this.gridColumnName.FieldName = "Name";
+            this.gridColumnName.Name = "gridColumnName";
+            this.gridColumnName.OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
+            this.gridColumnName.Visible = true;
+            this.gridColumnName.VisibleIndex = 1;
+            // 
+            // labelDacStock
+            // 
+            this.labelDacStock.AutoSize = true;
+            this.labelDacStock.Location = new System.Drawing.Point(229, 15);
+            this.labelDacStock.Name = "labelDacStock";
+            this.labelDacStock.Size = new System.Drawing.Size(52, 13);
+            this.labelDacStock.TabIndex = 13;
+            this.labelDacStock.Text = "Chọn kho";
+            // 
+            // checkEditKeepOrder
+            // 
+            this.checkEditKeepOrder.Location = new System.Drawing.Point(160, 12);
+            this.checkEditKeepOrder.Name = "checkEditKeepOrder";
+            this.checkEditKeepOrder.Properties.Caption = "Giữ lệnh";
+            this.checkEditKeepOrder.Size = new System.Drawing.Size(63, 19);
+            this.checkEditKeepOrder.TabIndex = 12;
+            // 
+            // gridLookUpEditProduct
+            // 
+            this.gridLookUpEditProduct.EditValue = "";
+            this.gridLookUpEditProduct.Location = new System.Drawing.Point(72, 38);
+            this.gridLookUpEditProduct.Name = "gridLookUpEditProduct";
+            this.gridLookUpEditProduct.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.gridLookUpEditProduct.Properties.DisplayMember = "Name";
+            this.gridLookUpEditProduct.Properties.ImmediatePopup = true;
+            this.gridLookUpEditProduct.Properties.NullText = "";
+            this.gridLookUpEditProduct.Properties.PopupFilterMode = DevExpress.XtraEditors.PopupFilterMode.Contains;
+            this.gridLookUpEditProduct.Properties.PopupView = this.gridLookUpEditProductView;
+            this.gridLookUpEditProduct.Properties.ValueMember = "Code";
+            this.gridLookUpEditProduct.Size = new System.Drawing.Size(326, 20);
+            this.gridLookUpEditProduct.TabIndex = 10;
+            // 
+            // gridLookUpEditProductView
+            // 
+            this.gridLookUpEditProductView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.gridColCode,
+            this.gridColName});
+            this.gridLookUpEditProductView.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
+            this.gridLookUpEditProductView.Name = "gridLookUpEditProductView";
+            this.gridLookUpEditProductView.OptionsSelection.EnableAppearanceFocusedCell = false;
+            this.gridLookUpEditProductView.OptionsView.ShowAutoFilterRow = true;
+            this.gridLookUpEditProductView.OptionsView.ShowGroupPanel = false;
+            // 
+            // gridColCode
+            // 
+            this.gridColCode.Caption = "Product Code";
+            this.gridColCode.FieldName = "Code";
+            this.gridColCode.Name = "gridColCode";
+            this.gridColCode.OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
+            this.gridColCode.Visible = true;
+            this.gridColCode.VisibleIndex = 0;
+            this.gridColCode.Width = 35;
+            // 
+            // gridColName
+            // 
+            this.gridColName.Caption = "Product Name";
+            this.gridColName.FieldName = "Name";
+            this.gridColName.Name = "gridColName";
+            this.gridColName.OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
+            this.gridColName.Visible = true;
+            this.gridColName.VisibleIndex = 1;
+            // 
+            // textBoxQuantity
+            // 
+            this.textBoxQuantity.Location = new System.Drawing.Point(72, 64);
+            this.textBoxQuantity.Name = "textBoxQuantity";
+            this.textBoxQuantity.Size = new System.Drawing.Size(117, 21);
+            this.textBoxQuantity.TabIndex = 9;
+            // 
+            // textBoxOrderNumber
+            // 
+            this.textBoxOrderNumber.Location = new System.Drawing.Point(72, 11);
+            this.textBoxOrderNumber.Name = "textBoxOrderNumber";
+            this.textBoxOrderNumber.Size = new System.Drawing.Size(82, 21);
+            this.textBoxOrderNumber.TabIndex = 9;
+            // 
+            // richTextBoxDescription
+            // 
+            this.richTextBoxDescription.Location = new System.Drawing.Point(72, 93);
+            this.richTextBoxDescription.Name = "richTextBoxDescription";
+            this.richTextBoxDescription.Size = new System.Drawing.Size(326, 37);
+            this.richTextBoxDescription.TabIndex = 7;
+            this.richTextBoxDescription.Text = "";
+            // 
+            // dateTimePickerCreatedDate
+            // 
+            this.dateTimePickerCreatedDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dateTimePickerCreatedDate.Location = new System.Drawing.Point(305, 65);
+            this.dateTimePickerCreatedDate.Name = "dateTimePickerCreatedDate";
+            this.dateTimePickerCreatedDate.Size = new System.Drawing.Size(93, 21);
+            this.dateTimePickerCreatedDate.TabIndex = 6;
+            // 
+            // labelDescription
+            // 
+            this.labelDescription.AutoSize = true;
+            this.labelDescription.Location = new System.Drawing.Point(9, 93);
+            this.labelDescription.Name = "labelDescription";
+            this.labelDescription.Size = new System.Drawing.Size(42, 13);
+            this.labelDescription.TabIndex = 4;
+            this.labelDescription.Text = "Ghi chú";
+            // 
+            // labelProduct
+            // 
+            this.labelProduct.AutoSize = true;
+            this.labelProduct.Location = new System.Drawing.Point(9, 41);
+            this.labelProduct.Name = "labelProduct";
+            this.labelProduct.Size = new System.Drawing.Size(54, 13);
+            this.labelProduct.TabIndex = 4;
+            this.labelProduct.Text = "Sản phẩm";
+            // 
+            // labelCreatedDate
+            // 
+            this.labelCreatedDate.AutoSize = true;
+            this.labelCreatedDate.Location = new System.Drawing.Point(248, 69);
+            this.labelCreatedDate.Name = "labelCreatedDate";
+            this.labelCreatedDate.Size = new System.Drawing.Size(51, 13);
+            this.labelCreatedDate.TabIndex = 4;
+            this.labelCreatedDate.Text = "Ngày tạo";
+            // 
+            // labelQuantity
+            // 
+            this.labelQuantity.AutoSize = true;
+            this.labelQuantity.Location = new System.Drawing.Point(9, 71);
+            this.labelQuantity.Name = "labelQuantity";
+            this.labelQuantity.Size = new System.Drawing.Size(49, 13);
+            this.labelQuantity.TabIndex = 4;
+            this.labelQuantity.Text = "Số lượng";
+            // 
+            // labelOrderNumber
+            // 
+            this.labelOrderNumber.AutoSize = true;
+            this.labelOrderNumber.Location = new System.Drawing.Point(9, 14);
+            this.labelOrderNumber.Name = "labelOrderNumber";
+            this.labelOrderNumber.Size = new System.Drawing.Size(58, 13);
+            this.labelOrderNumber.TabIndex = 4;
+            this.labelOrderNumber.Text = "Lệnh Nhập";
+            // 
+            // dataGridViewDetails
+            // 
+            this.dataGridViewDetails.AllowUserToAddRows = false;
+            this.dataGridViewDetails.AllowUserToDeleteRows = false;
+            this.dataGridViewDetails.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewDetails.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.ColumnId,
+            this.IsSelected,
+            this.ColumnDistributorID,
+            this.ColumnDacCode,
+            this.ColumnStatus});
+            this.dataGridViewDetails.Location = new System.Drawing.Point(491, 114);
+            this.dataGridViewDetails.Name = "dataGridViewDetails";
+            this.dataGridViewDetails.RowHeadersVisible = false;
+            this.dataGridViewDetails.Size = new System.Drawing.Size(305, 409);
+            this.dataGridViewDetails.TabIndex = 0;
+            // 
+            // ColumnId
+            // 
+            this.ColumnId.DataPropertyName = "ID";
+            this.ColumnId.HeaderText = "ID";
+            this.ColumnId.Name = "ColumnId";
+            this.ColumnId.Visible = false;
+            // 
+            // IsSelected
+            // 
+            this.IsSelected.HeaderText = "";
+            this.IsSelected.Name = "IsSelected";
+            this.IsSelected.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.IsSelected.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.IsSelected.Width = 30;
+            // 
+            // ColumnDistributorID
+            // 
+            this.ColumnDistributorID.DataPropertyName = "InsertID";
+            this.ColumnDistributorID.HeaderText = "Insert ID";
+            this.ColumnDistributorID.Name = "ColumnDistributorID";
+            this.ColumnDistributorID.Width = 75;
+            // 
+            // ColumnDacCode
+            // 
+            this.ColumnDacCode.DataPropertyName = "DacCode";
+            this.ColumnDacCode.HeaderText = "Mã QRCode";
+            this.ColumnDacCode.Name = "ColumnDacCode";
+            // 
+            // ColumnStatus
+            // 
+            this.ColumnStatus.DataPropertyName = "Status";
+            this.ColumnStatus.HeaderText = "Status";
+            this.ColumnStatus.Name = "ColumnStatus";
+            this.ColumnStatus.Width = 60;
+            // 
+            // labelProductCount
+            // 
+            this.labelProductCount.AutoSize = true;
+            this.labelProductCount.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelProductCount.Location = new System.Drawing.Point(494, 526);
+            this.labelProductCount.Name = "labelProductCount";
+            this.labelProductCount.Size = new System.Drawing.Size(132, 13);
+            this.labelProductCount.TabIndex = 4;
+            this.labelProductCount.Text = "Số sản phẩm đã thêm:";
+            // 
+            // ucDataButtonProduct
+            // 
+            this.ucDataButtonProduct.AddNewVisible = true;
+            this.ucDataButtonProduct.CancelVisible = true;
+            this.ucDataButtonProduct.DataMode = DAC.Core.Security.DataState.View;
+            this.ucDataButtonProduct.DeleteVisible = true;
+            this.ucDataButtonProduct.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.ucDataButtonProduct.EditVisible = true;
+            this.ucDataButtonProduct.ExcelVisible = false;
+            this.ucDataButtonProduct.IsContitnue = true;
+            this.ucDataButtonProduct.LanguageVisible = false;
+            this.ucDataButtonProduct.Location = new System.Drawing.Point(0, 545);
+            this.ucDataButtonProduct.MaximumSize = new System.Drawing.Size(0, 34);
+            this.ucDataButtonProduct.MinimumSize = new System.Drawing.Size(500, 34);
+            this.ucDataButtonProduct.MultiLanguageVisible = false;
+            this.ucDataButtonProduct.Name = "ucDataButtonProduct";
+            this.ucDataButtonProduct.PrintVisible = true;
+            this.ucDataButtonProduct.ReportVisible = false;
+            this.ucDataButtonProduct.SaveVisible = true;
+            this.ucDataButtonProduct.Size = new System.Drawing.Size(804, 34);
+            this.ucDataButtonProduct.TabIndex = 2;
+            this.ucDataButtonProduct.InsertHandler += new PIPT.ucDataButton.DataHandler(this.ucDataButtonProduct_InsertHandler);
+            this.ucDataButtonProduct.PrintHandler += new PIPT.ucDataButton.DataHandler(this.ucDataButtonProduct_PrintHandler);
+            this.ucDataButtonProduct.EditHandler += new PIPT.ucDataButton.DataHandler(this.ucDataButtonProduct_EditHandler);
+            this.ucDataButtonProduct.SaveHandler += new PIPT.ucDataButton.DataHandler(this.ucDataButtonProduct_SaveHandler);
+            this.ucDataButtonProduct.DeleteHandler += new PIPT.ucDataButton.DataHandler(this.ucDataButtonProduct_DeleteHandler);
+            this.ucDataButtonProduct.CancelHandler += new PIPT.ucDataButton.DataHandler(this.ucDataButtonProduct_CancelHandler);
+            this.ucDataButtonProduct.CloseHandler += new PIPT.ucDataButton.DataHandler(this.ucDataButtonProduct_CloseHandler);
+            // 
+            // frmDacProductWarehouse
+            // 
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.ClientSize = new System.Drawing.Size(804, 579);
+            this.Controls.Add(this.groupBoxProduct);
+            this.Controls.Add(this.ucDataButtonProduct);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.Name = "frmDacProductWarehouse";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Nhập hàng hóa vào kho";
+            this.Load += new System.EventHandler(this.frmDacProductWarehouse_Load);
+            this.groupBoxProduct.ResumeLayout(false);
+            this.groupBoxProduct.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridControlWarehouse)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridViewWarehouse)).EndInit();
+            this.panelAddDacCode.ResumeLayout(false);
+            this.panelAddDacCode.PerformLayout();
+            this.panelInsertToWarehouse.ResumeLayout(false);
+            this.panelInsertToWarehouse.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridLookUpEditDacStock.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.checkEditKeepOrder.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridLookUpEditProduct.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridLookUpEditProductView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewDetails)).EndInit();
+            this.ResumeLayout(false);
+
+        }
+
+        #endregion
+
+        private System.Windows.Forms.GroupBox groupBoxProduct;
+        private DevExpress.XtraGrid.GridControl gridControlWarehouse;
+        private DevExpress.XtraGrid.Views.Grid.GridView gridViewWarehouse;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnID;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnOrder;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumProductCode;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnQuantity;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnCreatedDate;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumActive;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnDescription;
+        private System.Windows.Forms.Panel panelAddDacCode;
+        private System.Windows.Forms.Button buttonDetailDelete;
+        private System.Windows.Forms.Button buttonUpdateDetail;
+        private System.Windows.Forms.Button buttonEnter;
+        private System.Windows.Forms.TextBox textBoxDacCode;
+        private System.Windows.Forms.Label labelSearchCode;
+        private System.Windows.Forms.Panel panelInsertToWarehouse;
+        private DevExpress.XtraEditors.GridLookUpEdit gridLookUpEditProduct;
+        private DevExpress.XtraGrid.Views.Grid.GridView gridLookUpEditProductView;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColCode;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColName;
+        private System.Windows.Forms.TextBox textBoxQuantity;
+        private System.Windows.Forms.TextBox textBoxOrderNumber;
+        private System.Windows.Forms.RichTextBox richTextBoxDescription;
+        private System.Windows.Forms.DateTimePicker dateTimePickerCreatedDate;
+        private System.Windows.Forms.Label labelDescription;
+        private System.Windows.Forms.Label labelProduct;
+        private System.Windows.Forms.Label labelCreatedDate;
+        private System.Windows.Forms.Label labelQuantity;
+        private System.Windows.Forms.Label labelOrderNumber;
+        private System.Windows.Forms.DataGridView dataGridViewDetails;
+        private System.Windows.Forms.Label labelProductCount;
+        private ucDataButton ucDataButtonProduct;
+        private System.Windows.Forms.Button addSerialCodeButton;
+        private System.Windows.Forms.TextBox ToSeriTextBox;
+        private System.Windows.Forms.TextBox FrSeriTextBox;
+        private System.Windows.Forms.Label ToSeriLabel;
+        private System.Windows.Forms.Label FrSeriLabel;
+        private DevExpress.XtraEditors.CheckEdit checkEditKeepOrder;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnId;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn IsSelected;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnDistributorID;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnDacCode;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnStatus;
+        private DevExpress.XtraEditors.GridLookUpEdit gridLookUpEditDacStock;
+        private DevExpress.XtraGrid.Views.Grid.GridView gridView1;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnCode;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnName;
+        private System.Windows.Forms.Label labelDacStock;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnStockID;
+        private System.Windows.Forms.CheckBox chkPrintType;
+    }
+}

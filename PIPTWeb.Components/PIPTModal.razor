@@ -1,0 +1,66 @@
+﻿<!-- Modal -->
+<div class="modal fade @modalClass" id="@Id" tabindex="-1" role="dialog" style="display: @modalDisplay; overflow-y: auto; background-color: rgba(10, 10, 10, .8);" aria-hidden="true">
+    <div class="modal-dialog @modalSize" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">@Title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @Body
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public RenderFragment Title { get; set; }
+    [Parameter] public RenderFragment Body { get; set; }
+    [Parameter] public ModalSize Size { get; set; }
+    [Parameter] public EventCallback OnCancelDialog { get; set; }
+    private Guid Id = new Guid();
+    private string modalDisplay = "none";
+    private string modalClass = string.Empty;
+    private string modalSize = string.Empty;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        switch(Size)
+        {
+            case ModalSize.Small:
+                modalSize = "modal-sm";
+                break;
+            case ModalSize.Nomal:
+                modalSize = string.Empty;
+                break;
+            case ModalSize.Large:
+                modalSize = "modal-lg";
+                break;
+        }
+    }
+
+    public async Task Open()
+    {
+        modalClass = "show";
+        modalDisplay = "block";
+        await Task.Delay(100);
+        StateHasChanged();
+    }
+
+    public async Task Close()
+    {
+        await OnCancelDialog.InvokeAsync();
+        modalClass = "";
+        modalDisplay = "none";
+        await Task.Delay(250);
+        StateHasChanged();
+    }
+
+    public enum ModalSize
+    {
+        Small = 1,
+        Nomal,
+        Large
+    }
+}

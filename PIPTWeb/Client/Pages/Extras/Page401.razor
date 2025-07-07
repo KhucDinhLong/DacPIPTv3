@@ -1,0 +1,31 @@
+﻿@page "/page-401"
+<ContentHeader>
+    <Header>
+        <PageTitle Title="401 Tài khoản không được cấp quyền" />
+    </Header>
+</ContentHeader>
+<ContentMain>
+    <div class="error-page">
+        <h2 class="headline text-warning"> 401</h2>
+        <div class="error-content">
+            <h3><i class="fas fa-exclamation-triangle text-warning"></i> Oops! Bạn không được cấp quyền vào trang này.</h3>
+            <p>
+                Chúng tôi không thể tìm thấy quyền của bạn trên trang này.
+                Đề nghị, bạn có thể <a href="./">quay lại dashboard</a> hoặc sử dụng form tìm kiếm.
+            </p>
+            <form class="search-form">
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control" placeholder="Search">
+
+                    <div class="input-group-append">
+                        <button type="submit" name="submit" class="btn btn-warning">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- /.input-group -->
+            </form>
+        </div>
+        <!-- /.error-content -->
+    </div>
+</ContentMain>

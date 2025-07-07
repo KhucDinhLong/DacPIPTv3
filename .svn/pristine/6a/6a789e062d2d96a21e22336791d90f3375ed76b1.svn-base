@@ -1,0 +1,138 @@
+﻿@page "/provinces"
+
+<ContentHeader>
+    <Header>
+        <PageTitle Title="Quản lý tỉnh thành" />
+    </Header>
+</ContentHeader>
+<ContentMain>
+    <div class="card mb-3">
+        <div class="card-header">
+            <i class="fa fa-table"></i> Quản lý tỉnh thành
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <div id="datatable_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-8">
+                            <div class="form-group">
+                                <div id="dataTable_filter" class="input-group">
+                                    <div class="input-group-prepend">
+                                        <button type="button" class="btn btn-default">Bộ lọc <i class="fas fa-filter"></i></button>
+                                    </div>
+                                    <input type="search" class="form-control" placeholder="Mã tỉnh thành" aria-controls="dataTable" @bind-value="ProvinceCode" />
+                                    <input type="search" class="form-control" placeholder="Tên tỉnh thành" aria-controls="dataTable" @bind-value="ProvinceName" />
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btn-default" @onclick="@(() => Search(ProvinceCode, ProvinceName))"><i class="fas fa-search"></i> Tìm kiếm</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-2">
+                            <button class="btn btn-success" @onclick="@(() => OpenDialog(new Province()))"> <i class="fa fa-plus"></i> </button>
+                        </div>
+                        <div class="col-sm-12 col-md-2">
+                            <div class="form-group">
+                                <div id="dataTable_length" class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Show:</span>
+                                    </div>
+                                    <select name="dataTable_length" aria-controls="dataTable" class="form-control">
+                                        <option value="10">10</option>
+                                        <option value="25">25</option>
+                                        <option value="50" selected>50</option>
+                                        <option value="100">100</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            @if (LstProvinces == null)
+                            {
+                                <p><em>Đang tải dữ liệu...</em></p>
+                            }
+                            else
+                            {
+                                <table class="table table-bordered dataTable" id="dataTable" role="grid" aria-describedby="dataTable_info">
+                                    <thead>
+                                        <tr role="row">
+                                            <th>#</th>
+                                            <th>Mã tỉnh thành</th>
+                                            <th>Tên tỉnh thành</th>
+                                            <th>Mã quốc gia</th>
+                                            <th>PostalCode</th>
+                                            <th>Hoạt động</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{ var i = 1;}
+                                        @foreach (var province in LstProvinces)
+                                        {
+                                        <tr role="row">
+                                            <td>@i</td>
+                                            <td>@province.Code</td>
+                                            <td>@province.Name</td>
+                                            <td>@province.NationallityCode</td>
+                                            <td>@province.PostalCode</td>
+                                            <td class="text-center"><input type="checkbox" @bind="province.Active" disabled /></td>
+                                            <td>
+                                                <button class="btn btn-primary btn-sm" @onclick="@(()=> OpenDialog(province))"><i class="fa fa-edit"></i></button>
+                                                <button class="btn btn-danger btn-sm" @onclick="@(()=> OpenDeleteDialog(province))"><i class="fa fa-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                            i++;
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-5">
+                            <div id="dataTable_info" class="dataTables_info" role="status" arial-live="polite">
+                                <PaginationInfo ActualPage="actualPage" TotalPages="totalPages" PageType="PaginationInfo.PageInfoType.PagePerTotal">
+                                    <Text>Nếu PaginationInfo.PageInfoType.Text thì thể hiện ở đây</Text>
+                                </PaginationInfo>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-7">
+                            <div id="dataTable_paginate" class="dataTables_paginate paging_simple_numbers">
+                                <Pagination TotalPages="totalPages" ActualPage="actualPage" Radius="3"
+                                            SelectedPage="SelectedPage"></Pagination>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer small text-muted">
+        </div>
+    </div>
+    <!-- Bordered table end -->
+</ContentMain>
+<PIPTModal @ref="piptModal" Size="PIPTModal.ModalSize.Nomal" OnCancelDialog="CancelDialog">
+    <Title>Thông tin khách hàng</Title>
+    <Body>
+        @if (IsDeleteDialogOpen)
+        {
+            <ProvinceDelete province="_Province"
+                             OnvalidSubmit="OnSubmitCallBack"
+                             OnClose="CloseDialog" />
+        }
+        else if (_Province != null && _Province.ID > 0)
+        {
+            <ProvinceEdit province="_Province" OnvalidSubmit="OnSubmitCallBack" OnClose="CloseDialog" />
+        }
+        else
+        {
+            <ProvinceCreate province="_Province"
+                             OnvalidSubmit="OnSubmitCallBack"
+                             OnClose="CloseDialog">
+            </ProvinceCreate>
+        }
+    </Body>
+</PIPTModal>
+

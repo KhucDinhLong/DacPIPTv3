@@ -1,0 +1,171 @@
+﻿@inherits LayoutComponentBase
+@inject NavigationManager navigationManager
+@inject IJSRuntime JSRuntime
+@inject ILayoutManager layoutManager
+@inject NavBarLeftInjectableMenu navBarLeftInjectableMenu
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject NavigationManager navigation
+@*@inject PIPTWeb.Client.Services.ISysNotificationsService notificationService*@
+@using Microsoft.AspNetCore.SignalR.Client
+
+<NavBar>
+    <NavBarLeft>
+        @if (!navBarLeftInjectableMenu.OverrideParentContent)
+        {
+            @*<NavBarMenuItem Link="/">Home</NavBarMenuItem>
+                <NavBarMenuItem OnClick="HandleContent">Content</NavBarMenuItem> // defaults to #*@
+        }
+        @navBarLeftInjectableMenu.content <!-- Injectable for custom menu content per page -->
+    </NavBarLeft>
+    @*<NavBarSearch></NavBarSearch>*@
+    <NavBarRight>
+
+        @*<NavBarDropDown>
+            <NavBarBadge Color="Color.Danger" Icon="far fa-comments">0</NavBarBadge>
+            <NavBarDropDownMenu>
+                <DropdownHeader>0 tin nhắn</DropdownHeader>
+                <DropdownDivider />
+                <DropdownFooter OnClick="SeeAllMessages">Xem tất cả tin nhắn</DropdownFooter>
+            </NavBarDropDownMenu>
+        </NavBarDropDown>*@
+        @*<NavBarDropDown>
+            <NavBarBadge Color="Color.Warning" Icon="far fa-bell">@LstNotification.Count()</NavBarBadge>
+            <NavBarDropDownMenu>
+                <DropdownHeader>@(LstNotification.Count() + " thông báo")</DropdownHeader>
+                @foreach (var item in LstNotification)
+                {
+                    <NavBarDropDownMenuItem>@item.Title</NavBarDropDownMenuItem>
+                }
+                <DropdownDivider></DropdownDivider>
+                <DropdownFooter OnClick="SeeAllNotifications">Xem tất cả thông báo</DropdownFooter>
+            </NavBarDropDownMenu>
+        </NavBarDropDown>*@
+        <!-- User Account Menu -->
+        <NavBarDropDown>
+            <!-- Menu Toggle Button -->
+            <a href="#" class="nav-item nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <div class="user-nav">
+                    <div class="avatar">
+                        <img src="@Avatar" class="round user-image" alt="user avatar" width="26" height="26">
+                        <span class="avatar-status-online"></span>
+                    </div>
+                </div>
+            </a>
+            <NavBarDropDownMenu>
+                <a class="dropdown-item" href="/profile"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user mr-50"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Hồ sơ</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-settings mr-50"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg> Cài đặt</a>
+                <a class="dropdown-item" href="/logout"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-power mr-50"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path><line x1="12" y1="2" x2="12" y2="12"></line></svg> Đăng xuất</a>
+            </NavBarDropDownMenu>
+        </NavBarDropDown>
+        <NavBarSideBarControl></NavBarSideBarControl>
+    </NavBarRight>
+</NavBar>
+<NavMenu />
+<ContentWrapper>
+    @Body
+</ContentWrapper>
+<ControlSideBar>Cài đặt!</ControlSideBar>
+<MainFooter>
+    <Default>
+        <strong>Copyright &copy; 2021 <a href="http://appprintco.com">AppPrintCo</a>.</strong> All rights reserved.
+    </Default>
+    <Right>
+        Dev by: <Badge>IT TEAM</Badge>
+    </Right>
+</MainFooter>
+
+<RadzenDialog />
+<RadzenNotification />
+<RadzenContextMenu />
+<RadzenTooltip />
+
+@code {
+    protected override void OnParametersSet()
+    {
+        // content = null; for refreshing custom menu injectables per page.
+        // no override; reset default to show parent menu content items.
+        navBarLeftInjectableMenu.SetContent(null, false);
+    }
+
+    private DateTime dt = DateTime.Now;
+
+    protected override void OnAfterRender(bool isFirstRender)
+    {
+        layoutManager.IsFooterFixed = true;
+        if (navigation.Uri.Contains("schedules"))
+        {
+            layoutManager.IsNavBarFixed = false;
+        }
+        else
+        {
+            layoutManager.IsNavBarFixed = true;
+        }
+        layoutManager.IsSideBarFixed = true;
+        JSRuntime.NavChildIdent();
+        JSRuntime.NavCompact();
+        base.OnAfterRender(isFirstRender);
+    }
+
+    private void SeeAllMessages(Tuple<IDropdownFooter, MouseEventArgs> args)
+    {
+        navigationManager.NavigateTo("messages/see-all-messages");
+    }
+
+    private void HandleContent(Tuple<INavBarMenuItem, MouseEventArgs> args)
+    {
+        navigationManager.NavigateTo("messages/see-all-messages");
+    }
+
+    private void SeeAllNotifications(Tuple<IDropdownFooter, MouseEventArgs> args)
+    {
+        navigationManager.NavigateTo("messages/see-all-notifications");
+    }
+
+    private string Avatar { get; set; }
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+    private string _authMessage;
+    //private List<SysNotifications> LstNotification { get; set; } = new List<SysNotifications>();
+    private string UserName = string.Empty;
+    private HubConnection hubConnection;
+    private int UnRead_StatusId = 7;
+    private string token = string.Empty;
+
+    private async Task LogUsername()
+    {
+        var authState = await authenticationStateTask;
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            _authMessage = $"{user.Identity.Name} đã được xác thực.";
+        }
+        else
+        {
+            _authMessage = "Người dùng KHÔNG được cấp quyền.";
+            navigationManager.NavigateTo("/login?returnUrl=" + Uri.EscapeDataString(navigationManager.Uri));
+        }
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        await LogUsername();
+        Avatar = await localStorage.GetItemAsync<string>("Avatar");
+        UserName = await localStorage.GetItemAsync<string>("UserName");
+        token = await localStorage.GetItemAsync<string>("authToken");
+        if (!string.IsNullOrWhiteSpace(token))
+        {
+            //hubConnection = OneAppHubService.GetConnectionHub(token, navigation);
+            //await OneAppHubService.TryStartHubConnection(hubConnection, navigation);
+            //hubConnection.On("NewRequestCreated", async () =>
+            //{
+            //    LstNotification = await notificationService.GetNotificationsByStatus(UnRead_StatusId);
+            //    StateHasChanged();
+            //});
+
+        }
+        //LstNotification = await notificationService.GetNotificationsByStatus(UnRead_StatusId);
+
+        StateHasChanged();
+    }
+}

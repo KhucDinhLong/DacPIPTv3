@@ -1,0 +1,314 @@
+﻿using DAC.Core;
+using DAC.Core.Security;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace PIPT
+{
+    public partial class frmDacRegion : Form
+    {
+        #region Instance of the form
+        /// <summary>
+        /// Instance to store instance of this form
+        /// </summary>
+        private static frmDacRegion _instance = null;
+
+        /// <summary>
+        /// Instance form.
+        /// </summary>
+        /// <returns>Instance of this Form</returns>
+        public static frmDacRegion Instance()
+        {
+            if (_instance == null || _instance.IsDisposed)
+            {
+                _instance = new frmDacRegion();
+            }
+            return _instance;
+        }
+
+        public static frmDacRegion Instance(Form parent)
+        {
+            _instance = Instance();
+            _instance.MdiParent = parent;
+            return _instance;
+        }
+
+        public static frmDacRegion Instance(Form parent, bool isActivate)
+        {
+            _instance = Instance(parent);
+            if (isActivate)
+            {
+                _instance.WindowState = FormWindowState.Normal;
+                _instance.Show();
+                _instance.Activate();
+            }
+            return _instance;
+        }
+        #endregion
+        #region Variables
+        DacRegion dacRegion = new DacRegion();
+        DacRegion selectedDacRegion = new DacRegion();
+        DacRegionCollection dacRegionCollection = new DacRegionCollection();
+        DacRegionCS dacRegionBS = new DacRegionCS();
+        BindingList<DacRegion> bdlDacRegion;
+        bool bIsDataBinding = false;
+        #endregion
+        #region Form's Events
+        
+        public frmDacRegion()
+        {
+            InitializeComponent();
+        }
+        private void frmDacAgency_Load(object sender, EventArgs e)
+        {
+            // Get data from database
+            dacRegionCollection = dacRegionBS.GetListRegion();
+            // Get BindingList DataSource
+            AddObjectIntoBindingList(dacRegionCollection);
+        }
+        #endregion
+        #region Functions on Form
+        private void AddObjectIntoBindingList(DacRegionCollection RegionCollection)
+        {
+            bdlDacRegion = new BindingList<DacRegion>();
+            foreach (DacRegion product in RegionCollection)
+            {
+                bdlDacRegion.Add(product);
+            }
+            SetDataSource();
+        }
+        private void SetDataSource()
+        {
+            CommonCore.ClearDataBinding(panelStore);
+            // Binding data to Controls
+            bIsDataBinding = true;
+            textBoxCode.DataBindings.Add("Text", bdlDacRegion, "RegionCode");
+            textBoxName.DataBindings.Add("Text", bdlDacRegion, "RegionArea");
+            textBoxMotherRegion.DataBindings.Add("Text", bdlDacRegion, "MotherRegion");
+            dateTimePickerCreatedDate.DataBindings.Clear();
+            dateTimePickerCreatedDate.DataBindings.Add("Value", bdlDacRegion, "CreatedDate");
+            dateTimePickerModifiedDate.DataBindings.Clear();
+            dateTimePickerModifiedDate.DataBindings.Add("Value", bdlDacRegion, "ModifiedDate");
+            checkBoxActive.DataBindings.Clear();
+            checkBoxActive.DataBindings.Add("Checked", bdlDacRegion, "Active");
+
+            dataGridViewRegion.DataSource = bdlDacRegion;
+            bIsDataBinding = false;
+            EnableControls(bIsDataBinding);
+        }
+        private DacRegion GetSelectedRegion(string sCode)
+        {
+            foreach(DacRegion region in dacRegionCollection)
+            {
+                if (region.RegionCode == sCode)
+                    return region;
+            }
+            return null;
+        }
+        private bool IsRegionCodeExists(string sCode)
+        {
+            foreach(DacRegion region in dacRegionCollection)
+            {
+                if (region.RegionCode == sCode.Trim().ToUpper())
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        private void EnableControls(bool bIsEnabled)
+        {
+            foreach (Control ctrl in panelStore.Controls)
+            {
+                ctrl.Enabled = bIsEnabled;
+            }
+            if(ucDataButtonStore.DataMode == DataState.Edit)
+            {
+                textBoxCode.Enabled = false;
+            }
+        }
+        private bool IsChangedData()
+        {
+            if(ucDataButtonStore.DataMode == DataState.Insert)
+            {
+                if (textBoxCode.Text.Trim().Length > 0 || textBoxName.Text.Trim().Length > 0)
+                    return true;
+                else
+                    return false;
+            }
+            else if (ucDataButtonStore.DataMode == DataState.Edit)
+            {
+                if (selectedDacRegion.RegionCode != textBoxCode.Text.Trim()
+                || selectedDacRegion.RegionArea != textBoxName.Text.Trim()
+                || selectedDacRegion.Active != checkBoxActive.Checked)
+                    return true;
+                else
+                    return false;
+            }
+            return false;
+        }
+        private bool IsDataOK()
+        {
+            if (textBoxCode.Text.Trim().Length == 0)
+            {
+                MessageBox.Show("Bạn chưa nhập mã vùng.", "Thông báo" + Common.formSoftName);
+                textBoxCode.Focus();
+                return false;
+            }
+            if (ucDataButtonStore.DataMode == DataState.Insert && IsRegionCodeExists(textBoxCode.Text))
+            {
+                MessageBox.Show("Mã vùng này đã tồn tại.", "Thông báo" + Common.formSoftName);
+                textBoxCode.Focus();
+                textBoxCode.SelectAll();
+                return false;
+            }
+            if (textBoxName.Text.Trim().Length == 0)
+            {
+                MessageBox.Show("Bạn chưa tên vùng.", "Thông báo" + Common.formSoftName);
+                textBoxName.Focus();
+                return false;
+            }
+            return true;
+        }
+        private bool SaveData()
+        {
+            if (IsDataOK() == false) return false;
+
+            bool bResult = true;
+            if(ucDataButtonStore.DataMode == DataState.Insert)
+            {
+                DacRegion region = new DacRegion();
+                region.RegionCode = textBoxCode.Text.Trim().ToUpper();
+                region.RegionArea = textBoxName.Text.Trim();
+                region.Active = checkBoxActive.Checked;
+                region.MotherRegion = textBoxMotherRegion.Text;
+                region.CreatedDate = DateTime.Now;
+                region.CreatedUser = CommonBS.CurrentUser.LoginID;
+                region.ModifiedUser = string.Empty;
+                region.ModifiedDate = DateTime.Now;
+
+                bResult = dacRegionBS.Insert(region);
+            }
+            else
+            {
+                // Update data in to databaseDacstore
+                selectedDacRegion.RegionCode = textBoxCode.Text.Trim().ToUpper();
+                selectedDacRegion.RegionArea = textBoxName.Text.Trim();
+                selectedDacRegion.Active = checkBoxActive.Checked;
+                selectedDacRegion.MotherRegion = textBoxMotherRegion.Text;
+                selectedDacRegion.CreatedUser = CommonBS.CurrentUser.LoginID;
+                selectedDacRegion.ModifiedUser = CommonBS.CurrentUser.LoginID;
+                selectedDacRegion.ModifiedDate = DateTime.Now;
+
+                bResult = dacRegionBS.Update(selectedDacRegion);
+            }
+            // Kiem tra luu thanh cong khong de load lai du lieu
+            if (bResult)
+            {
+                // Get data from database
+                dacRegionCollection = dacRegionBS.GetListRegion();
+                AddObjectIntoBindingList(dacRegionCollection);
+                CommonBS.SaveSuccessfully();
+                ucDataButtonStore.DataMode = DataState.View;
+                ucDataButtonStore.SetInsertFocus();
+                EnableControls(false);
+            }
+            else CommonBS.SaveNotSuccessfully();
+
+            return bResult;
+        }
+        private void SaveRegion()
+        {
+            SaveData();
+        }
+        #endregion
+        #region Buttons' Event
+        private void ucDataButtonStore_InsertHandler()
+        {
+            bdlDacRegion.AddNew();
+            //CommonCore.ClearTextBox(panelStore);
+            EnableControls(true);
+            textBoxCode.Focus();
+            //Set focus for DataGridView
+            if (dataGridViewRegion.Rows.Count > 0)
+            {
+                int iCurrentRowIndex = dataGridViewRegion.Rows.Count - 1;
+                dataGridViewRegion.CurrentCell = dataGridViewRegion.Rows[iCurrentRowIndex].Cells[1];
+                dataGridViewRegion.Rows[iCurrentRowIndex].Selected = true;
+            }
+        }
+
+        private void ucDataButtonStore_SaveHandler()
+        {
+            Common objCommon = new Common();
+            objCommon.CurrentForm = this;
+            objCommon.CurrentFormMethodInvoker = SaveRegion;
+            objCommon.App_ShowWaitForm(DataState.Insert);
+        }
+
+        private void ucDataButtonStore_EditHandler()
+        {
+            // Kiem tra xem co du lieu nao khong
+            if (dataGridViewRegion.Rows.Count == 0) return;
+            // Lay du lieu de sua
+            selectedDacRegion = GetSelectedRegion(dataGridViewRegion.CurrentRow.Cells[ColumnCode.Name].Value.ToString());
+            EnableControls(true);
+            textBoxName.Focus();
+        }
+
+        private void ucDataButtonStore_DeleteHandler()
+        {
+            // Kiem tra xem co du lieu nao khong
+            if (dataGridViewRegion.Rows.Count == 0)
+            {
+                return;
+            }
+            // Lay du lieu de xoa
+            selectedDacRegion = GetSelectedRegion(dataGridViewRegion.CurrentRow.Cells[ColumnCode.Name].Value.ToString());
+            // Kiem tra moi lien quan voi du lieu khac neu co
+            if (dacRegionBS.Delete(selectedDacRegion.RegionCode))
+            {
+                CommonBS.DeleteSuccessfully();
+                // Get data from database
+                dacRegionCollection = dacRegionBS.GetListRegion();
+                AddObjectIntoBindingList(dacRegionCollection);
+            }
+            else
+                CommonBS.DeleteNotSuccessfully();
+        }
+
+        private void ucDataButtonStore_CancelHandler()
+        {
+            EnableControls(false);
+            if (ucDataButtonStore.DataMode == DataState.Insert)
+            {
+                if (dataGridViewRegion.Rows.Count > 1)
+                {
+                    dataGridViewRegion.Rows.RemoveAt(dataGridViewRegion.CurrentRow.Index);
+                }
+            }
+            ucDataButtonStore.DataMode = DataState.View;
+        }
+
+        private void ucDataButtonStore_CloseHandler()
+        {
+            if(IsChangedData())
+            {
+                if(CommonBS.ConfirmChangedData() == DialogResult.Yes)
+                {
+                    if (SaveData() == false)
+                        return;
+                }
+            }
+            this.Close();
+        }
+        #endregion
+    }
+}

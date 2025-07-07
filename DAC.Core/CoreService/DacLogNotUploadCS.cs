@@ -1,0 +1,135 @@
+﻿using DAC.DAL;
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+
+namespace DAC.Core
+{
+    public class DacLogNotUploadCS
+    {
+        public const string Status = "Not Upload";
+
+        public List<DacLogNotUpload> GetListDacLogNotUpload(string sIDNotUpload, string sInTable)
+        {
+            List<DacLogNotUpload> dacLogNotUploadCollection = new List<DacLogNotUpload>();
+            DacDbAccess dacDb = new DacDbAccess();
+            dacDb.CreateNewSqlCommand();
+            dacDb.AddParameter("@IDNotUpload", sIDNotUpload);
+            dacDb.AddParameter("@InTable", sInTable);
+            SqlDataReader reader = dacDb.ExecuteReader("DacLogNotUpload_Select");
+            while (reader.Read())
+            {
+                DacLogNotUpload dacLogNotUpload = new DacLogNotUpload();
+
+                dacLogNotUpload.ID = (int)reader["ID"];
+                dacLogNotUpload.DateSend = (DateTime)reader["DateSend"];
+                dacLogNotUpload.LastDateSend = (DateTime)reader["LastDateSend"];
+                dacLogNotUpload.IDNotUpload = reader["IDNotUpload"].ToString();
+                dacLogNotUpload.InTable = reader["InTable"].ToString();
+                dacLogNotUpload.Action = reader["Action"].ToString();
+                dacLogNotUpload.Content = reader["Content"].ToString();
+                dacLogNotUpload.Remark = reader["Remark"].ToString();
+                dacLogNotUpload.Status = reader["Status"].ToString();
+
+                dacLogNotUploadCollection.Add(dacLogNotUpload);
+            }
+
+            // Call Close when reading done
+            reader.Close();
+
+            return dacLogNotUploadCollection;
+        }
+
+        public bool Insert(DacLogNotUpload LogNotUpload)
+        {
+            DacDbAccess dacDb = new DacDbAccess();
+            try
+            {
+                dacDb.CreateNewSqlCommand();
+                // Add parameters
+                dacDb.AddParameter("@DateSend", LogNotUpload.DateSend);
+                dacDb.AddParameter("@LastDateSend", LogNotUpload.LastDateSend);
+                dacDb.AddParameter("@IDNotUpload", LogNotUpload.IDNotUpload);
+                dacDb.AddParameter("@InTable", LogNotUpload.InTable);
+                dacDb.AddParameter("@Action", LogNotUpload.Action);
+                dacDb.AddParameter("@Content", LogNotUpload.Content);
+                dacDb.AddParameter("@Remark", LogNotUpload.Remark);
+                dacDb.AddParameter("@Status", LogNotUpload.Status);
+
+                dacDb.ExecuteNonQuery("DacLogNotUpload_Insert");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public void SaveLogNotUpload(string ID, string InTable, string Action, string Content, string Remark)
+        {
+            DacLogNotUpload LogNotUpload = new DacLogNotUpload();
+            LogNotUpload.IDNotUpload = ID;
+            LogNotUpload.InTable = InTable;
+            LogNotUpload.Action = Action;
+            LogNotUpload.Content = Content == null ? string.Empty : Content;
+            LogNotUpload.Remark =  Remark;
+            this.Insert(LogNotUpload);
+        }
+
+        public bool Update(DacLogNotUpload LogNotUpload)
+        {
+            DacDbAccess dacDb = new DacDbAccess();
+            try
+            {
+                dacDb.CreateNewSqlCommand();
+                // Add parameters
+                dacDb.AddParameter("@ID", LogNotUpload.ID);
+                dacDb.AddParameter("@LastDateSend", LogNotUpload.LastDateSend);
+                dacDb.AddParameter("@IDNotUpload", LogNotUpload.IDNotUpload);
+                dacDb.AddParameter("@InTable", LogNotUpload.InTable);
+                dacDb.AddParameter("@Action", LogNotUpload.Action);
+                dacDb.AddParameter("@Remark", LogNotUpload.Remark);
+                dacDb.AddParameter("@Status", LogNotUpload.Status);
+
+                dacDb.ExecuteNonQuery("DacLogNotUpload_Update");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public void UpdateLogNotUpload(int ID, string IDNotUpload, string InTable, string Action, string Remark, string Status)
+        {
+            DacLogNotUpload LogNotUpload = new DacLogNotUpload();
+            LogNotUpload.ID = ID;
+            LogNotUpload.IDNotUpload = IDNotUpload;
+            LogNotUpload.LastDateSend = DateTime.Now;
+            LogNotUpload.InTable = InTable;
+            LogNotUpload.Action = Action;
+            LogNotUpload.Status = Status;
+            LogNotUpload.Remark = Remark;
+            this.Update(LogNotUpload);
+        }
+
+        public bool Delete(string sIDNotUpload, string sInTable)
+        {
+            DacDbAccess dacDb = new DacDbAccess();
+            try
+            {
+                dacDb.CreateNewSqlCommand();
+                // Add parameters
+                dacDb.AddParameter("@IDNotUpload", sIDNotUpload);
+                dacDb.AddParameter("@InTable", sInTable);
+
+                dacDb.ExecuteNonQuery("DacLogNotUpload_Delete");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+    }
+}

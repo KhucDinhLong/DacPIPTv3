@@ -1,0 +1,31 @@
+﻿using System;
+using System.Drawing;
+using System.Collections;
+using System.ComponentModel;
+using DevExpress.XtraReports.UI;
+
+using DAC.Core;
+
+namespace PIPT.Report
+{
+    public partial class PackageQRCode : DevExpress.XtraReports.UI.XtraReport
+    {
+        public PackageQRCode()
+        {
+            InitializeComponent();
+        }
+
+        public void CreateQRCode(DacPackage Package)
+        {
+            // Nội dung QRCode
+            xrBarCodePackageCode.Text = Package.PackageCode;
+
+            // Gán các giá trị khác
+            xrLabelValueCreatedDate.Text = Package.CreatedDate.ToShortDateString();
+            xrLabelValuePackageCode.Text = Package.PackageCode;
+            xrLabelValueProductCode.Text = Package.ProductCode;
+            xrLabelValueProductName.Text = Package.Description;
+            xrLabelValueQuantity.Text = Package.Quantity.ToString();
+        }
+    }
+}

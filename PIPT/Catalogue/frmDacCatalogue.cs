@@ -1,0 +1,316 @@
+﻿using DAC.Core;
+using DAC.Core.Security;
+using DAC.DAL;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace PIPT
+{
+    public partial class frmDacCatalogue : Form
+    {
+        #region Instance of the form
+        /// <summary>
+        /// Instance to store instance of this form
+        /// </summary>
+        private static frmDacCatalogue _instance = null;
+
+        /// <summary>
+        /// Instance form.
+        /// </summary>
+        /// <returns>Instance of this Form</returns>
+        public static frmDacCatalogue Instance()
+        {
+            if (_instance == null || _instance.IsDisposed)
+            {
+                _instance = new frmDacCatalogue();
+            }
+            return _instance;
+        }
+
+        public static frmDacCatalogue Instance(Form parent)
+        {
+            _instance = Instance();
+            _instance.MdiParent = parent;
+            return _instance;
+        }
+
+        public static frmDacCatalogue Instance(Form parent, bool isActivate)
+        {
+            _instance = Instance(parent);
+            if (isActivate)
+            {
+                _instance.WindowState = FormWindowState.Normal;
+                _instance.Show();
+                _instance.Activate();
+            }
+            return _instance;
+        }
+        #endregion
+        #region Variables
+        DacProductCatalogue dacCatalogue = new DacProductCatalogue();
+        DacProductCatalogue selectedDacCatalogue = new DacProductCatalogue();
+        List<DacProductCatalogue> dacCatalogueCollection = new List<DacProductCatalogue>();
+        DacProductCategoryCS dacCatalogueBS = new DacProductCategoryCS();
+        BindingList<DacProductCatalogue> bdlDacCatalogue;
+        bool bIsDataBinding = false;
+        #endregion
+        #region Form's Events
+        
+        public frmDacCatalogue()
+        {
+            InitializeComponent();
+        }
+        private void frmDacAgency_Load(object sender, EventArgs e)
+        {
+            // Get data from database
+            dacCatalogueCollection = dacCatalogueBS.GetListCategory();
+            // Get BindingList DataSource
+            AddObjectIntoBindingList(dacCatalogueCollection);
+        }
+        #endregion
+        #region Functions on Form
+        private void AddObjectIntoBindingList(List<DacProductCatalogue> CatalogueCollection)
+        {
+            bdlDacCatalogue = new BindingList<DacProductCatalogue>();
+            foreach (DacProductCatalogue product in CatalogueCollection)
+            {
+                bdlDacCatalogue.Add(product);
+            }
+            SetDataSource();
+        }
+        private void SetDataSource()
+        {
+            CommonCore.ClearDataBinding(panelStore);
+            // Binding data to Controls
+            bIsDataBinding = true;
+            textBoxCode.DataBindings.Add("Text", bdlDacCatalogue, "Code");
+            textBoxName.DataBindings.Add("Text", bdlDacCatalogue, "Name");
+            txtLargeCode.DataBindings.Add("Text", bdlDacCatalogue, "LargeGroupCode");
+            txtRemark.DataBindings.Add("Text", bdlDacCatalogue, "Remark");
+            dateTimePickerCreatedDate.DataBindings.Clear();
+            dateTimePickerCreatedDate.DataBindings.Add("Value", bdlDacCatalogue, "CreatedDate");
+            dateTimePickerModifiedDate.DataBindings.Clear();
+            dateTimePickerModifiedDate.DataBindings.Add("Value", bdlDacCatalogue, "ModifiedDate");
+
+            dataGridViewCatalogue.DataSource = bdlDacCatalogue;
+            bIsDataBinding = false;
+            EnableControls(bIsDataBinding);
+        }
+        private DacProductCatalogue GetSelectedCatalogue(string sCode)
+        {
+            foreach (DacProductCatalogue catalogue in dacCatalogueCollection)
+            {
+                if (catalogue.Code == sCode)
+                    return catalogue;
+            }
+            return null;
+        }
+        private bool IsCatalogueCodeExists(string sCode)
+        {
+            foreach(DacProductCatalogue catalogue in dacCatalogueCollection)
+            {
+                if (catalogue.Code == sCode.Trim().ToUpper())
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        private void EnableControls(bool bIsEnabled)
+        {
+            foreach (Control ctrl in panelStore.Controls)
+            {
+                ctrl.Enabled = bIsEnabled;
+            }
+            if(ucDataButtonStore.DataMode == DataState.Edit)
+            {
+                textBoxCode.Enabled = false;
+            }
+        }
+        private bool IsChangedData()
+        {
+            if(ucDataButtonStore.DataMode == DataState.Insert)
+            {
+                if (textBoxCode.Text.Trim().Length > 0 || textBoxName.Text.Trim().Length > 0 || txtLargeCode.Text.Trim().Length > 0 || txtRemark.Text.Trim().Length > 0)
+                    return true;
+                else
+                    return false;
+            }
+            else if (ucDataButtonStore.DataMode == DataState.Edit)
+            {
+                if (selectedDacCatalogue.Code != textBoxCode.Text.Trim()
+                || selectedDacCatalogue.Name != textBoxName.Text.Trim()
+                || selectedDacCatalogue.LargeGroupCode != txtLargeCode.Text.Trim()
+                || selectedDacCatalogue.Remark != txtRemark.Text.Trim())
+                    return true;
+                else
+                    return false;
+            }
+            return false;
+        }
+        private bool IsDataOK()
+        {
+            if (textBoxCode.Text.Trim().Length == 0)
+            {
+                MessageBox.Show("Bạn chưa nhập mã .", "Thông báo" + Common.formSoftName);
+                textBoxCode.Focus();
+                return false;
+            }
+            if (ucDataButtonStore.DataMode == DataState.Insert && IsCatalogueCodeExists(textBoxCode.Text))
+            {
+                MessageBox.Show("Mã này đã tồn tại.", "Thông báo" + Common.formSoftName);
+                textBoxCode.Focus();
+                textBoxCode.SelectAll();
+                return false;
+            }
+            if (textBoxName.Text.Trim().Length == 0)
+            {
+                MessageBox.Show("Bạn chưa tên.", "Thông báo" + Common.formSoftName);
+                textBoxName.Focus();
+                return false;
+            }
+            return true;
+        }
+        private bool SaveData()
+        {
+            if (IsDataOK() == false) return false;
+
+            bool bResult = true;
+            if(ucDataButtonStore.DataMode == DataState.Insert)
+            {
+                DacProductCatalogue catalogue = new DacProductCatalogue();
+                catalogue.Code = textBoxCode.Text.Trim().ToUpper();
+                catalogue.Name = textBoxName.Text.Trim();
+                catalogue.LargeGroupCode = txtLargeCode.Text.Trim().ToUpper();
+                catalogue.Remark = txtRemark.Text.Trim();
+                catalogue.CreatedDate = DateTime.Now;
+                catalogue.CreatedUser = CommonBS.CurrentUser.LoginID;
+                catalogue.ModifiedUser = string.Empty;
+                catalogue.ModifiedDate = DateTime.Now;
+
+                bResult = dacCatalogueBS.Insert(catalogue);
+            }
+            else
+            {
+                // Update data in to databaseDacstore
+                selectedDacCatalogue.Code = textBoxCode.Text.Trim().ToUpper();
+                selectedDacCatalogue.Name = textBoxName.Text.Trim();
+                selectedDacCatalogue.LargeGroupCode = txtLargeCode.Text.Trim().ToUpper();
+                selectedDacCatalogue.Remark = txtRemark.Text.Trim();
+                selectedDacCatalogue.CreatedDate = DateTime.Now;
+                selectedDacCatalogue.CreatedUser = CommonBS.CurrentUser.LoginID;
+                selectedDacCatalogue.ModifiedUser = CommonBS.CurrentUser.LoginID;
+                selectedDacCatalogue.ModifiedDate = DateTime.Now;
+
+                bResult = dacCatalogueBS.Update(selectedDacCatalogue);
+            }
+            // Kiem tra luu thanh cong khong de load lai du lieu
+            if (bResult)
+            {
+                // Get data from database
+                dacCatalogueCollection = dacCatalogueBS.GetListCategory();
+                AddObjectIntoBindingList(dacCatalogueCollection);
+                CommonBS.SaveSuccessfully();
+                ucDataButtonStore.DataMode = DataState.View;
+                ucDataButtonStore.SetInsertFocus();
+                EnableControls(false);
+            }
+            else CommonBS.SaveNotSuccessfully();
+
+            return bResult;
+        }
+        private void SaveCatalogue()
+        {
+            SaveData();
+        }
+        #endregion
+        #region Buttons' Event
+        private void ucDataButtonStore_InsertHandler()
+        {
+            bdlDacCatalogue.AddNew();
+            //CommonCore.ClearTextBox(panelStore);
+            EnableControls(true);
+            textBoxCode.Focus();
+            //Set focus for DataGridView
+            if (dataGridViewCatalogue.Rows.Count > 0)
+            {
+                int iCurrentRowIndex = dataGridViewCatalogue.Rows.Count - 1;
+                dataGridViewCatalogue.CurrentCell = dataGridViewCatalogue.Rows[iCurrentRowIndex].Cells[1];
+                dataGridViewCatalogue.Rows[iCurrentRowIndex].Selected = true;
+            }
+        }
+
+        private void ucDataButtonStore_SaveHandler()
+        {
+            Common objCommon = new Common();
+            objCommon.CurrentForm = this;
+            objCommon.CurrentFormMethodInvoker = SaveCatalogue;
+            objCommon.App_ShowWaitForm(DataState.Insert);
+        }
+
+        private void ucDataButtonStore_EditHandler()
+        {
+            // Kiem tra xem co du lieu nao khong
+            if (dataGridViewCatalogue.Rows.Count == 0) return;
+            // Lay du lieu de sua
+            selectedDacCatalogue = GetSelectedCatalogue(dataGridViewCatalogue.CurrentRow.Cells[ColumnCode.Name].Value.ToString());
+            EnableControls(true);
+            textBoxName.Focus();
+        }
+
+        private void ucDataButtonStore_DeleteHandler()
+        {
+            // Kiem tra xem co du lieu nao khong
+            if (dataGridViewCatalogue.Rows.Count == 0)
+            {
+                return;
+            }
+            // Lay du lieu de xoa
+            selectedDacCatalogue = GetSelectedCatalogue(dataGridViewCatalogue.CurrentRow.Cells[ColumnCode.Name].Value.ToString());
+            // Kiem tra moi lien quan voi du lieu khac neu co
+            if (dacCatalogueBS.Delete(selectedDacCatalogue.Code))
+            {
+                CommonBS.DeleteSuccessfully();
+                // Get data from database
+                dacCatalogueCollection = dacCatalogueBS.GetListCategory();
+                AddObjectIntoBindingList(dacCatalogueCollection);
+            }
+            else
+                CommonBS.DeleteNotSuccessfully();
+        }
+
+        private void ucDataButtonStore_CancelHandler()
+        {
+            EnableControls(false);
+            if (ucDataButtonStore.DataMode == DataState.Insert)
+            {
+                if (dataGridViewCatalogue.Rows.Count > 1)
+                {
+                    dataGridViewCatalogue.Rows.RemoveAt(dataGridViewCatalogue.CurrentRow.Index);
+                }
+            }
+            ucDataButtonStore.DataMode = DataState.View;
+        }
+
+        private void ucDataButtonStore_CloseHandler()
+        {
+            if(IsChangedData())
+            {
+                if(CommonBS.ConfirmChangedData() == DialogResult.Yes)
+                {
+                    if (SaveData() == false)
+                        return;
+                }
+            }
+            this.Close();
+        }
+        #endregion
+    }
+}

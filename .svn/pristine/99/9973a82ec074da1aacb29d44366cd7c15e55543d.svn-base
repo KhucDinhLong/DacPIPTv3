@@ -1,0 +1,764 @@
+﻿namespace PIPT
+{
+    partial class frmDacStore
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmDacStore));
+            this.groupBoxStore = new System.Windows.Forms.GroupBox();
+            this.gridControlStore = new DevExpress.XtraGrid.GridControl();
+            this.gridViewStore = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.gridColumnID = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnCode = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnName = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnAddress = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnProvinceCode = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnShopKeeper = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnPhoneNum = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnMobileNum = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnEmail = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnAgencyCode = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnCreatedUser = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnCreatedDate = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnModifiedDate = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnModifiedUser = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnDescription = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnActive = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.panelSearchAgency = new System.Windows.Forms.Panel();
+            this.buttonPaste = new System.Windows.Forms.Button();
+            this.panelStore = new System.Windows.Forms.Panel();
+            this.gridLookUpEditAgencyCode = new DevExpress.XtraEditors.GridLookUpEdit();
+            this.gridLookUpEditViewAgencyCode = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.gridColAgencyCode = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColAgencyName = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridLookUpEditProvince = new DevExpress.XtraEditors.GridLookUpEdit();
+            this.gridLookUpEditViewProvince = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.gridLookUpColumnProvinceCode = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridLookUpColumnProvinceName = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.textBoxCode = new System.Windows.Forms.TextBox();
+            this.richTextBoxDescription = new System.Windows.Forms.RichTextBox();
+            this.dateTimePickerModifiedDate = new System.Windows.Forms.DateTimePicker();
+            this.dateTimePickerCreatedDate = new System.Windows.Forms.DateTimePicker();
+            this.checkBoxActive = new System.Windows.Forms.CheckBox();
+            this.labelEmail = new System.Windows.Forms.Label();
+            this.textBoxAddress = new System.Windows.Forms.TextBox();
+            this.labelPhoneNum = new System.Windows.Forms.Label();
+            this.textBoxName = new System.Windows.Forms.TextBox();
+            this.labelMobileNum = new System.Windows.Forms.Label();
+            this.textBoxShopKeeper = new System.Windows.Forms.TextBox();
+            this.labelDescription = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.textBoxMobileNum = new System.Windows.Forms.TextBox();
+            this.labelModifiedDate = new System.Windows.Forms.Label();
+            this.labelCreatedDate = new System.Windows.Forms.Label();
+            this.textBoxPhoneNum = new System.Windows.Forms.TextBox();
+            this.labelShopKeeper = new System.Windows.Forms.Label();
+            this.textBoxEmail = new System.Windows.Forms.TextBox();
+            this.labelName = new System.Windows.Forms.Label();
+            this.labelCode = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.ucDataButtonStore = new PIPT.ucDataButton();
+            this.btnImport = new System.Windows.Forms.Button();
+            this.groupBoxStore.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridControlStore)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridViewStore)).BeginInit();
+            this.panelSearchAgency.SuspendLayout();
+            this.panelStore.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridLookUpEditAgencyCode.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridLookUpEditViewAgencyCode)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridLookUpEditProvince.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridLookUpEditViewProvince)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // groupBoxStore
+            // 
+            this.groupBoxStore.Controls.Add(this.gridControlStore);
+            this.groupBoxStore.Controls.Add(this.panelSearchAgency);
+            this.groupBoxStore.Controls.Add(this.panelStore);
+            this.groupBoxStore.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBoxStore.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBoxStore.Location = new System.Drawing.Point(0, 0);
+            this.groupBoxStore.Name = "groupBoxStore";
+            this.groupBoxStore.Size = new System.Drawing.Size(1078, 478);
+            this.groupBoxStore.TabIndex = 1;
+            this.groupBoxStore.TabStop = false;
+            this.groupBoxStore.Text = "Thông tin khách hàng";
+            // 
+            // gridControlStore
+            // 
+            this.gridControlStore.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.gridControlStore.Location = new System.Drawing.Point(3, 158);
+            this.gridControlStore.MainView = this.gridViewStore;
+            this.gridControlStore.Name = "gridControlStore";
+            this.gridControlStore.Size = new System.Drawing.Size(1072, 317);
+            this.gridControlStore.TabIndex = 11;
+            this.gridControlStore.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.gridViewStore});
+            // 
+            // gridViewStore
+            // 
+            this.gridViewStore.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.gridColumnID,
+            this.gridColumnCode,
+            this.gridColumnName,
+            this.gridColumnAddress,
+            this.gridColumnProvinceCode,
+            this.gridColumnShopKeeper,
+            this.gridColumnPhoneNum,
+            this.gridColumnMobileNum,
+            this.gridColumnEmail,
+            this.gridColumnAgencyCode,
+            this.gridColumnCreatedUser,
+            this.gridColumnCreatedDate,
+            this.gridColumnModifiedDate,
+            this.gridColumnModifiedUser,
+            this.gridColumnDescription,
+            this.gridColumnActive});
+            this.gridViewStore.GridControl = this.gridControlStore;
+            this.gridViewStore.Name = "gridViewStore";
+            this.gridViewStore.OptionsView.ShowAutoFilterRow = true;
+            this.gridViewStore.OptionsView.ShowGroupPanel = false;
+            // 
+            // gridColumnID
+            // 
+            this.gridColumnID.Caption = "ID";
+            this.gridColumnID.FieldName = "ID";
+            this.gridColumnID.Name = "gridColumnID";
+            this.gridColumnID.Visible = true;
+            this.gridColumnID.VisibleIndex = 0;
+            this.gridColumnID.Width = 34;
+            // 
+            // gridColumnCode
+            // 
+            this.gridColumnCode.Caption = "Mã KH";
+            this.gridColumnCode.FieldName = "Code";
+            this.gridColumnCode.Name = "gridColumnCode";
+            this.gridColumnCode.Visible = true;
+            this.gridColumnCode.VisibleIndex = 1;
+            this.gridColumnCode.Width = 53;
+            // 
+            // gridColumnName
+            // 
+            this.gridColumnName.Caption = "Tên KH";
+            this.gridColumnName.FieldName = "Name";
+            this.gridColumnName.Name = "gridColumnName";
+            this.gridColumnName.OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
+            this.gridColumnName.Visible = true;
+            this.gridColumnName.VisibleIndex = 2;
+            this.gridColumnName.Width = 107;
+            // 
+            // gridColumnAddress
+            // 
+            this.gridColumnAddress.Caption = "Địa chỉ";
+            this.gridColumnAddress.FieldName = "Address";
+            this.gridColumnAddress.Name = "gridColumnAddress";
+            this.gridColumnAddress.OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
+            this.gridColumnAddress.Visible = true;
+            this.gridColumnAddress.VisibleIndex = 3;
+            this.gridColumnAddress.Width = 120;
+            // 
+            // gridColumnProvinceCode
+            // 
+            this.gridColumnProvinceCode.Caption = "Mã tỉnh";
+            this.gridColumnProvinceCode.FieldName = "ProvinceCode";
+            this.gridColumnProvinceCode.Name = "gridColumnProvinceCode";
+            this.gridColumnProvinceCode.Visible = true;
+            this.gridColumnProvinceCode.VisibleIndex = 4;
+            this.gridColumnProvinceCode.Width = 50;
+            // 
+            // gridColumnShopKeeper
+            // 
+            this.gridColumnShopKeeper.Caption = "Chủ cửa hàng";
+            this.gridColumnShopKeeper.FieldName = "ShopKeeper";
+            this.gridColumnShopKeeper.Name = "gridColumnShopKeeper";
+            this.gridColumnShopKeeper.OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
+            this.gridColumnShopKeeper.Visible = true;
+            this.gridColumnShopKeeper.VisibleIndex = 5;
+            this.gridColumnShopKeeper.Width = 91;
+            // 
+            // gridColumnPhoneNum
+            // 
+            this.gridColumnPhoneNum.Caption = "Điện thoại";
+            this.gridColumnPhoneNum.FieldName = "PhoneNum";
+            this.gridColumnPhoneNum.Name = "gridColumnPhoneNum";
+            this.gridColumnPhoneNum.Visible = true;
+            this.gridColumnPhoneNum.VisibleIndex = 6;
+            this.gridColumnPhoneNum.Width = 98;
+            // 
+            // gridColumnMobileNum
+            // 
+            this.gridColumnMobileNum.Caption = "Di động";
+            this.gridColumnMobileNum.FieldName = "MobileNum";
+            this.gridColumnMobileNum.Name = "gridColumnMobileNum";
+            this.gridColumnMobileNum.Visible = true;
+            this.gridColumnMobileNum.VisibleIndex = 7;
+            this.gridColumnMobileNum.Width = 67;
+            // 
+            // gridColumnEmail
+            // 
+            this.gridColumnEmail.Caption = "Email";
+            this.gridColumnEmail.FieldName = "Email";
+            this.gridColumnEmail.Name = "gridColumnEmail";
+            this.gridColumnEmail.Visible = true;
+            this.gridColumnEmail.VisibleIndex = 8;
+            this.gridColumnEmail.Width = 76;
+            // 
+            // gridColumnAgencyCode
+            // 
+            this.gridColumnAgencyCode.Caption = "Mã ĐL phụ thuộc";
+            this.gridColumnAgencyCode.FieldName = "AgencyCode";
+            this.gridColumnAgencyCode.Name = "gridColumnAgencyCode";
+            this.gridColumnAgencyCode.Visible = true;
+            this.gridColumnAgencyCode.VisibleIndex = 9;
+            this.gridColumnAgencyCode.Width = 55;
+            // 
+            // gridColumnCreatedUser
+            // 
+            this.gridColumnCreatedUser.Caption = "Người tạo";
+            this.gridColumnCreatedUser.FieldName = "CreatedUser";
+            this.gridColumnCreatedUser.Name = "gridColumnCreatedUser";
+            this.gridColumnCreatedUser.Visible = true;
+            this.gridColumnCreatedUser.VisibleIndex = 10;
+            this.gridColumnCreatedUser.Width = 53;
+            // 
+            // gridColumnCreatedDate
+            // 
+            this.gridColumnCreatedDate.Caption = "Ngày tạo";
+            this.gridColumnCreatedDate.FieldName = "CreatedDate";
+            this.gridColumnCreatedDate.Name = "gridColumnCreatedDate";
+            this.gridColumnCreatedDate.Visible = true;
+            this.gridColumnCreatedDate.VisibleIndex = 11;
+            this.gridColumnCreatedDate.Width = 59;
+            // 
+            // gridColumnModifiedDate
+            // 
+            this.gridColumnModifiedDate.Caption = "Ngày sửa";
+            this.gridColumnModifiedDate.FieldName = "ModifiedDate";
+            this.gridColumnModifiedDate.Name = "gridColumnModifiedDate";
+            this.gridColumnModifiedDate.Visible = true;
+            this.gridColumnModifiedDate.VisibleIndex = 12;
+            this.gridColumnModifiedDate.Width = 46;
+            // 
+            // gridColumnModifiedUser
+            // 
+            this.gridColumnModifiedUser.Caption = "Người sửa";
+            this.gridColumnModifiedUser.FieldName = "ModifiedUser";
+            this.gridColumnModifiedUser.Name = "gridColumnModifiedUser";
+            this.gridColumnModifiedUser.Visible = true;
+            this.gridColumnModifiedUser.VisibleIndex = 13;
+            this.gridColumnModifiedUser.Width = 36;
+            // 
+            // gridColumnDescription
+            // 
+            this.gridColumnDescription.Caption = "Ghi chú";
+            this.gridColumnDescription.FieldName = "Description";
+            this.gridColumnDescription.Name = "gridColumnDescription";
+            this.gridColumnDescription.Visible = true;
+            this.gridColumnDescription.VisibleIndex = 14;
+            this.gridColumnDescription.Width = 61;
+            // 
+            // gridColumnActive
+            // 
+            this.gridColumnActive.Caption = "Active";
+            this.gridColumnActive.FieldName = "Active";
+            this.gridColumnActive.Name = "gridColumnActive";
+            this.gridColumnActive.Visible = true;
+            this.gridColumnActive.VisibleIndex = 15;
+            this.gridColumnActive.Width = 48;
+            // 
+            // panelSearchAgency
+            // 
+            this.panelSearchAgency.Controls.Add(this.btnImport);
+            this.panelSearchAgency.Controls.Add(this.buttonPaste);
+            this.panelSearchAgency.Location = new System.Drawing.Point(851, 119);
+            this.panelSearchAgency.Name = "panelSearchAgency";
+            this.panelSearchAgency.Size = new System.Drawing.Size(196, 33);
+            this.panelSearchAgency.TabIndex = 10;
+            // 
+            // buttonPaste
+            // 
+            this.buttonPaste.Image = global::PIPT.Properties.Resources.Excel;
+            this.buttonPaste.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.buttonPaste.Location = new System.Drawing.Point(3, 6);
+            this.buttonPaste.Name = "buttonPaste";
+            this.buttonPaste.Size = new System.Drawing.Size(71, 24);
+            this.buttonPaste.TabIndex = 3;
+            this.buttonPaste.Text = "Paste";
+            this.buttonPaste.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.buttonPaste.UseVisualStyleBackColor = true;
+            this.buttonPaste.Click += new System.EventHandler(this.buttonSearch_Click);
+            // 
+            // panelStore
+            // 
+            this.panelStore.Controls.Add(this.gridLookUpEditAgencyCode);
+            this.panelStore.Controls.Add(this.gridLookUpEditProvince);
+            this.panelStore.Controls.Add(this.textBoxCode);
+            this.panelStore.Controls.Add(this.richTextBoxDescription);
+            this.panelStore.Controls.Add(this.dateTimePickerModifiedDate);
+            this.panelStore.Controls.Add(this.dateTimePickerCreatedDate);
+            this.panelStore.Controls.Add(this.checkBoxActive);
+            this.panelStore.Controls.Add(this.labelEmail);
+            this.panelStore.Controls.Add(this.textBoxAddress);
+            this.panelStore.Controls.Add(this.labelPhoneNum);
+            this.panelStore.Controls.Add(this.textBoxName);
+            this.panelStore.Controls.Add(this.labelMobileNum);
+            this.panelStore.Controls.Add(this.textBoxShopKeeper);
+            this.panelStore.Controls.Add(this.labelDescription);
+            this.panelStore.Controls.Add(this.label4);
+            this.panelStore.Controls.Add(this.textBoxMobileNum);
+            this.panelStore.Controls.Add(this.labelModifiedDate);
+            this.panelStore.Controls.Add(this.labelCreatedDate);
+            this.panelStore.Controls.Add(this.textBoxPhoneNum);
+            this.panelStore.Controls.Add(this.labelShopKeeper);
+            this.panelStore.Controls.Add(this.textBoxEmail);
+            this.panelStore.Controls.Add(this.labelName);
+            this.panelStore.Controls.Add(this.labelCode);
+            this.panelStore.Controls.Add(this.label5);
+            this.panelStore.Controls.Add(this.label3);
+            this.panelStore.Location = new System.Drawing.Point(3, 20);
+            this.panelStore.Name = "panelStore";
+            this.panelStore.Size = new System.Drawing.Size(842, 132);
+            this.panelStore.TabIndex = 9;
+            // 
+            // gridLookUpEditAgencyCode
+            // 
+            this.gridLookUpEditAgencyCode.EditValue = "";
+            this.gridLookUpEditAgencyCode.Location = new System.Drawing.Point(362, 30);
+            this.gridLookUpEditAgencyCode.Name = "gridLookUpEditAgencyCode";
+            this.gridLookUpEditAgencyCode.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.gridLookUpEditAgencyCode.Properties.DisplayMember = "Name";
+            this.gridLookUpEditAgencyCode.Properties.ImmediatePopup = true;
+            this.gridLookUpEditAgencyCode.Properties.NullText = "";
+            this.gridLookUpEditAgencyCode.Properties.PopupFilterMode = DevExpress.XtraEditors.PopupFilterMode.Contains;
+            this.gridLookUpEditAgencyCode.Properties.PopupView = this.gridLookUpEditViewAgencyCode;
+            this.gridLookUpEditAgencyCode.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.Standard;
+            this.gridLookUpEditAgencyCode.Properties.ValueMember = "Code";
+            this.gridLookUpEditAgencyCode.Size = new System.Drawing.Size(168, 20);
+            this.gridLookUpEditAgencyCode.TabIndex = 13;
+            // 
+            // gridLookUpEditViewAgencyCode
+            // 
+            this.gridLookUpEditViewAgencyCode.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.gridColAgencyCode,
+            this.gridColAgencyName});
+            this.gridLookUpEditViewAgencyCode.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
+            this.gridLookUpEditViewAgencyCode.Name = "gridLookUpEditViewAgencyCode";
+            this.gridLookUpEditViewAgencyCode.OptionsSelection.EnableAppearanceFocusedCell = false;
+            this.gridLookUpEditViewAgencyCode.OptionsView.ShowAutoFilterRow = true;
+            this.gridLookUpEditViewAgencyCode.OptionsView.ShowGroupPanel = false;
+            // 
+            // gridColAgencyCode
+            // 
+            this.gridColAgencyCode.Caption = "Mã đại lý";
+            this.gridColAgencyCode.FieldName = "Code";
+            this.gridColAgencyCode.Name = "gridColAgencyCode";
+            this.gridColAgencyCode.OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
+            this.gridColAgencyCode.Visible = true;
+            this.gridColAgencyCode.VisibleIndex = 0;
+            this.gridColAgencyCode.Width = 80;
+            // 
+            // gridColAgencyName
+            // 
+            this.gridColAgencyName.Caption = "Tên đại lý";
+            this.gridColAgencyName.FieldName = "Name";
+            this.gridColAgencyName.Name = "gridColAgencyName";
+            this.gridColAgencyName.OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
+            this.gridColAgencyName.Visible = true;
+            this.gridColAgencyName.VisibleIndex = 1;
+            this.gridColAgencyName.Width = 304;
+            // 
+            // gridLookUpEditProvince
+            // 
+            this.gridLookUpEditProvince.EditValue = "";
+            this.gridLookUpEditProvince.Location = new System.Drawing.Point(64, 84);
+            this.gridLookUpEditProvince.Name = "gridLookUpEditProvince";
+            this.gridLookUpEditProvince.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.gridLookUpEditProvince.Properties.DisplayMember = "Name";
+            this.gridLookUpEditProvince.Properties.ImmediatePopup = true;
+            this.gridLookUpEditProvince.Properties.NullText = "";
+            this.gridLookUpEditProvince.Properties.PopupFilterMode = DevExpress.XtraEditors.PopupFilterMode.Contains;
+            this.gridLookUpEditProvince.Properties.PopupView = this.gridLookUpEditViewProvince;
+            this.gridLookUpEditProvince.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.Standard;
+            this.gridLookUpEditProvince.Properties.ValueMember = "Code";
+            this.gridLookUpEditProvince.Size = new System.Drawing.Size(142, 20);
+            this.gridLookUpEditProvince.TabIndex = 12;
+            // 
+            // gridLookUpEditViewProvince
+            // 
+            this.gridLookUpEditViewProvince.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.gridLookUpColumnProvinceCode,
+            this.gridLookUpColumnProvinceName});
+            this.gridLookUpEditViewProvince.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
+            this.gridLookUpEditViewProvince.Name = "gridLookUpEditViewProvince";
+            this.gridLookUpEditViewProvince.OptionsSelection.EnableAppearanceFocusedCell = false;
+            this.gridLookUpEditViewProvince.OptionsView.ShowAutoFilterRow = true;
+            this.gridLookUpEditViewProvince.OptionsView.ShowGroupPanel = false;
+            // 
+            // gridLookUpColumnProvinceCode
+            // 
+            this.gridLookUpColumnProvinceCode.Caption = "Mã";
+            this.gridLookUpColumnProvinceCode.FieldName = "Code";
+            this.gridLookUpColumnProvinceCode.Name = "gridLookUpColumnProvinceCode";
+            this.gridLookUpColumnProvinceCode.OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
+            this.gridLookUpColumnProvinceCode.Visible = true;
+            this.gridLookUpColumnProvinceCode.VisibleIndex = 0;
+            this.gridLookUpColumnProvinceCode.Width = 100;
+            // 
+            // gridLookUpColumnProvinceName
+            // 
+            this.gridLookUpColumnProvinceName.Caption = "Tỉnh thành";
+            this.gridLookUpColumnProvinceName.FieldName = "Name";
+            this.gridLookUpColumnProvinceName.Name = "gridLookUpColumnProvinceName";
+            this.gridLookUpColumnProvinceName.OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
+            this.gridLookUpColumnProvinceName.Visible = true;
+            this.gridLookUpColumnProvinceName.VisibleIndex = 1;
+            this.gridLookUpColumnProvinceName.Width = 284;
+            // 
+            // textBoxCode
+            // 
+            this.textBoxCode.Location = new System.Drawing.Point(64, 4);
+            this.textBoxCode.Name = "textBoxCode";
+            this.textBoxCode.Size = new System.Drawing.Size(100, 21);
+            this.textBoxCode.TabIndex = 0;
+            // 
+            // richTextBoxDescription
+            // 
+            this.richTextBoxDescription.Location = new System.Drawing.Point(592, 55);
+            this.richTextBoxDescription.Name = "richTextBoxDescription";
+            this.richTextBoxDescription.Size = new System.Drawing.Size(240, 21);
+            this.richTextBoxDescription.TabIndex = 9;
+            this.richTextBoxDescription.Text = "";
+            // 
+            // dateTimePickerModifiedDate
+            // 
+            this.dateTimePickerModifiedDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dateTimePickerModifiedDate.Location = new System.Drawing.Point(592, 28);
+            this.dateTimePickerModifiedDate.Name = "dateTimePickerModifiedDate";
+            this.dateTimePickerModifiedDate.Size = new System.Drawing.Size(98, 21);
+            this.dateTimePickerModifiedDate.TabIndex = 8;
+            // 
+            // dateTimePickerCreatedDate
+            // 
+            this.dateTimePickerCreatedDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dateTimePickerCreatedDate.Location = new System.Drawing.Point(592, 4);
+            this.dateTimePickerCreatedDate.Name = "dateTimePickerCreatedDate";
+            this.dateTimePickerCreatedDate.Size = new System.Drawing.Size(98, 21);
+            this.dateTimePickerCreatedDate.TabIndex = 8;
+            // 
+            // checkBoxActive
+            // 
+            this.checkBoxActive.AutoSize = true;
+            this.checkBoxActive.Location = new System.Drawing.Point(725, 6);
+            this.checkBoxActive.Name = "checkBoxActive";
+            this.checkBoxActive.Size = new System.Drawing.Size(97, 17);
+            this.checkBoxActive.TabIndex = 10;
+            this.checkBoxActive.Text = "Còn hoạt động";
+            this.checkBoxActive.UseVisualStyleBackColor = true;
+            // 
+            // labelEmail
+            // 
+            this.labelEmail.AutoSize = true;
+            this.labelEmail.Location = new System.Drawing.Point(322, 58);
+            this.labelEmail.Name = "labelEmail";
+            this.labelEmail.Size = new System.Drawing.Size(35, 13);
+            this.labelEmail.TabIndex = 4;
+            this.labelEmail.Text = "E-mail";
+            // 
+            // textBoxAddress
+            // 
+            this.textBoxAddress.Location = new System.Drawing.Point(64, 56);
+            this.textBoxAddress.Name = "textBoxAddress";
+            this.textBoxAddress.Size = new System.Drawing.Size(195, 21);
+            this.textBoxAddress.TabIndex = 2;
+            // 
+            // labelPhoneNum
+            // 
+            this.labelPhoneNum.AutoSize = true;
+            this.labelPhoneNum.Location = new System.Drawing.Point(300, 86);
+            this.labelPhoneNum.Name = "labelPhoneNum";
+            this.labelPhoneNum.Size = new System.Drawing.Size(56, 13);
+            this.labelPhoneNum.TabIndex = 4;
+            this.labelPhoneNum.Text = "Điện thoại";
+            // 
+            // textBoxName
+            // 
+            this.textBoxName.Location = new System.Drawing.Point(64, 30);
+            this.textBoxName.Name = "textBoxName";
+            this.textBoxName.Size = new System.Drawing.Size(195, 21);
+            this.textBoxName.TabIndex = 1;
+            // 
+            // labelMobileNum
+            // 
+            this.labelMobileNum.AutoSize = true;
+            this.labelMobileNum.Location = new System.Drawing.Point(543, 85);
+            this.labelMobileNum.Name = "labelMobileNum";
+            this.labelMobileNum.Size = new System.Drawing.Size(43, 13);
+            this.labelMobileNum.TabIndex = 4;
+            this.labelMobileNum.Text = "Di động";
+            // 
+            // textBoxShopKeeper
+            // 
+            this.textBoxShopKeeper.Location = new System.Drawing.Point(362, 4);
+            this.textBoxShopKeeper.Name = "textBoxShopKeeper";
+            this.textBoxShopKeeper.Size = new System.Drawing.Size(126, 21);
+            this.textBoxShopKeeper.TabIndex = 4;
+            // 
+            // labelDescription
+            // 
+            this.labelDescription.AutoSize = true;
+            this.labelDescription.Location = new System.Drawing.Point(544, 58);
+            this.labelDescription.Name = "labelDescription";
+            this.labelDescription.Size = new System.Drawing.Size(42, 13);
+            this.labelDescription.TabIndex = 4;
+            this.labelDescription.Text = "Ghi chú";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(264, 33);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(92, 13);
+            this.label4.TabIndex = 4;
+            this.label4.Text = "Mã đại lý cấp trên";
+            // 
+            // textBoxMobileNum
+            // 
+            this.textBoxMobileNum.Location = new System.Drawing.Point(592, 82);
+            this.textBoxMobileNum.Name = "textBoxMobileNum";
+            this.textBoxMobileNum.Size = new System.Drawing.Size(126, 21);
+            this.textBoxMobileNum.TabIndex = 6;
+            // 
+            // labelModifiedDate
+            // 
+            this.labelModifiedDate.AutoSize = true;
+            this.labelModifiedDate.Location = new System.Drawing.Point(536, 31);
+            this.labelModifiedDate.Name = "labelModifiedDate";
+            this.labelModifiedDate.Size = new System.Drawing.Size(53, 13);
+            this.labelModifiedDate.TabIndex = 4;
+            this.labelModifiedDate.Text = "Ngày sửa";
+            // 
+            // labelCreatedDate
+            // 
+            this.labelCreatedDate.AutoSize = true;
+            this.labelCreatedDate.Location = new System.Drawing.Point(536, 7);
+            this.labelCreatedDate.Name = "labelCreatedDate";
+            this.labelCreatedDate.Size = new System.Drawing.Size(51, 13);
+            this.labelCreatedDate.TabIndex = 4;
+            this.labelCreatedDate.Text = "Ngày tạo";
+            // 
+            // textBoxPhoneNum
+            // 
+            this.textBoxPhoneNum.Location = new System.Drawing.Point(362, 83);
+            this.textBoxPhoneNum.Name = "textBoxPhoneNum";
+            this.textBoxPhoneNum.Size = new System.Drawing.Size(126, 21);
+            this.textBoxPhoneNum.TabIndex = 5;
+            // 
+            // labelShopKeeper
+            // 
+            this.labelShopKeeper.AutoSize = true;
+            this.labelShopKeeper.Location = new System.Drawing.Point(279, 7);
+            this.labelShopKeeper.Name = "labelShopKeeper";
+            this.labelShopKeeper.Size = new System.Drawing.Size(77, 13);
+            this.labelShopKeeper.TabIndex = 4;
+            this.labelShopKeeper.Text = "Chủ nhà thuốc";
+            // 
+            // textBoxEmail
+            // 
+            this.textBoxEmail.Location = new System.Drawing.Point(362, 55);
+            this.textBoxEmail.Name = "textBoxEmail";
+            this.textBoxEmail.Size = new System.Drawing.Size(126, 21);
+            this.textBoxEmail.TabIndex = 7;
+            // 
+            // labelName
+            // 
+            this.labelName.AutoSize = true;
+            this.labelName.Location = new System.Drawing.Point(16, 33);
+            this.labelName.Name = "labelName";
+            this.labelName.Size = new System.Drawing.Size(41, 13);
+            this.labelName.TabIndex = 4;
+            this.labelName.Text = "Tên KH";
+            // 
+            // labelCode
+            // 
+            this.labelCode.AutoSize = true;
+            this.labelCode.Location = new System.Drawing.Point(21, 7);
+            this.labelCode.Name = "labelCode";
+            this.labelCode.Size = new System.Drawing.Size(37, 13);
+            this.labelCode.TabIndex = 4;
+            this.labelCode.Text = "Mã KH";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(9, 86);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(49, 13);
+            this.label5.TabIndex = 4;
+            this.label5.Text = "Tỉnh / TP";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(18, 59);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(39, 13);
+            this.label3.TabIndex = 4;
+            this.label3.Text = "Địa chỉ";
+            // 
+            // ucDataButtonStore
+            // 
+            this.ucDataButtonStore.AddNewVisible = true;
+            this.ucDataButtonStore.CancelVisible = true;
+            this.ucDataButtonStore.DataMode = DAC.Core.Security.DataState.View;
+            this.ucDataButtonStore.DeleteVisible = true;
+            this.ucDataButtonStore.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.ucDataButtonStore.EditVisible = true;
+            this.ucDataButtonStore.ExcelVisible = true;
+            this.ucDataButtonStore.IsContitnue = true;
+            this.ucDataButtonStore.LanguageVisible = false;
+            this.ucDataButtonStore.Location = new System.Drawing.Point(0, 478);
+            this.ucDataButtonStore.MaximumSize = new System.Drawing.Size(0, 34);
+            this.ucDataButtonStore.MinimumSize = new System.Drawing.Size(500, 34);
+            this.ucDataButtonStore.MultiLanguageVisible = false;
+            this.ucDataButtonStore.Name = "ucDataButtonStore";
+            this.ucDataButtonStore.PrintVisible = false;
+            this.ucDataButtonStore.ReportVisible = false;
+            this.ucDataButtonStore.SaveVisible = true;
+            this.ucDataButtonStore.Size = new System.Drawing.Size(1078, 34);
+            this.ucDataButtonStore.TabIndex = 0;
+            this.ucDataButtonStore.InsertHandler += new PIPT.ucDataButton.DataHandler(this.ucDataButtonAgency_InsertHandler);
+            this.ucDataButtonStore.ExcelHandler += new PIPT.ucDataButton.DataHandler(this.ucDataButtonAgency_ExcelHandler);
+            this.ucDataButtonStore.EditHandler += new PIPT.ucDataButton.DataHandler(this.ucDataButtonAgency_EditHandler);
+            this.ucDataButtonStore.SaveHandler += new PIPT.ucDataButton.DataHandler(this.ucDataButtonAgency_SaveHandler);
+            this.ucDataButtonStore.DeleteHandler += new PIPT.ucDataButton.DataHandler(this.ucDataButtonAgency_DeleteHandler);
+            this.ucDataButtonStore.CancelHandler += new PIPT.ucDataButton.DataHandler(this.ucDataButtonAgency_CancelHandler);
+            this.ucDataButtonStore.CloseHandler += new PIPT.ucDataButton.DataHandler(this.ucDataButtonAgency_CloseHandler);
+            // 
+            // btnImport
+            // 
+            this.btnImport.Image = global::PIPT.Properties.Resources.Excel;
+            this.btnImport.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnImport.Location = new System.Drawing.Point(122, 6);
+            this.btnImport.Name = "btnImport";
+            this.btnImport.Size = new System.Drawing.Size(71, 24);
+            this.btnImport.TabIndex = 4;
+            this.btnImport.Text = "Import";
+            this.btnImport.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnImport.UseVisualStyleBackColor = true;
+            this.btnImport.Click += new System.EventHandler(this.btnImport_Click);
+            // 
+            // frmDacStore
+            // 
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.ClientSize = new System.Drawing.Size(1078, 512);
+            this.Controls.Add(this.groupBoxStore);
+            this.Controls.Add(this.ucDataButtonStore);
+            this.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Name = "frmDacStore";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Danh mục nhà thuốc / cửa hàng";
+            this.Load += new System.EventHandler(this.frmDacStore_Load);
+            this.groupBoxStore.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.gridControlStore)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridViewStore)).EndInit();
+            this.panelSearchAgency.ResumeLayout(false);
+            this.panelStore.ResumeLayout(false);
+            this.panelStore.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridLookUpEditAgencyCode.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridLookUpEditViewAgencyCode)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridLookUpEditProvince.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridLookUpEditViewProvince)).EndInit();
+            this.ResumeLayout(false);
+
+        }
+
+        #endregion
+
+        private ucDataButton ucDataButtonStore;
+        private System.Windows.Forms.GroupBox groupBoxStore;
+        private System.Windows.Forms.Panel panelStore;
+        private System.Windows.Forms.TextBox textBoxCode;
+        private System.Windows.Forms.RichTextBox richTextBoxDescription;
+        private System.Windows.Forms.DateTimePicker dateTimePickerCreatedDate;
+        private System.Windows.Forms.CheckBox checkBoxActive;
+        private System.Windows.Forms.Label labelEmail;
+        private System.Windows.Forms.TextBox textBoxAddress;
+        private System.Windows.Forms.Label labelPhoneNum;
+        private System.Windows.Forms.TextBox textBoxName;
+        private System.Windows.Forms.Label labelMobileNum;
+        private System.Windows.Forms.TextBox textBoxShopKeeper;
+        private System.Windows.Forms.Label labelDescription;
+        private System.Windows.Forms.TextBox textBoxMobileNum;
+        private System.Windows.Forms.Label labelCreatedDate;
+        private System.Windows.Forms.TextBox textBoxPhoneNum;
+        private System.Windows.Forms.Label labelShopKeeper;
+        private System.Windows.Forms.TextBox textBoxEmail;
+        private System.Windows.Forms.Label labelName;
+        private System.Windows.Forms.Label labelCode;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Panel panelSearchAgency;
+        private System.Windows.Forms.Button buttonPaste;
+        private DevExpress.XtraGrid.GridControl gridControlStore;
+        private DevExpress.XtraGrid.Views.Grid.GridView gridViewStore;
+        private System.Windows.Forms.Label label4;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnID;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnCode;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnName;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnAddress;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnProvinceCode;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnShopKeeper;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnPhoneNum;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnAgencyCode;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnCreatedUser;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnCreatedDate;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnModifiedDate;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnModifiedUser;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnDescription;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnActive;
+        private DevExpress.XtraEditors.GridLookUpEdit gridLookUpEditProvince;
+        private DevExpress.XtraGrid.Views.Grid.GridView gridLookUpEditViewProvince;
+        private DevExpress.XtraGrid.Columns.GridColumn gridLookUpColumnProvinceCode;
+        private DevExpress.XtraGrid.Columns.GridColumn gridLookUpColumnProvinceName;
+        private System.Windows.Forms.DateTimePicker dateTimePickerModifiedDate;
+        private System.Windows.Forms.Label labelModifiedDate;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnMobileNum;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnEmail;
+        private DevExpress.XtraEditors.GridLookUpEdit gridLookUpEditAgencyCode;
+        private DevExpress.XtraGrid.Views.Grid.GridView gridLookUpEditViewAgencyCode;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColAgencyCode;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColAgencyName;
+        private System.Windows.Forms.Button btnImport;
+    }
+}

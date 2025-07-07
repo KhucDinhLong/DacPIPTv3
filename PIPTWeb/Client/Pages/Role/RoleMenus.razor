@@ -1,0 +1,70 @@
+﻿@page "/role-menus/{roleId}"
+
+<ContentHeader>
+    <Header>
+        <PageTitle Title="Phân quyền chức năng cho nhóm" />
+    </Header>
+</ContentHeader>
+<ContentMain>
+    <Card>
+        <Title><CardTitle>Cấp quyền cho nhóm: <strong>@(roleName != null ? roleName : string.Empty)</strong></CardTitle></Title>
+        <Body>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card card-success card-outline">
+                            <div class="card-header">
+                                <h3>Nghiệp vụ hệ thống</h3>
+                            </div>
+                            <div class="card-body">
+                                <TreeView Items="Menus" GetChildren="(item) => item.ChildrenMenus" AllowSelection="true" @bind-SelectedItems="SelectedMenus" InitiallyCollapsed="true">
+                                    <ItemTemplate>
+                                        <div @onclick="() => SelectedMenu(context.Item)" style="background-color: @(CurrentMenu == context.Item ? "highlight" : "inherit")">&nbsp;&nbsp;@context.Item.Value</div>
+                                    </ItemTemplate>
+                                </TreeView>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card card-success card-outline">
+                            <div class="card-header">
+                                @if (CurrentMenu != null)
+                                {
+                                    <h3>Nghiệp vụ: <strong>@CurrentMenu.Value</strong></h3>
+                                }
+                                else
+                                {
+                                    <h3>Chọn nghiệp vụ ...</h3>
+                                }
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    @if (CurrentMenu != null)
+                                    {
+                                        @if (RoleMenuClaims.Count > 0)
+                                        {
+                                            foreach (var claim in RoleMenuClaims)
+                                            {
+                                                <div class="form-check">
+                                                    <input class="form-check-input" id="@claim.Value" type="checkbox" @onchange="(e) => { PermissionsChecked(claim.Value, e.Value); }" checked ="@claim.Selected">
+                                                    <label class="form-check-label" for="@claim.Value">@claim.Name</label>
+                                                </div>
+                                            }
+                                        }
+                                    }
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <div class="form-group">
+                                    <button class="btn btn-primary" @onclick="() => UpdatePermission(roleId)">Cập nhật</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                    </div>
+                </div>
+            </div>
+        </Body>
+    </Card>
+</ContentMain>

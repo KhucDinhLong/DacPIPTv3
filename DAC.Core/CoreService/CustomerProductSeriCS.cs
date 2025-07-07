@@ -1,0 +1,44 @@
+﻿using DAC.DAL;
+using System;
+using System.Data;
+
+namespace DAC.Core
+{
+    public class CustomerProductSeriCS
+    {
+        public CustomerProductSeriCollection GetProductSeriCollection(DataTable dataTable)
+        {
+            CustomerProductSeriCollection customerProductSeriCollection = new CustomerProductSeriCollection();
+            try
+            {
+                if(dataTable.Rows.Count > 0)
+                {
+                    CustomerProductSeri customerProductSeri;
+                    foreach (DataRow dataRow in dataTable.Rows)
+                    {
+                        customerProductSeri = new CustomerProductSeri();
+                        customerProductSeri.CreatedDate = (DateTime)dataRow["CreatedDate"];
+                        customerProductSeri.Seri = dataRow["Seri"].ToString();
+                        customerProductSeri.UnitCode = dataRow["UnitCode"].ToString();
+                        customerProductSeri.ProductCode = dataRow["ProductCode"].ToString();
+                        customerProductSeri.PromotionCode = dataRow["PromotionCode"].ToString();
+                        customerProductSeri.AddPoint = Convert.ToBoolean(dataRow["AddPoint"]);
+                        customerProductSeri.ExpiredDate = dataRow["ExpiredDate"] != DBNull.Value ? (DateTime)dataRow["ExpiredDate"] : DateTime.MinValue;
+                        customerProductSeri.Status = (int)dataRow["Status"];
+                        customerProductSeri.Count = (int)dataRow["Count"];
+                        customerProductSeri.AgencyCode = dataRow["AgencyCode"].ToString();
+                        customerProductSeri.AgencyName = dataRow["AgencyName"].ToString();
+                        customerProductSeri.AgencyAddress = dataRow["AgencyAddress"].ToString();
+
+                        customerProductSeriCollection.Add(customerProductSeri);
+                    }
+                }
+            }
+            catch
+            {
+                return customerProductSeriCollection;
+            }
+            return customerProductSeriCollection;
+        }
+    }
+}

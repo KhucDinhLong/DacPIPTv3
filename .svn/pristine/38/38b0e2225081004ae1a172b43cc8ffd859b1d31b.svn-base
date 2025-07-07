@@ -1,0 +1,268 @@
+﻿using DAC.DAL;
+using System;
+using System.Data.SqlClient;
+
+namespace DAC.Core
+{
+    public class DacStoreCS
+    {
+        public DacStoreCollection GetListStore()
+        {
+            DacStoreCollection dacStoreCollection = new DacStoreCollection();
+            DacDbAccess dacDb = new DacDbAccess();
+            dacDb.CreateNewSqlCommand();
+            SqlDataReader reader = dacDb.ExecuteReader("spDacStore_SelectAll");
+            while (reader.Read())
+            {
+                DacStore dacStore = new DacStore();
+
+                dacStore.ID = (int)reader["ID"];
+                dacStore.Code = reader["Code"].ToString();
+                dacStore.Name = reader["Name"].ToString();
+                dacStore.Address = reader["Address"].ToString();
+                dacStore.ShopKeeper = reader["ShopKeeper"].ToString();
+                dacStore.PhoneNum = reader["PhoneNum"].ToString();
+                dacStore.MobileNum = reader["MobileNum"].ToString();
+                dacStore.Email = reader["Email"].ToString();
+                dacStore.AgencyCode = reader["AgencyCode"].ToString();
+                dacStore.ProvinceCode = reader["ProvinceCode"].ToString();
+                dacStore.Description = reader["Description"].ToString();
+                dacStore.CreatedDate = (DateTime)reader["CreatedDate"];
+                dacStore.Active = (bool)reader["Active"];
+
+                dacStoreCollection.Add(dacStore);
+            }
+
+            // Call Close when reading done
+            reader.Close();
+
+            return dacStoreCollection;
+        }
+        public DacStoreCollection GetListStore(string sCode, string sName, string sMobileNum)
+        {
+            DacStoreCollection dacStoreCollection = new DacStoreCollection();
+            DacDbAccess dacDb = new DacDbAccess();
+            dacDb.CreateNewSqlCommand();
+            dacDb.AddParameter("@Code", sCode.ToUpper());
+            dacDb.AddParameter("@Name", sName);
+            dacDb.AddParameter("@MobileNum", sMobileNum);
+            SqlDataReader reader = dacDb.ExecuteReader("spDacStore_SelectByCode");
+            while (reader.Read())
+            {
+                DacStore dacStore = new DacStore();
+                dacStore.ID = (int)reader["ID"];
+                dacStore.Code = reader["Code"].ToString();
+                dacStore.Name = reader["Name"].ToString();
+                dacStore.Address = reader["Address"].ToString();
+                dacStore.ShopKeeper = reader["ShopKeeper"].ToString();
+                dacStore.PhoneNum = reader["PhoneNum"].ToString();
+                dacStore.MobileNum = reader["MobileNum"].ToString();
+                dacStore.Email = reader["Email"].ToString();
+                dacStore.AgencyCode = reader["AgencyCode"].ToString();
+                dacStore.ProvinceCode = reader["ProvinceCode"].ToString();
+                dacStore.Description = reader["Description"].ToString();
+                dacStore.CreatedDate = (DateTime)reader["CreatedDate"];
+                dacStore.CreatedUser = reader["CreatedUser"].ToString();
+                dacStore.ModifiedUser = reader["ModifiedUser"].ToString();
+                dacStore.ModifiedDate = (DateTime)reader["ModifiedDate"];
+                dacStore.Active = (bool)reader["Active"];
+
+                dacStoreCollection.Add(dacStore);
+            }
+
+            // Call Close when reading done
+            reader.Close();
+
+            return dacStoreCollection;
+        }
+
+        public DacStoreCollection GetListStore(string sAgencyCode)
+        {
+            DacStoreCollection dacStoreCollection = new DacStoreCollection();
+            DacDbAccess dacDb = new DacDbAccess();
+            dacDb.CreateNewSqlCommand();
+            dacDb.AddParameter("@AgencyCode", sAgencyCode);
+            SqlDataReader reader = dacDb.ExecuteReader("spDacStore_SelectByAgencyCode");
+            while (reader.Read())
+            {
+                DacStore dacStore = new DacStore();
+                dacStore.ID = (int)reader["ID"];
+                dacStore.Code = reader["Code"].ToString();
+                dacStore.Name = reader["Name"].ToString();
+                dacStore.Address = reader["Address"].ToString();
+                dacStore.ShopKeeper = reader["ShopKeeper"].ToString();
+                dacStore.PhoneNum = reader["PhoneNum"].ToString();
+                dacStore.MobileNum = reader["MobileNum"].ToString();
+                dacStore.Email = reader["Email"].ToString();
+                dacStore.AgencyCode = reader["AgencyCode"].ToString();
+                dacStore.ProvinceCode = reader["ProvinceCode"].ToString();
+                dacStore.Description = reader["Description"].ToString();
+                dacStore.CreatedDate = (DateTime)reader["CreatedDate"];
+                dacStore.CreatedUser = reader["CreatedUser"].ToString();
+                dacStore.ModifiedUser = reader["ModifiedUser"].ToString();
+                dacStore.ModifiedDate = (DateTime)reader["ModifiedDate"];
+                dacStore.Active = (bool)reader["Active"];
+
+                dacStoreCollection.Add(dacStore);
+            }
+
+            // Call Close when reading done
+            reader.Close();
+
+            return dacStoreCollection;
+        }
+
+        public DacStoreCollection GetListStore( int iID, string sAgencyCode)
+        {
+            DacStoreCollection dacStoreCollection = new DacStoreCollection();
+            DacDbAccess dacDb = new DacDbAccess();
+            dacDb.CreateNewSqlCommand();
+            dacDb.AddParameter("@AgencyCode", sAgencyCode);
+            dacDb.AddParameter("@ID", iID);
+            SqlDataReader reader = dacDb.ExecuteReader("spDacStore_LargerThanID");
+            while (reader.Read())
+            {
+                DacStore dacStore = new DacStore();
+                dacStore.ID = (int)reader["ID"];
+                dacStore.Code = reader["Code"].ToString();
+                dacStore.Name = reader["Name"].ToString();
+                dacStore.Address = reader["Address"].ToString();
+                dacStore.ShopKeeper = reader["ShopKeeper"].ToString();
+                dacStore.PhoneNum = reader["PhoneNum"].ToString();
+                dacStore.MobileNum = reader["MobileNum"].ToString();
+                dacStore.Email = reader["Email"].ToString();
+                dacStore.AgencyCode = reader["AgencyCode"].ToString();
+                dacStore.ProvinceCode = reader["ProvinceCode"].ToString();
+                dacStore.Description = reader["Description"].ToString();
+                dacStore.CreatedDate = (DateTime)reader["CreatedDate"];
+                dacStore.CreatedUser = reader["CreatedUser"].ToString();
+                dacStore.ModifiedUser = reader["ModifiedUser"].ToString();
+                dacStore.ModifiedDate = (DateTime)reader["ModifiedDate"];
+                dacStore.Active = (bool)reader["Active"];
+
+                dacStoreCollection.Add(dacStore);
+            }
+
+            // Call Close when reading done
+            reader.Close();
+
+            return dacStoreCollection;
+        }
+
+        public bool Insert(DacStore dacStore)
+        {
+            DacDbAccess dacDb = new DacDbAccess();
+            try
+            {
+                dacDb.CreateNewSqlCommand();
+                // Add parameters
+                dacDb.AddParameter("@Code", dacStore.Code);
+                dacDb.AddParameter("@Name", dacStore.Name);
+                dacDb.AddParameter("@Address", dacStore.Address);
+                dacDb.AddParameter("@ShopKeeper", dacStore.ShopKeeper);
+                dacDb.AddParameter("@PhoneNum", dacStore.PhoneNum);
+                dacDb.AddParameter("@MobileNum", dacStore.MobileNum);
+                dacDb.AddParameter("@Email", dacStore.Email);
+                dacDb.AddParameter("@ProvinceCode", dacStore.ProvinceCode);
+                dacDb.AddParameter("@AgencyCode", dacStore.AgencyCode);
+                dacDb.AddParameter("@Description", dacStore.Description);
+                dacDb.AddParameter("@CreatedDate", dacStore.CreatedDate);
+                dacDb.AddParameter("@CreatedUser", dacStore.CreatedUser);
+                dacDb.AddParameter("@ModifiedUser", dacStore.ModifiedUser);
+                dacDb.AddParameter("@ModifiedDate", dacStore.ModifiedDate);
+                dacDb.AddParameter("@Active", dacStore.Active);
+
+                dacDb.ExecuteNonQuery("spDacStore_Insert");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public bool Insert(DacStore dacStore, int iID)
+        {
+            DacDbAccess dacDb = new DacDbAccess();
+            try
+            {
+                dacDb.CreateNewSqlCommand();
+                // Add parameters
+                dacDb.AddParameter("@ID", iID);
+                dacDb.AddParameter("@Code", dacStore.Code);
+                dacDb.AddParameter("@Name", dacStore.Name);
+                dacDb.AddParameter("@Address", dacStore.Address);
+                dacDb.AddParameter("@ShopKeeper", dacStore.ShopKeeper);
+                dacDb.AddParameter("@PhoneNum", dacStore.PhoneNum);
+                dacDb.AddParameter("@MobileNum", dacStore.MobileNum);
+                dacDb.AddParameter("@Email", dacStore.Email);
+                dacDb.AddParameter("@ProvinceCode", dacStore.ProvinceCode);
+                dacDb.AddParameter("@AgencyCode", dacStore.AgencyCode);
+                dacDb.AddParameter("@Description", dacStore.Description);
+                dacDb.AddParameter("@CreatedDate", dacStore.CreatedDate);
+                dacDb.AddParameter("@CreatedUser", dacStore.CreatedUser);
+                dacDb.AddParameter("@ModifiedUser", dacStore.ModifiedUser);
+                dacDb.AddParameter("@ModifiedDate", dacStore.ModifiedDate);
+                dacDb.AddParameter("@Active", dacStore.Active);
+
+                dacDb.ExecuteNonQuery("spDacStore_Insert");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public bool Update(DacStore dacStore)
+        {
+            DacDbAccess dacDb = new DacDbAccess();
+            try
+            {
+                dacDb.CreateNewSqlCommand();
+                // Add parameters
+                dacDb.AddParameter("@ID", dacStore.ID);
+                dacDb.AddParameter("@Code", dacStore.Code);
+                dacDb.AddParameter("@Name", dacStore.Name);
+                dacDb.AddParameter("@Address", dacStore.Address);
+                dacDb.AddParameter("@ShopKeeper", dacStore.ShopKeeper);
+                dacDb.AddParameter("@PhoneNum", dacStore.PhoneNum);
+                dacDb.AddParameter("@MobileNum", dacStore.MobileNum);
+                dacDb.AddParameter("@Email", dacStore.Email);
+                dacDb.AddParameter("@AgencyCode", dacStore.AgencyCode);
+                dacDb.AddParameter("@ProvinceCode", dacStore.ProvinceCode);
+                dacDb.AddParameter("@Description", dacStore.Description);
+                dacDb.AddParameter("@CreatedDate", dacStore.CreatedDate);
+                dacDb.AddParameter("@Active", dacStore.Active);
+                dacDb.AddParameter("@CreatedUser", dacStore.CreatedUser);
+                dacDb.AddParameter("@ModifiedUser", dacStore.ModifiedUser);
+                dacDb.AddParameter("@ModifiedDate", dacStore.ModifiedDate);
+
+                dacDb.ExecuteNonQuery("spDacStore_Update");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public bool Delete(string sCode, string sAgencyCode)
+        {
+            DacDbAccess dacDb = new DacDbAccess();
+            try
+            {
+                dacDb.CreateNewSqlCommand();
+                // Add parameters
+                dacDb.AddParameter("@Code", sCode);
+                dacDb.AddParameter("@AgencyCode", sAgencyCode);
+
+                dacDb.ExecuteNonQuery("spDacStore_Delete");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+    }
+}

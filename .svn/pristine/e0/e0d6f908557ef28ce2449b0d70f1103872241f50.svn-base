@@ -1,0 +1,59 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="TrackSite.master.cs" Inherits="PIPT.Track.TrackSite" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">    
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="Content/dactrack.css" rel="stylesheet" />
+    <link href="Content/bootstrap.min.css" rel="stylesheet" />
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <asp:ScriptManager ID="ScriptManagerTruyVan" runat="server"></asp:ScriptManager>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/">DAC</a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="getserialbydaccode.aspx">Tìm serial</a></li>
+                    </ul>
+                    <div class="navbar-form navbar-right">
+                        <div class="form-group">
+                            <asp:TextBox ID="username" runat="server" placeholder="Username" CssClass="form-control"></asp:TextBox>
+                        </div>
+                        <div class="form-group">
+                            <asp:TextBox ID="password" runat="server" placeholder="Password" CssClass="form-control" TextMode="Password"></asp:TextBox>
+                        </div>
+                        <asp:Button ID="btnLogin" runat="server" CssClass="btn btn-success" Text="Đăng nhập" OnClick="btnLogin_Click"></asp:Button>
+                    </div>
+                </div>
+                <!--/.navbar-collapse -->
+            </div>
+        </nav>
+
+        <!-- Main jumbotron for a primary marketing message or call to action -->
+        <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+        </asp:ContentPlaceHolder>
+        <div class="container">
+            <hr />
+            <footer>
+                <p>&copy; 2016 Power by DAC, ltd.</p>
+            </footer>
+        </div>
+    </form>
+    <script src="Scripts/jquery-2.2.3.min.js"></script>
+    <script src="Scripts/bootstrap.min.js"></script>
+</body>
+</html>

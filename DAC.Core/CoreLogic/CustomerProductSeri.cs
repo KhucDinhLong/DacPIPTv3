@@ -1,0 +1,23 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace DAC.Core
+{
+    //public class CustomerProductSeri
+    //{
+    //    public int ID { get; set; } = -1;
+    //    public DateTime CreatedDate { get; set; } = DateTime.Now;
+    //    public string Seri { get; set; } = string.Empty;
+    //    public string UnitCode { get; set; } = string.Empty;
+    //    public string PromotionCode { get; set; } = string.Empty;
+    //    public string ProductCode { get; set; } = string.Empty;
+    //    public bool AddPoint { get; set; } = true;
+    //    public DateTime ExpiredDate { get; set; } = DateTime.MinValue;
+    //    public int Status { get; set; } = 0;
+    //    public int Count { get; set; } = 0;
+    //    public string AgencyCode { get; set; } = string.Empty;
+    //    public string AgencyName { get; set; } = string.Empty;
+    //    public string AgencyAddress { get; set; } = string.Empty;
+    //}
+    //public class CustomerProductSeriCollection : List<CustomerProductSeri> { }
+}

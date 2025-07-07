@@ -1,0 +1,1256 @@
+﻿using DAC.Core;
+using DAC.Core.Security;
+using DevExpress.XtraGrid.Views.Grid;
+using DevExpress.XtraReports.UI;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Configuration;
+using System.Data;
+using System.Drawing;
+using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
+using COMExcel = Microsoft.Office.Interop.Excel;
+
+namespace PIPT
+{
+    public partial class frmDacDistributeToAgency : Form
+    {
+        #region Instance of the form
+        /// <summary>
+        /// Instance to store instance of this form
+        /// </summary>
+        private static frmDacDistributeToAgency _instance = null;
+
+        /// <summary>
+        /// Instance form.
+        /// </summary>
+        /// <returns>Instance of this Form</returns>
+        public static frmDacDistributeToAgency Instance()
+        {
+            if (_instance == null || _instance.IsDisposed)
+            {
+                _instance = new frmDacDistributeToAgency();
+            }
+            return _instance;
+        }
+
+        public static frmDacDistributeToAgency Instance(Form parent)
+        {
+            _instance = Instance();
+            _instance.MdiParent = parent;
+            return _instance;
+        }
+
+        public static frmDacDistributeToAgency Instance(Form parent, bool isActivate)
+        {
+            _instance = Instance(parent);
+            if (isActivate)
+            {
+                _instance.WindowState = FormWindowState.Normal;
+                _instance.Show();
+                _instance.Activate();
+            }
+            return _instance;
+        }
+        #endregion
+        #region Variables
+        DacDistributeToAgencyCollection distributeToAgencyCollection = new DacDistributeToAgencyCollection();
+        DacDistributeToAgencyDetailsCollection distributeDetailsCollection = new DacDistributeToAgencyDetailsCollection();
+        BindingList<DacDistributeToAgency> bdlDistributeToAgency;
+        BindingList<DistributeDetailModel> bdlDistributeDetails;
+        DacDistributeToAgencyCS distributeToAgencyCS = new DacDistributeToAgencyCS();
+        DacDistributeToAgencyDetailsCS dacDistributeDetailsCS = new DacDistributeToAgencyDetailsCS();
+        DacInsertToWarehouseDetailsCS warehouseDetailsCS = new DacInsertToWarehouseDetailsCS();
+        SecConfig secConfig = CommonBO.GetSecConfig("AutoIncreaseOrder");
+        SecConfig secConfigWH = CommonBO.GetSecConfig("CheckInWarehouse");
+        SecConfig secConfigPkg = CommonBO.GetSecConfig("AutoIncreasePackage");
+        // DataView for Agency table
+        DataView dvAgency;
+        // DataView for Product table
+        DataView dvProduct;
+        int iCurrentID = 0;
+        // Check Box Select All
+        int TotalCheckBoxes = 0;
+        int TotalCheckedCheckBoxes = 0;
+        CheckBox HeaderCheckBox = null;
+        bool IsHeaderCheckBoxClicked = false;
+        DacDistributeToAgencyDetailsCollection LstAddTemp;
+        bool HasOutOfNewRow = false;
+        int ProvinceIndex = -1;
+        List<string> LstDupplicateDacCode = new List<string>();
+        // --------------------
+        #endregion
+        #region Form's Events
+        public frmDacDistributeToAgency()
+        {
+            InitializeComponent();
+        }
+        private void frmDacDistributeToAgency_Load(object sender, EventArgs e)
+        {
+            InitData();
+            InitLookUp();
+            // Get Max order number
+            textBoxOrderNumber.Text = this.GetMaxOrderNumber();
+            // Get distributeToAgencyCollection from database
+            // -----------------------------------------
+            // Dinh lai thoi gia de load du lieu tai day
+            // -----------------------------------------
+            distributeToAgencyCollection = distributeToAgencyCS.GetListDistributeToAgency(
+                DateTime.Parse(CommonBO.GetSecConfig("DateStartGettingData").Value),
+                DateTime.Now, string.Empty, string.Empty, CommonBS.CurrentUser.LoginID);
+            AddObjectDistributorIntoBindingList(distributeToAgencyCollection);
+            // Get data from database
+            AddObjectDetailsIntoBindingList(distributeDetailsCollection);
+            EnableControls(false);
+
+            // Init Events For Select All CheckBox
+            AddHeaderCheckBox();
+
+            HeaderCheckBox.KeyUp += new KeyEventHandler(HeaderCheckBox_KeyUp);
+            HeaderCheckBox.MouseClick += new MouseEventHandler(HeaderCheckBox_MouseClick);
+            dataGridViewDetails.CellValueChanged += new DataGridViewCellEventHandler(dataGridViewDetails_CellValueChanged);
+            dataGridViewDetails.CurrentCellDirtyStateChanged += new EventHandler(dataGridViewDetails_CurrentCellDirtyStateChanged);
+            dataGridViewDetails.CellPainting += new DataGridViewCellPaintingEventHandler(dataGridViewDetails_CellPainting);
+
+            //SetDistributeDetailsDataSource()
+            // -----------------------------
+        }
+
+        private void frmDacDistributeToAgency_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (ucDataButtonAgency.DataMode == DataState.Insert)
+            {
+                if (CommonCore.FormClosing("Bạn chưa lưu đơn hàng xuất này. Bạn có muốn lưu lại?"))
+                {
+                    //Luu lai du lieu xong thoat form;
+                    this.SaveData();
+                }
+            }
+        }
+        #endregion
+        #region Function on form
+        private void InitData()
+        {
+            DAC.DAL.DacDbAccess dacDb = new DAC.DAL.DacDbAccess();
+            dacDb.CreateNewSqlCommand();
+            DataSet ds = new DataSet("Agency_Product");
+            DataTable dataTable = dacDb.ExecuteDataTable("spDacAgency_SelectAll");
+            // Add table Agency
+            dataTable.TableName = "Agencies";
+            ds.Tables.Add(dataTable);
+
+            dataTable = dacDb.ExecuteDataTable("spProvince_SelectAll");
+            comboBoxProvince.DataSource = dataTable;
+            comboBoxProvince.DisplayMember = "Name";
+            comboBoxProvince.ValueMember = "Code";
+            dacDb.AddParameter("@FactoryCode", string.Empty);
+            dataTable = dacDb.ExecuteDataTable("spDacProduct_SelectAll");
+            // Add table Product
+            dataTable.TableName = "Products";
+            ds.Tables.Add(dataTable);
+
+            DataViewManager dvm = new DataViewManager(ds);
+            dvAgency = dvm.CreateDataView(ds.Tables["Agencies"]);
+            dvProduct = dvm.CreateDataView(ds.Tables["Products"]);
+
+            // Add Stock filter by Username
+            dacDb.CreateNewSqlCommand();
+            dacDb.AddParameter("@Code", string.Empty);
+            dacDb.AddParameter("@Name", string.Empty);
+            dacDb.AddParameter("@Email", string.Empty);
+            dacDb.AddParameter("@Mobi", string.Empty);
+            dacDb.AddParameter("@LoginID", CommonBS.CurrentUser.LoginID);
+            dataTable = dacDb.ExecuteDataTable("DacStock_Select");
+            gridLookUpEditDacStock.Properties.DataSource = dataTable;
+        }
+        private void InitLookUp()
+        {
+            // The data source for the dropdown rows
+            gridLookUpEditAgency.Properties.DataSource = dvAgency;
+            gridLookUpEditProduct.Properties.DataSource = dvProduct;
+            gridLookUpEditProductChoose.Properties.DataSource = dvProduct;
+        }
+        private void AddObjectDistributorIntoBindingList(DacDistributeToAgencyCollection DistributeToAgencyCollection)
+        {
+            bdlDistributeToAgency = new BindingList<DacDistributeToAgency>();
+            foreach (DacDistributeToAgency DistributeToAgency in DistributeToAgencyCollection)
+            {
+                bdlDistributeToAgency.Add(DistributeToAgency);
+            }
+            SetDataSource();
+        }
+        private void SetDataSource()
+        {
+            CommonCore.ClearDataBinding(panelDistributeToAgency);
+            // Binding data to Controls
+            textBoxOrderNumber.DataBindings.Add("Text", bdlDistributeToAgency, "OrderNumber");
+            comboBoxProvince.DataBindings.Clear();
+            comboBoxProvince.DataBindings.Add("SelectedValue", bdlDistributeToAgency, "ProvinceCode");
+            textBoxQuantity.DataBindings.Add("Text", bdlDistributeToAgency, "Quantity");
+            gridLookUpEditAgency.DataBindings.Clear();
+            gridLookUpEditAgency.DataBindings.Add("EditValue", bdlDistributeToAgency, "AgencyCode");
+            gridLookUpEditDacStock.DataBindings.Clear();
+            gridLookUpEditDacStock.DataBindings.Add("EditValue", bdlDistributeToAgency, "StockID");
+            richTextBoxDescription.DataBindings.Add("Text", bdlDistributeToAgency, "Description");
+            dateTimePickerCreatedDate.DataBindings.Clear();
+            dateTimePickerCreatedDate.DataBindings.Add("Value", bdlDistributeToAgency, "CreatedDate");
+            checkBoxActive.DataBindings.Clear();
+            checkBoxActive.DataBindings.Add("Checked", bdlDistributeToAgency, "Active");
+            txtNguoiDongHang.DataBindings.Add("Text", bdlDistributeToAgency, "PersonPackaged");
+            // Huy su kien SelectionChanged truoc khi gan DataSource
+            this.gridViewDistributor.FocusedRowChanged -= new DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventHandler(this.gridViewDistributor_FocusedRowChanged);
+            gridControlDistributor.DataSource = bdlDistributeToAgency;
+            this.gridViewDistributor.FocusedRowChanged += new DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventHandler(this.gridViewDistributor_FocusedRowChanged);
+            
+            if (bdlDistributeToAgency.Count > 0)
+            {
+                this.GetDetailData();
+            }
+            EnableControls(false);
+        }
+        private void AddObjectDetailsIntoBindingList(DacDistributeToAgencyDetailsCollection distributeDetailsCollection)
+        {
+            bdlDistributeDetails = new BindingList<DistributeDetailModel>();
+            foreach (DacDistributeToAgencyDetails distributeDetail in distributeDetailsCollection)
+            {
+                DistributeDetailModel DetailModel = new DistributeDetailModel();
+                DetailModel.ID = distributeDetail.ID;
+                DetailModel.DistributorID = distributeDetail.DistributorID.ToString();
+                DetailModel.ProductCode = distributeDetail.ProductCode;
+                DetailModel.DacCode = distributeDetail.DacCode;
+                DetailModel.PackageCode = GetPackageCodeByDacCode(distributeDetail.DacCode);
+                bdlDistributeDetails.Add(DetailModel);
+            }
+            SetDistributeDetailsDataSource();
+        }
+        private void SetDistributeDetailsDataSource()
+        {
+            gridLookUpEditProduct.DataBindings.Clear();
+            gridLookUpEditProduct.DataBindings.Add("EditValue", bdlDistributeDetails, "ProductCode");
+            dataGridViewDetails.DataSource = bdlDistributeDetails;
+
+            TotalCheckBoxes = dataGridViewDetails.RowCount;
+            TotalCheckedCheckBoxes = 0;
+        }
+        private void EnableControls(bool bIsEnabled)
+        {
+            foreach (Control ctrl in panelDistributeToAgency.Controls)
+            {
+                if (ctrl.Name != "checkEditKeepOrder" && ctrl.Name != "txtNguoiDongHang")
+                    ctrl.Enabled = bIsEnabled;
+            }
+        }
+        private bool IsChangedData()
+        {
+            if (ucDataButtonAgency.DataMode == DataState.Insert)
+            {
+            }
+            else if (ucDataButtonAgency.DataMode == DataState.Edit)
+            {
+                //if (selectedDacProduct.ProductUnitId != (int)comboBoxAgency.SelectedValue
+                //|| selectedDacProduct.ProductCategoryId != (int)comboBoxProvince.SelectedValue
+                //|| selectedDacProduct.Remark != richTextBoxDescription.Text.Trim()
+                //|| selectedDacProduct.Active != checkBoxActive.Checked)
+                //    return true;
+                //else
+                //    return false;
+            }
+            return false;
+        }
+        private bool IsDataOK()
+        {
+            if (gridLookUpEditAgency.Properties.GetIndexByKeyValue(gridLookUpEditAgency.EditValue) < 0)
+            {
+                MessageBox.Show("Bạn chưa chọn mã Khách hàng/Đại lý.", "Thông báo" + Common.formSoftName);
+                gridLookUpEditAgency.Focus();
+                return false;
+            }
+            if (comboBoxProvince.SelectedIndex == -1)
+            {
+                if (HasOutOfNewRow)
+                    MessageBox.Show("Bạn cần chọn lại khách hàng!", "Thông báo" + Common.formSoftName);
+                else
+                    MessageBox.Show("Đại lý bạn chọn chưa có mã tỉnh, bạn phải cập nhật mã tỉnh!.", "Thông báo" + Common.formSoftName);
+                comboBoxProvince.Focus();
+                return false;
+            }
+            if (dataGridViewDetails.Rows.Count == 0)
+            {
+                MessageBox.Show("Bạn chưa nhập bất kỳ mã an ninh nào.", "Thông báo" + Common.formSoftName);
+                textBoxDacCode.Focus();
+                return false;
+            }
+            return true;
+        }
+        private bool SaveData()
+        {
+            if (IsDataOK() == false) return false;
+
+            bool bResult = true;
+            if (ucDataButtonAgency.DataMode == DataState.Insert)
+            {
+                DacDistributeToAgency distributeToAgency = new DacDistributeToAgency();
+
+                distributeToAgency.OrderNumber = textBoxOrderNumber.Text;
+                // Kiem tra lai OrderNumber
+                if (secConfig.Value == "true")
+                {
+                    if (this.GetMaxOrderNumber() != distributeToAgency.OrderNumber)
+                    {
+                        distributeToAgency.OrderNumber = this.GetMaxOrderNumber();
+                        textBoxOrderNumber.Text = distributeToAgency.OrderNumber;
+                    }
+                }
+                distributeToAgency.CreatedDate = dateTimePickerCreatedDate.Value;
+                distributeToAgency.ProvinceCode = comboBoxProvince.SelectedValue.ToString();
+                distributeToAgency.AgencyCode = gridLookUpEditAgency.EditValue.ToString();
+                distributeToAgency.ProductCode = gridLookUpEditProduct.EditValue.ToString();
+                distributeToAgency.Quantity = Convert.ToDouble(textBoxQuantity.Text);
+                distributeToAgency.Description = richTextBoxDescription.Text;
+                distributeToAgency.StockID = gridLookUpEditDacStock.EditValue.ToString();
+                distributeToAgency.Active = checkBoxActive.Checked;
+                distributeToAgency.PersonPackaged = CommonBS.CurrentUser.FullName;
+
+                bResult = distributeToAgencyCS.Insert(distributeToAgency, ref iCurrentID);
+                if (bResult)
+                {
+                    gridViewDistributor.SetFocusedRowCellValue(gridColumnID, iCurrentID);
+                    // Doi lai ID da luu trong database
+                    for (int i = 0; i < distributeDetailsCollection.Count; i++)
+                    {
+                        distributeDetailsCollection[i].DistributorID = iCurrentID;
+                    }
+                    // Convert list to datatable
+                    DataTable dataTable = CommonCore.GetDataTable(distributeDetailsCollection, typeof(DacDistributeToAgencyDetails));
+                    dataTable.TableName = "DacDistributeToAgencyDetails"; // Ten bang trong CSDL
+                    DacDistributeToAgencyDetailsCS dacDistributeDetailsCS = new DacDistributeToAgencyDetailsCS();
+                    // Khai bao mang cac cot trong bang du lieu can mapping
+                    string[] sColumnName = new string[] { "DistributorID", "DacCode", "ProductCode" };
+                    CommonCore.PerformBulkCopy(dataTable, sColumnName);
+                    bResult = true;
+                }
+                if (LstAddTemp != null)
+                    LstAddTemp = null;
+                if (HasOutOfNewRow)
+                    HasOutOfNewRow = false;
+                if (ProvinceIndex != -1)
+                    ProvinceIndex = -1;
+            }
+            else
+            {
+                // Update data in to DacDistributeToAgency
+                DacDistributeToAgency distributeToAgency = new DacDistributeToAgency();
+                distributeToAgency = (DacDistributeToAgency)gridViewDistributor.GetRow(gridViewDistributor.FocusedRowHandle);
+                distributeToAgency.PersonPackaged = CommonBS.CurrentUser.FullName;
+                // Update to DataBase
+                bResult = distributeToAgencyCS.Update(distributeToAgency);
+            }
+            // Kiem tra luu thanh cong khong de load lai du lieu
+            if (bResult)
+            {
+                if (ucDataButtonAgency.DataMode == DataState.Insert)
+                {
+                    // Get distributeToAgencyCollection from database
+                    // -----------------------------------------
+                    // Dinh lai thoi gia de load du lieu tai day
+                    // -----------------------------------------
+                    distributeToAgencyCollection = distributeToAgencyCS.GetListDistributeToAgency(
+                        DateTime.Parse(CommonBO.GetSecConfig("DateStartGettingData").Value),
+                        DateTime.Now, string.Empty, string.Empty, CommonBS.CurrentUser.LoginID);
+                    AddObjectDistributorIntoBindingList(distributeToAgencyCollection);
+                    // Get data from database
+                    AddObjectDetailsIntoBindingList(distributeDetailsCollection);
+                    // CommonBS.SaveSuccessfully();
+                }
+                ucDataButtonAgency.DataMode = DataState.View;
+                ucDataButtonAgency.SetInsertFocus();
+                EnableControls(false);
+                this.GetDetailData();
+            }
+            else CommonBS.SaveNotSuccessfully();
+
+            return bResult;
+        }
+        private void SaveDistributeToAgency()
+        {
+            SaveData();
+        }
+        private void AddDistributDetails(DacDistributeToAgencyDetails distributeDetails, SecConfig secConfigWH)
+        {
+            // Kiem tra su ton tai cua ma QRCode
+            foreach (DacDistributeToAgencyDetails detail in distributeDetailsCollection)
+            {
+                // Neu co roi thi thoat luon khoi ham.
+                if (detail.DacCode == distributeDetails.DacCode)
+                {
+                    if (chkAgreeAll.Checked)
+                    {
+                        LstDupplicateDacCode.Add(distributeDetails.DacCode);
+                        return;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Mã QRCode này đã tồn tại trong CSDL. \r\nBạn không thể thêm QRCode được nữa!", "Thông báo", MessageBoxButtons.OK);
+                        return;
+                    }
+                }
+            }
+            // Kiem tra san pham da nhap kho hay chua
+            if (secConfigWH.Value == "true")
+            {
+                string serial = CommonCore.GetSerialFromScanner(distributeDetails.DacCode);
+                DataTable dataTableByDacCode = warehouseDetailsCS.DacWarehouseByDacCode(serial);
+                if (dataTableByDacCode.Rows.Count > 0)
+                {
+                    string sProductCode = dataTableByDacCode.Rows[0]["ProductCode"].ToString();
+                    // Kiem tra ma san pham da nhap kho voi san pham nguoi dung chon
+                    // ---- viet code doan nay ------
+                    distributeDetails.ProductCode = sProductCode;
+                }
+                else
+                {
+                    MessageBox.Show("Bạn chưa nhập kho mã này!", "PIPT - Thong bao");
+                    return;
+                }
+            }
+            // Kiem tra trong database
+            DacDistributeToAgencyDetailsCollection detailsCollection = dacDistributeDetailsCS.GetDistributeDetails(distributeDetails.DacCode);
+            if (detailsCollection.Count > 0)
+            {
+                if (chkAgreeAll.Checked)
+                {
+                    LstDupplicateDacCode.Add(distributeDetails.DacCode);
+                    return;
+                }
+                else
+                {
+                    MessageBox.Show("Mã QRCode này đã tồn tại trong CSDL. \r\nBạn không thể thêm QRCode được nữa!", "Thông báo", MessageBoxButtons.OK);
+                    return;
+                }
+            }
+            // Kiem tra neu khong phai dang Insert thi lay ID cua dong dang focus.
+            if (ucDataButtonAgency.DataMode != DataState.Insert)
+            {
+                int iDistributorID = (int)gridViewDistributor.GetFocusedRowCellValue(gridColumnID);
+                // Gan lai ID cho DistributeDetails
+                distributeDetails.DistributorID = iDistributorID;
+            }
+            distributeDetailsCollection.Add(distributeDetails);
+            labelProductCount.Text = String.Format("Số sản phẩm đã thêm: {0:0,0}", distributeDetailsCollection.Count);
+            textBoxQuantity.Text = distributeDetailsCollection.Count.ToString();
+            AddObjectDetailsIntoBindingList(distributeDetailsCollection);
+            //Set focus on DataGridView
+            if (dataGridViewDetails.Rows.Count > 0)
+            {
+                dataGridViewDetails.CurrentCell = dataGridViewDetails.Rows[dataGridViewDetails.Rows.Count - 1].Cells[2];
+                dataGridViewDetails.Rows[dataGridViewDetails.Rows.Count - 1].Cells[2].Selected = true;
+            }
+            if (ucDataButtonAgency.DataMode == DataState.Insert
+                && gridViewDistributor.GetRowCellValue(gridViewDistributor.FocusedRowHandle, gridColumnID).ToString() == "-1")
+            {
+                if (!LstAddTemp.Contains(distributeDetails))
+                    LstAddTemp.Add(distributeDetails);
+            }
+        }
+
+        private void gridLookUpEditAgency_EditValueChanged(object sender, EventArgs e)
+        {
+            if (1 > 0)
+            {
+                DAC.DAL.DacDbAccess dacDb = new DAC.DAL.DacDbAccess();
+                dacDb.CreateNewSqlCommand();
+                dacDb.AddParameter("@Code", gridLookUpEditAgency.EditValue.ToString());
+                dacDb.AddParameter("@Name", "");
+                dacDb.AddParameter("@MobileNum", "");
+                DataTable dataTable = dacDb.ExecuteDataTable("spDacAgency_SelectByCode");
+                if (dataTable.Rows.Count > 0)
+                {
+                    DataRow dataRow = dataTable.Rows[0];
+                    string sProvinceCode = dataRow["ProvinceCode"].ToString();
+                    if (sProvinceCode.Length > 0)
+                    {
+                        comboBoxProvince.SelectedValue = sProvinceCode;
+                    }
+                    else
+                    {
+                        comboBoxProvince.SelectedIndex = -1;
+                    }
+                }
+                else
+                {
+                    comboBoxProvince.SelectedIndex = -1;
+                }
+            }
+        }
+
+        private void gridViewDistributor_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
+        {
+            this.GetDetailData();
+            if (ucDataButtonAgency.DataMode == DataState.Insert && e.FocusedRowHandle != gridViewDistributor.RowCount - 1)
+                HasOutOfNewRow = true;
+            if (ucDataButtonAgency.DataMode == DataState.Insert && e.FocusedRowHandle == gridViewDistributor.RowCount - 1
+                && LstAddTemp != null && LstAddTemp.Count > 0)
+            {
+                bdlDistributeDetails.Clear();
+                foreach (DacDistributeToAgencyDetails item in LstAddTemp)
+                {
+                    DistributeDetailModel DetailModel = new DistributeDetailModel();
+                    DetailModel.ID = item.ID;
+                    DetailModel.DistributorID = item.DistributorID.ToString();
+                    DetailModel.DacCode = item.DacCode;
+                    DetailModel.ProductCode = item.ProductCode;
+                    DetailModel.PackageCode = GetPackageCodeByDacCode(item.DacCode);
+                    bdlDistributeDetails.Add(DetailModel);
+                }
+                distributeDetailsCollection = LstAddTemp;
+                bdlDistributeDetails.ResetBindings();
+            }
+        }
+
+        private void GetDetailData()
+        {
+            if (gridViewDistributor.RowCount == 0)
+                return;
+            //if (gridViewDistributor.FocusedRowHandle < 0)
+            //    return;
+            try
+            {
+                DacDistributeToAgencyDetailsCS distributeDetailsCS = new DacDistributeToAgencyDetailsCS();
+                int iDistributorID = (int)gridViewDistributor.GetRowCellValue(gridViewDistributor.FocusedRowHandle, "ID");
+                distributeDetailsCollection = distributeDetailsCS.GetDistributeDetails(iDistributorID);
+                AddObjectDetailsIntoBindingList(distributeDetailsCollection);
+                labelProductCount.Text = String.Format("Số sản phẩm đã thêm: {0:0,0}", distributeDetailsCollection.Count);
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show(ex.Message, "PIPT - Thông báo");
+                return;
+            }
+        }
+
+        // Get Max order number
+        private string GetMaxOrderNumber()
+        {
+            string OrderNumber = string.Empty;
+            if (secConfig.Value == "true")
+            {
+                OrderNumber = DacDistributeToAgencyCS.GetMaxOrderNumber();
+            }
+            return OrderNumber;
+        }
+
+        #endregion
+        #region Buttons' Event
+        private void ucDataButtonProduct_InsertHandler()
+        {
+            // Lay gia tri Agency va Product de giu lai
+            string AgencyCode = gridLookUpEditAgency.EditValue.ToString();
+            string ProductCode = gridLookUpEditProduct.EditValue.ToString();
+            string Order = textBoxOrderNumber.Text;
+            string StockID = gridLookUpEditDacStock.EditValue.ToString();
+            //bdlDistributeToAgency.AddNew();
+            DevExpress.XtraGrid.Views.Grid.GridView view = gridControlDistributor.FocusedView as DevExpress.XtraGrid.Views.Grid.GridView;
+            view.AddNewRow();
+            gridControlDistributor.RefreshDataSource();
+            EnableControls(true);
+            //Set focus for DataGridView
+            gridViewDistributor.FocusedRowHandle = gridViewDistributor.GetVisibleRowHandle(gridViewDistributor.RowCount - 1);
+            // Kiem tra neu giu lai lenh thi khong tang lenh len nua
+            if (checkEditKeepOrder.Checked)
+            {
+                textBoxOrderNumber.Text = Order;
+                gridLookUpEditAgency.EditValue = AgencyCode;
+                gridLookUpEditProduct.EditValue = ProductCode;
+            }
+            else
+            {
+                // Get Max order number
+                textBoxOrderNumber.Text = this.GetMaxOrderNumber();
+            }
+            gridLookUpEditDacStock.EditValue = StockID;
+            LstAddTemp = new DacDistributeToAgencyDetailsCollection();
+        }
+
+        private void ucDataButtonProduct_SaveHandler()
+        {
+            if (ucDataButtonAgency.DataMode == DataState.Insert
+                && gridViewDistributor.GetRowCellValue(gridViewDistributor.FocusedRowHandle, gridColumnID).ToString() != "-1" && HasOutOfNewRow)
+            {
+                MessageBox.Show("Bạn cần chọn đúng dòng để thêm mới!", "Thông báo"
+                    , MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            // Cảnh báo chưa chọn KH
+            // Lưu nhật ký
+            CommonBO.Instance().TraceLogEvent("Lưu phân phối đến Đại lý: " + textBoxOrderNumber.Text + " - "
+                + textBoxQuantity.Text + " - " + gridLookUpEditAgency.EditValue, CommonBS.CurrentUser.LoginID);
+            Common objCommon = new Common();
+            objCommon.CurrentForm = this;
+            objCommon.CurrentFormMethodInvoker = SaveDistributeToAgency;
+            objCommon.App_ShowWaitForm(DataState.Insert);
+        }
+
+        private void ucDataButtonProduct_EditHandler()
+        {
+            if (gridViewDistributor.FocusedRowHandle < 0)
+                return;
+            // Kiem tra quyen de Sua, Xoa hoac Them mã QR khi lenh xuat duoc khoa
+            bool bActive = (bool)gridViewDistributor.GetRowCellValue(gridViewDistributor.FocusedRowHandle, "Active");
+            if (!bActive) // Neu la false thi kiem tra quyen
+            {
+                if (!CommonBS.IsAdminUser)
+                {
+                    MessageBox.Show("Bạn không có quyền thêm các mã qrcode này!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    ucDataButtonAgency.DataMode = DataState.View;
+                    return;
+                }
+            }
+            // ---------------------------------------end
+            // Lưu nhật ký
+            CommonBO.Instance().TraceLogEvent("Sửa phân phối đến Đại lý: " + textBoxOrderNumber.Text + " - "
+                + textBoxQuantity.Text + " - " + gridLookUpEditAgency.EditValue, CommonBS.CurrentUser.LoginID);
+            // Kiem tra xem co du lieu nao khong
+            if (dataGridViewDetails.Rows.Count == 0) return;
+            // Lay du lieu de sua
+            EnableControls(true);
+        }
+
+        private void ucDataButtonProduct_DeleteHandler()
+        {
+            if (gridViewDistributor.FocusedRowHandle < 0)
+                return;
+            // Kiem tra quyen de Sua, Xoa hoac Them mã QR khi lenh xuat duoc khoa
+            bool bActive = (bool)gridViewDistributor.GetRowCellValue(gridViewDistributor.FocusedRowHandle, "Active");
+            if (!bActive) // Neu la false thi kiem tra quyen
+            {
+                if (!CommonBS.IsAdminUser)
+                {
+                    MessageBox.Show("Bạn không có quyền thêm các mã qrcode này!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+            }
+            // ---------------------------------------end
+
+            // Lay du lieu de xoa
+            int ID = (int)gridViewDistributor.GetFocusedRowCellValue(gridColumnID);
+            if (ID > -1)
+            {
+                if (MessageBox.Show("Bạn có chắc chắn muốn xóa mục này?", "Thong bao", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                {
+                    // Delete table detail
+                    var dacDistributeToAgencyDetailsCS = new DacDistributeToAgencyDetailsCS();
+                    for (int i = 0; i < dataGridViewDetails.Rows.Count; i++)
+                    {
+                        DacDistributeToAgencyDetails dacDistributeToAgencyDetails
+                            = dataGridViewDetails.Rows[i].DataBoundItem as DacDistributeToAgencyDetails;
+                        if (dacDistributeToAgencyDetails != null)
+                        {
+                            dacDistributeDetailsCS.Delete(dacDistributeToAgencyDetails.ID);
+                            i--;
+                        }
+                    }
+                    distributeToAgencyCS.Delete(ID);
+                    try
+                    {
+                        // Lưu nhật ký
+                        CommonBO.Instance().TraceLogEvent("Xóa phân phối đến Đại lý: ID = " + ID + " - " + textBoxOrderNumber.Text + " - "
+                            + textBoxQuantity.Text + " - " + gridLookUpEditAgency.EditValue, CommonBS.CurrentUser.LoginID);
+                        DevExpress.XtraGrid.Views.Grid.GridView view = gridControlDistributor.FocusedView as DevExpress.XtraGrid.Views.Grid.GridView;
+                        view.DeleteRow(view.FocusedRowHandle);
+                    }
+                    catch
+                    {
+                        return;
+                    }
+                }
+            }
+        }
+
+        private void ucDataButtonProduct_CancelHandler()
+        {
+            EnableControls(false);
+            if (ucDataButtonAgency.DataMode == DataState.Insert)
+            {
+                DevExpress.XtraGrid.Views.Grid.GridView view = gridControlDistributor.FocusedView as DevExpress.XtraGrid.Views.Grid.GridView;
+                view.DeleteRow(view.FocusedRowHandle);
+            }
+            // Gan lai trang thai view
+            ucDataButtonAgency.DataMode = DataState.View;
+            if (LstAddTemp != null)
+                LstAddTemp = null;
+            if (HasOutOfNewRow)
+                HasOutOfNewRow = false;
+        }
+
+        private void ucDataButtonProduct_CloseHandler()
+        {
+            if (IsChangedData())
+            {
+                if (CommonBS.ConfirmChangedData() == DialogResult.Yes)
+                {
+                    if (SaveData() == false)
+                        return;
+                }
+            }
+            this.Close();
+        }
+
+        private void buttonEnter_Click(object sender, EventArgs e)
+        {
+            //if (gridLookUpEditProductChoose.Properties.GetIndexByKeyValue(gridLookUpEditProductChoose.EditValue) >= 0)
+            //{
+            //    AddDistributDetails(new DacDistributeToAgencyDetails(-1, gridLookUpEditAgency.Properties.GetIndexByKeyValue(gridLookUpEditAgency.EditValue), CommonCore.GetSerialFromScanner(textBoxDacCode.Text.Trim()), gridLookUpEditProductChoose.EditValue.ToString()));
+            //    textBoxDacCode.Text = string.Empty;
+            //}
+            //else
+            //{
+            //    MessageBox.Show("Bạn chưa chọn sản phẩm nào, hãy chọn một sản phẩm để tiếp tục!", "Thông báo", MessageBoxButtons.OK);
+            //}
+            this.GetDacCode(textBoxDacCode.Text.Trim());
+        }
+
+        private void buttonUpdateDetail_Click(object sender, EventArgs e)
+        {
+            if (gridViewDistributor.FocusedRowHandle < 0)
+                return;
+            // Kiem tra quyen de Sua, Xoa hoac Them mã QR khi lenh xuat duoc khoa
+            bool bActive = (bool)gridViewDistributor.GetRowCellValue(gridViewDistributor.FocusedRowHandle, "Active");
+            if (!bActive) // Neu la false thi kiem tra quyen
+            {
+                if (!CommonBS.IsAdminUser)
+                {
+                    MessageBox.Show("Bạn không có quyền thêm các mã qrcode này!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+            }
+            // ---------------------------------------end
+            try
+            {
+                int iQuantity = 0;
+                string sContent = string.Empty;
+                foreach (DacDistributeToAgencyDetails details in distributeDetailsCollection)
+                {
+                    // Nhung ID moi them se co ID = -1
+                    // Neu ID = -1 thi Insert vao database
+                    if (details.ID == -1)
+                    {
+                        dacDistributeDetailsCS.Insert(details);
+                        iQuantity += 1;
+                        sContent += details.DacCode + "-" + details.ProductCode + ", ";
+                    }
+                }
+                if (iQuantity > 0)
+                {
+                    // Lưu nhật ký
+                    CommonBO.Instance().TraceLogEvent("Thêm QRCode vào lệnh phân phối đến Đại lý: " + textBoxOrderNumber.Text + " - "
+                        + textBoxQuantity.Text + " - " + gridLookUpEditAgency.EditValue + " - " + sContent, CommonBS.CurrentUser.LoginID);
+                    distributeToAgencyCS.Update(distributeDetailsCollection[0].DistributorID, iQuantity);
+                }
+                this.GetDetailData();
+                MessageBox.Show("Bạn đã thêm các mã QRCode thành công!", "Thông báo");
+            }
+            catch
+            {
+                MessageBox.Show("Có lỗi đã xảy ra khi thêm các mã QRCode!", "Thông báo");
+            }
+        }
+
+        private void buttonDetailDelete_Click(object sender, EventArgs e)
+        {
+            if (gridViewDistributor.FocusedRowHandle < 0 && ucDataButtonAgency.DataMode != DataState.Insert)
+                return;
+            // Kiem tra quyen de Sua, Xoa hoac Them mã QR khi lenh xuat duoc khoa
+            bool bActive = (bool)gridViewDistributor.GetRowCellValue(gridViewDistributor.FocusedRowHandle, "Active");
+            if (!bActive) // Neu la false thi kiem tra quyen
+            {
+                if (!CommonBS.IsAdminUser)
+                {
+                    MessageBox.Show("Bạn không có quyền xóa các mã qrcode này!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+            }
+            // ---------------------------------------end
+
+            if (MessageBox.Show("Bạn có chắc chắn xóa mã QRCode đã chọn?", "Thong bao - Xoa ma QRCode", MessageBoxButtons.OKCancel) == DialogResult.OK)
+            {
+                if (ucDataButtonAgency.DataMode == DataState.Insert && LstAddTemp != null)
+                {
+                    for (int i = 0; i < dataGridViewDetails.Rows.Count; i++)
+                    {
+                        if (((DataGridViewCheckBoxCell)dataGridViewDetails.Rows[i].Cells["IsSelected"]).Value != null
+                            && (bool)((DataGridViewCheckBoxCell)dataGridViewDetails.Rows[i].Cells["IsSelected"]).Value)
+                        {
+                            DistributeDetailModel distributeDetails
+                                = (DistributeDetailModel)dataGridViewDetails.Rows[i].DataBoundItem;
+                            LstAddTemp.Remove(LstAddTemp.Find(x => x.ID == distributeDetails.ID));
+                            bdlDistributeDetails.Remove(distributeDetails);
+                            i--;
+                        }
+                    }
+                }
+                string sContent = string.Empty;
+                List<DistributeDetailModel> detailsCollection = new List<DistributeDetailModel>();
+                foreach (DataGridViewRow Row in dataGridViewDetails.Rows)
+                    if (((DataGridViewCheckBoxCell)Row.Cells["IsSelected"]).Value != null)
+                    {
+                        if ((bool)((DataGridViewCheckBoxCell)Row.Cells["IsSelected"]).Value)
+                        {
+                            DistributeDetailModel distributeDetails = (DistributeDetailModel)Row.DataBoundItem;
+                            detailsCollection.Add(distributeDetails);
+                            if (distributeDetails.ID > 0)
+                            {
+                                // Xoa tren Database
+                                dacDistributeDetailsCS.Delete(distributeDetails.ID);
+                                sContent += distributeDetails.DacCode + "-" + distributeDetails.ProductCode + ", ";
+                            }
+                        }
+                    }
+                // Lưu nhật ký
+                CommonBO.Instance().TraceLogEvent("Xóa QRCode khỏi lệnh phân phối đến Đại lý: " + textBoxOrderNumber.Text + " - "
+                    + textBoxQuantity.Text + " - " + gridLookUpEditAgency.EditValue + " - " + sContent, CommonBS.CurrentUser.LoginID);
+                foreach (DistributeDetailModel distributeDetailModel in detailsCollection)
+                {
+                    distributeDetailsCollection.Remove(distributeDetailsCollection.Find(x => x.ID == distributeDetailModel.ID));
+                    bdlDistributeDetails.Remove(distributeDetailModel);
+                }
+                bdlDistributeDetails.ResetBindings();
+            }
+        }
+
+        private void textBoxDacCode_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == 13)
+            {
+                this.GetDacCode(textBoxDacCode.Text.Trim());
+            }
+        }
+
+        private void buttonRefreshAgency_Click(object sender, EventArgs e)
+        {
+            InitData();
+            InitLookUp();
+        }
+
+        private void addAgencyButton_Click(object sender, EventArgs e)
+        {
+            frmDacAgency DacAgency = frmDacAgency.Instance();
+            DacAgency.Visible = false;
+            DacAgency.MdiParent = null;
+            DacAgency.buttonSelectAgency.Visible = true;
+            if (DacAgency.ShowDialog(this) == DialogResult.OK)
+            {
+                DAC.DAL.DacDbAccess dacDb = new DAC.DAL.DacDbAccess();
+                dacDb.CreateNewSqlCommand();
+                DataSet ds = new DataSet("Agencies");
+                DataTable dataTable = dacDb.ExecuteDataTable("spDacAgency_SelectAll");
+                gridLookUpEditAgency.Properties.DataSource = dataTable;
+                gridLookUpEditAgency.EditValue = DacAgency.selectedDacAgency.Code;
+            }
+            DacAgency.Close();
+        }
+
+        private void ucDataButtonAgency_ExcelHandler()
+        {
+            DataTable dataTableOrders;
+
+            ExcelDataTransformService excelDataTransformService = new ExcelDataTransformService();
+            string fileName = string.Empty;
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Excel files 97 - 2003|*.xls|Excel files 2007 - 2013|*.xlsx";
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                fileName = openFileDialog.FileName;
+                if (File.Exists(fileName))
+                {
+                    excelDataTransformService.FileName = fileName;
+                    DataTable dt = excelDataTransformService.GetSheetNames();
+                    if (dt.Rows.Count > 0)
+                    {
+                        string sSheetName = dt.Rows[0]["TABLE_NAME"].ToString();
+                        DataSet dataSetSheet = excelDataTransformService.GetDataImport(sSheetName);
+                        if (dataSetSheet != null)
+                        {
+                            dataTableOrders = new DataTable();
+                            dataTableOrders = dataSetSheet.Tables[0];
+                            if (dataTableOrders.Rows.Count > 0)
+                                foreach (DataRow dr in dataTableOrders.Rows)
+                                {
+                                    AddDistributDetails(new DacDistributeToAgencyDetails(-1, gridLookUpEditAgency.Properties.GetIndexByKeyValue(gridLookUpEditAgency.EditValue),
+                                        CommonCore.GetSerialFromScanner(dr[1].ToString()), dr[2].ToString()), secConfigWH);
+                                }
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("File của bạn không có Sheet nào!", "Thông báo");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Không tồn tại file của bạn!", "Thông báo");
+                }
+            }
+        }
+
+        private void GetDacCode(string DacCode)
+        {
+            //string DacCode = textBoxDacCode.Text.Trim();
+            if (DacCode.Length >= 7)
+            {
+                string serial = CommonCore.GetSerialFromScanner(DacCode);
+                StringBuilder sbPackageType = new StringBuilder();
+                foreach (char item in serial)
+                {
+                    if (char.IsLetter(item))
+                        sbPackageType.Append(item);
+                }
+                string PackageType = sbPackageType.ToString().ToUpper();
+                string PackageSymbol = secConfigPkg.Pattern.Substring(0, 3);
+                if (!string.IsNullOrWhiteSpace(PackageType) && PackageType == PackageSymbol)
+                {
+                    DacPackageDetailsCS dacPackageDetailsCS = new DacPackageDetailsCS();
+                    DacPackageDetailsCollection PackageDetailsCollection = dacPackageDetailsCS.GetPackageDetails(DacCode, PackageType);
+                    if (PackageDetailsCollection.Count > 0)
+                    {
+                        foreach (DacPackageDetails packageDetails in PackageDetailsCollection)
+                        {
+                            AddDistributDetails(new DacDistributeToAgencyDetails(-1, gridLookUpEditAgency.Properties.GetIndexByKeyValue(gridLookUpEditAgency.EditValue),
+                                packageDetails.DacCode, packageDetails.ProductCode), secConfigWH);
+                            textBoxDacCode.Text = string.Empty;
+                        }
+                        if (chkAgreeAll.Checked)
+                        {
+                            AlertDupplicateCode();
+                        }
+                    }
+                }
+                else
+                {
+                    if (secConfigWH.Value == "true")
+                    {
+                        AddDistributDetails(new DacDistributeToAgencyDetails(-1, gridLookUpEditAgency.Properties.GetIndexByKeyValue(gridLookUpEditAgency.EditValue), serial,
+                        gridLookUpEditProductChoose.EditValue.ToString()), secConfigWH);
+                        textBoxDacCode.Text = string.Empty;
+                    }
+                    else if (gridLookUpEditProductChoose.Properties.GetIndexByKeyValue(gridLookUpEditProductChoose.EditValue) >= 0)
+                    {
+                        AddDistributDetails(new DacDistributeToAgencyDetails(-1, gridLookUpEditAgency.Properties.GetIndexByKeyValue(gridLookUpEditAgency.EditValue), serial,
+                        gridLookUpEditProductChoose.EditValue.ToString()), secConfigWH);
+                        textBoxDacCode.Text = string.Empty;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Bạn chưa chọn sản phẩm nào, hãy chọn một sản phẩm để tiếp tục!", "Thông báo", MessageBoxButtons.OK);
+                    }
+                }
+            }
+        }
+
+        private void GetRangSerialNumber(string frSerie, string toSerie)
+        {
+            try
+            {
+                string sPreSeriValue = ConfigurationManager.AppSettings["PreSeri"].ToString();
+                string[] sPreSeris = sPreSeriValue.Split(',');
+                string sPreSeri = string.Empty;
+                if (sPreSeriValue.Length > 0)
+                {
+                    foreach (string PreSeri in sPreSeris)
+                    {
+                        if (frSerie.Contains(PreSeri.Trim()))
+                        {
+                            sPreSeri = PreSeri.Trim();
+                            break;
+                        }
+                    }
+                }
+                long iFrSerie = 0;
+                long iToSerie = 0;
+                if (sPreSeri.Length == 0)
+                {
+                    iFrSerie = Convert.ToInt64(frSerie);
+                    iToSerie = Convert.ToInt64(toSerie);
+                }
+                else
+                {
+                    sPreSeri = frSerie.Substring(0, sPreSeri.Length);
+                    iFrSerie = Convert.ToInt64(frSerie.Substring(sPreSeri.Length, frSerie.Length - sPreSeri.Length));
+                    iToSerie = Convert.ToInt64(toSerie.Substring(sPreSeri.Length, toSerie.Length - sPreSeri.Length));
+                }
+                if (iToSerie > iFrSerie)
+                {
+                    for (long i = iFrSerie; i <= iToSerie; i++)
+                    {
+                        AddDistributDetails(new DacDistributeToAgencyDetails(-1, gridLookUpEditAgency.Properties.GetIndexByKeyValue(gridLookUpEditAgency.EditValue),
+                             String.Format("{0}{1:" + CommonBO.GetSecConfig("SeriLength").Pattern + "}", sPreSeri, i), gridLookUpEditProductChoose.EditValue.ToString()), secConfigWH);
+                    }
+                    if (chkAgreeAll.Checked)
+                    {
+                        AlertDupplicateCode();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        private void FrSeriTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == 13)
+            {
+                string DacCode = FrSeriTextBox.Text.Trim();
+                if (DacCode.Length >= 7)
+                {
+                    string serial = CommonCore.GetSerialFromScanner(DacCode);
+                    FrSeriTextBox.Text = serial;
+                    ToSeriTextBox.Focus();
+                }
+            }
+        }
+
+        private void ToSeriTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == 13)
+            {
+                string DacCode = ToSeriTextBox.Text.Trim();
+                if (DacCode.Length >= 7)
+                {
+                    string serial = CommonCore.GetSerialFromScanner(DacCode);
+                    ToSeriTextBox.Text = serial;
+                    if (gridLookUpEditProductChoose.Properties.GetIndexByKeyValue(gridLookUpEditProductChoose.EditValue) >= 0)
+                    {
+                        GetRangSerialNumber(FrSeriTextBox.Text, ToSeriTextBox.Text);
+                        ToSeriTextBox.Text = string.Empty;
+                        FrSeriTextBox.Text = string.Empty;
+                        FrSeriTextBox.Focus();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Bạn chưa chọn sản phẩm nào, hãy chọn một sản phẩm để tiếp tục!", "Thông báo", MessageBoxButtons.OK);
+                    }
+                }
+            }
+        }
+
+        private void ucDataButtonAgency_PrintHandler()
+        {
+            if (gridViewDistributor.RowCount <= 0 || gridViewDistributor.SelectedRowsCount <= 0
+                || dataGridViewDetails.Rows == null || dataGridViewDetails.Rows.Count <= 0)
+            {
+                MessageBox.Show("Không có dữ liệu để in! ", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            COMExcel.Application exApp = new COMExcel.Application();
+            string workbookpath;
+            workbookpath = Application.StartupPath + @"\Excel\PhieuXuatKho.xlsx";
+            COMExcel.Workbook exBook = exApp.Workbooks.Open(workbookpath, false, true, Type.Missing, Type.Missing, Type.Missing,
+                    Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+            COMExcel.Worksheet exSheet = (COMExcel.Worksheet)exBook.Worksheets[1];
+            exSheet.Cells[1, 2] = ConfigurationManager.AppSettings["CompanyName"];
+            exSheet.Cells[2, 2] = ConfigurationManager.AppSettings["CompanyAddress"];
+            int selectedRow = gridViewDistributor.GetSelectedRows()[0];
+            COMExcel.Range SoPhieu = exSheet.Range[exSheet.Cells[3, 5], exSheet.Cells[3, 6]];
+            SoPhieu.HorizontalAlignment = COMExcel.XlHAlign.xlHAlignRight;
+            SoPhieu.Value2 = "Số: " + textBoxOrderNumber.Text;
+            COMExcel.Range MaKho = exSheet.Range[exSheet.Cells[4, 5], exSheet.Cells[4, 6]];
+            MaKho.HorizontalAlignment = COMExcel.XlHAlign.xlHAlignRight;
+            MaKho.Value2 = "Mã kho: " + gridLookUpEditDacStock.Text;
+            COMExcel.Range CreateDate = exSheet.Range[exSheet.Cells[6, 1], exSheet.Cells[6, 6]];
+            DateTime dtCreateDate = dateTimePickerCreatedDate.Value.Date;
+            CreateDate.Value2 = "Ngày " + dtCreateDate.Day + " tháng " + dtCreateDate.Month + " năm " + dtCreateDate.Year;
+            exSheet.Cells[9, 3] = gridLookUpEditAgency.Text;
+            exSheet.Cells[10, 3] = richTextBoxDescription.Text;
+            exSheet.Cells[12, 5] = "Time: " + DateTime.Now.TimeOfDay.ToString("hh\\:mm\\:ss");
+            exSheet.Cells[12, 6] = DateTime.Now.Date.ToString("dd/MM/yyyy");
+            if (chkPrintType.Checked)
+            {
+                exSheet.Cells[15, 2] = textBoxOrderNumber.Text;
+                exSheet.Cells[15, 3] = gridLookUpEditProduct.Text;
+                DacProductCS productcs = new DacProductCS();
+                string ProductCode = dataGridViewDetails.Rows[0].Cells[4].Value.ToString();
+                DacProductCollection productCollection = productcs.GetListProduct(ProductCode);
+                if (productCollection.Count > 0)
+                {
+                    DacProductUnitCS productunitcs = new DacProductUnitCS();
+                    DacProductUnitCollection productUnitCollection = productunitcs.GetListProductUnit(productCollection[0].ProductUnitId);
+                    if (productUnitCollection.Count > 0)
+                    {
+                        exSheet.Cells[15, 4] = productUnitCollection[0].Name;
+                    }
+                }
+                exSheet.Cells[15, 5] = string.Empty;
+                exSheet.Cells[15, 6] = textBoxQuantity.Text;
+                exSheet.Cells[20, 6] = textBoxQuantity.Text;
+            }
+            else
+            {
+                int countRowDetail = dataGridViewDetails.Rows.Count;
+                for (int i = 0; i < countRowDetail; i++)
+                {
+                    exSheet.Cells[i + 15, 1] = i + 1;
+                    if (i + 15 >= 18)
+                    {
+                        COMExcel.Range rowLast = exSheet.Rows[i + 15 + 1];
+                        rowLast.Insert();
+                    }
+                    exSheet.Cells[i + 15, 2] = textBoxOrderNumber.Text;
+                    exSheet.Cells[i + 15, 3] = gridLookUpEditProduct.Text;
+                    DacProductCS productcs = new DacProductCS();
+                    string ProductCode = dataGridViewDetails.Rows[0].Cells[4].Value.ToString();
+                    DacProductCollection productCollection = productcs.GetListProduct(ProductCode);
+                    if (productCollection.Count > 0)
+                    {
+                        DacProductUnitCS productunitcs = new DacProductUnitCS();
+                        DacProductUnitCollection productUnitCollection = productunitcs.GetListProductUnit(productCollection[0].ProductUnitId);
+                        if (productUnitCollection.Count > 0)
+                        {
+                            exSheet.Cells[i + 15, 4] = productUnitCollection[0].Name;
+                        }
+                    }
+                    exSheet.Cells[i + 15, 5] = dataGridViewDetails.Rows[i].Cells[3].Value.ToString();
+                    exSheet.Cells[i + 15, 6] = "1";
+                }
+
+                if (countRowDetail >= 5)
+                {
+                    for (int i = 0; i < 2; i++)
+                    {
+                        COMExcel.Range DeleteRange = exSheet.Rows[countRowDetail + 15];
+                        DeleteRange.Delete();
+                    }
+                    exSheet.Cells[countRowDetail + 15, 6] = countRowDetail;
+
+                }
+
+            }
+            exApp.Visible = true;
+        }
+        #endregion
+        #region Events For Select All CheckBox
+        private void AddHeaderCheckBox()
+        {
+            HeaderCheckBox = new CheckBox();
+
+            HeaderCheckBox.Size = new Size(15, 15);
+
+            //Add the CheckBox into the DataGridView
+            this.dataGridViewDetails.Controls.Add(HeaderCheckBox);
+        }
+
+        private void HeaderCheckBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Space)
+                HeaderCheckBoxClick((CheckBox)sender);
+        }
+        private void HeaderCheckBox_MouseClick(object sender, MouseEventArgs e)
+        {
+            HeaderCheckBoxClick((CheckBox)sender);
+        }
+
+        private void HeaderCheckBoxClick(CheckBox HCheckBox)
+        {
+            IsHeaderCheckBoxClicked = true;
+
+            foreach (DataGridViewRow Row in dataGridViewDetails.Rows)
+                ((DataGridViewCheckBoxCell)Row.Cells["IsSelected"]).Value = HCheckBox.Checked;
+
+            dataGridViewDetails.RefreshEdit();
+
+            TotalCheckedCheckBoxes = HCheckBox.Checked ? TotalCheckBoxes : 0;
+
+            IsHeaderCheckBoxClicked = false;
+        }
+
+        private void dataGridViewDetails_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        {
+            if (e.RowIndex == -1 && e.ColumnIndex == 0)
+                ResetHeaderCheckBoxLocation(e.ColumnIndex, e.RowIndex);
+        }
+
+        private void dataGridViewDetails_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        {
+            if (dataGridViewDetails.CurrentCell is DataGridViewCheckBoxCell)
+                dataGridViewDetails.CommitEdit(DataGridViewDataErrorContexts.Commit);
+        }
+
+        private void dataGridViewDetails_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (!IsHeaderCheckBoxClicked)
+                RowCheckBoxClick((DataGridViewCheckBoxCell)dataGridViewDetails[e.ColumnIndex, e.RowIndex]);
+        }
+
+        private void ResetHeaderCheckBoxLocation(int ColumnIndex, int RowIndex)
+        {
+            //Get the column header cell bounds
+            Rectangle oRectangle = this.dataGridViewDetails.GetCellDisplayRectangle(ColumnIndex, RowIndex, true);
+
+            Point oPoint = new Point();
+
+            oPoint.X = oRectangle.Location.X + (oRectangle.Width - HeaderCheckBox.Width) / 2 + 1;
+            oPoint.Y = oRectangle.Location.Y + (oRectangle.Height - HeaderCheckBox.Height) / 2 + 1;
+
+            //Change the location of the CheckBox to make it stay on the header
+            HeaderCheckBox.Location = oPoint;
+        }
+
+        private void RowCheckBoxClick(DataGridViewCheckBoxCell RCheckBox)
+        {
+            if (RCheckBox != null)
+            {
+                //Modify Counter;
+                if ((bool)RCheckBox.Value && TotalCheckedCheckBoxes < TotalCheckBoxes)
+                    TotalCheckedCheckBoxes++;
+                else if (TotalCheckedCheckBoxes > 0)
+                    TotalCheckedCheckBoxes--;
+
+                //Change state of the header CheckBox;
+                if (TotalCheckedCheckBoxes < TotalCheckBoxes)
+                    HeaderCheckBox.Checked = false;
+                else if (TotalCheckedCheckBoxes == TotalCheckBoxes)
+                    HeaderCheckBox.Checked = true;
+            }
+        }
+
+
+        #endregion
+
+        private void comboBoxProvince_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (ucDataButtonAgency.DataMode == DataState.Insert)
+            {
+                if (comboBoxProvince.SelectedIndex != -1)
+                {
+                    ProvinceIndex = comboBoxProvince.SelectedIndex;
+                }
+                else
+                {
+                    if (ProvinceIndex != -1)
+                        comboBoxProvince.SelectedIndex = ProvinceIndex;
+                }
+            }
+        }
+
+        private void AlertDupplicateCode()
+        {
+            if (LstDupplicateDacCode != null && LstDupplicateDacCode.Count != 0)
+            {
+                string message = "Số lượng mã trùng đã bị loại khỏi danh sách: " + LstDupplicateDacCode.Count;
+                MessageBox.Show(message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                LstDupplicateDacCode.Clear();
+            }
+        }
+
+        private string GetPackageCodeByDacCode(string DacCode)
+        {
+            var PackageCS = new DacPackageCS();
+            var Package = PackageCS.GetPackageCodeByDacCode(DacCode);
+            return Package.PackageCode;
+        }
+
+    }
+}

@@ -1,0 +1,109 @@
+﻿using DAC.DAL;
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+
+namespace DAC.Core
+{
+    public class DacRegionCS
+    {
+        public List<DacRegion> GetListRegion()
+        {
+            List<DacRegion> dacRegionCollection = new List<DacRegion>();
+            DacDbAccess dacDb = new DacDbAccess();
+            dacDb.CreateNewSqlCommand();
+            SqlDataReader reader = dacDb.ExecuteReader("spDacRegion_SelectAll");
+            while (reader.Read())
+            {
+                DacRegion dacRegion = new DacRegion();
+
+                dacRegion.ID = (int)reader["ID"];
+                dacRegion.RegionCode = reader["RegionCode"].ToString();
+                dacRegion.RegionArea = reader["RegionArea"].ToString();
+                dacRegion.Active = (bool)reader["Active"];
+                dacRegion.MotherRegion = reader["MotherRegion"].ToString();
+                dacRegion.CreatedUser = reader["CreatedUser"].ToString();
+                dacRegion.CreatedDate = (DateTime)reader["CreatedDate"];
+                dacRegion.ModifiedUser = reader["ModifiedUser"].ToString();
+                dacRegion.ModifiedDate = (DateTime)reader["ModifiedDate"];
+
+                dacRegionCollection.Add(dacRegion);
+            }
+
+            // Call Close when reading done
+            reader.Close();
+
+            return dacRegionCollection;
+        }
+
+        public bool Insert(DacRegion dacRegion)
+        {
+            DacDbAccess dacDb = new DacDbAccess();
+            try
+            {
+                dacDb.CreateNewSqlCommand();
+                // Add parameters
+                dacDb.AddParameter("@RegionCode", dacRegion.RegionCode);
+                dacDb.AddParameter("@RegionArea", dacRegion.RegionArea);
+                dacDb.AddParameter("@Active", dacRegion.Active);
+                dacDb.AddParameter("@MotherRegion", dacRegion.MotherRegion);
+                dacDb.AddParameter("@CreatedUser", dacRegion.CreatedUser);
+                dacDb.AddParameter("@CreatedDate", dacRegion.CreatedDate);
+                dacDb.AddParameter("@ModifiedUser", dacRegion.ModifiedUser);
+                dacDb.AddParameter("@ModifiedDate", dacRegion.ModifiedDate);
+
+                dacDb.ExecuteNonQuery("spDacRegion_Insert");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public bool Update(DacRegion dacRegion)
+        {
+            DacDbAccess dacDb = new DacDbAccess();
+            try
+            {
+                dacDb.CreateNewSqlCommand();
+                // Add parameters
+                dacDb.AddParameter("@ID", dacRegion.ID);
+                dacDb.AddParameter("@RegionCode", dacRegion.RegionCode);
+                dacDb.AddParameter("@RegionArea", dacRegion.RegionArea);
+                dacDb.AddParameter("@Active", dacRegion.Active);
+                dacDb.AddParameter("@MotherRegion", dacRegion.MotherRegion);
+                dacDb.AddParameter("@CreatedUser", dacRegion.CreatedUser);
+                dacDb.AddParameter("@CreatedDate", dacRegion.CreatedDate);
+                dacDb.AddParameter("@ModifiedUser", dacRegion.ModifiedUser);
+                dacDb.AddParameter("@ModifiedDate", dacRegion.ModifiedDate);
+
+                dacDb.ExecuteNonQuery("spDacRegion_Update");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public bool Delete(string sCode)
+        {
+            DacDbAccess dacDb = new DacDbAccess();
+            try
+            {
+                dacDb.CreateNewSqlCommand();
+                // Add parameters
+                dacDb.AddParameter("@RegionCode", sCode);
+
+                int iResult = dacDb.ExecuteNonQuery("spDacRegion_Delete");
+                if (iResult > 0)
+                    return true;
+                else
+                    return false;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+    }
+}

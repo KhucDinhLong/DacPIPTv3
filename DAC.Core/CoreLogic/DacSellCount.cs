@@ -1,0 +1,44 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace DAC.Core
+{
+    //public class DacSellCount
+    //{
+    //    public virtual int ID { get; set; }
+    //    public virtual string UnitCode { get; set; }
+    //    public virtual int SellCount { get; set; }
+    //    public virtual long StartingNumber { get; set; }
+    //    public virtual DateTime SellDate { get; set; }
+    //    public virtual bool TxtType { get; set; }
+    //    public virtual string PromotionCode { get; set; }
+    //    public virtual string ProductCode { get; set; }
+    //    public virtual string Memo { get; set; }
+    //    public virtual bool snyn { get; set; }
+    //    public virtual string snbegin { get; set; }
+    //    public virtual string snend { get; set; }
+    //    public virtual DateTime EndDate { get; set; }
+    //    public virtual bool Active { get; set; }
+
+    //    public DacSellCount()
+    //    {
+    //        ID = -1;
+    //        UnitCode = string.Empty;
+    //        SellDate = DateTime.Now;
+    //        TxtType = true;
+    //        PromotionCode = string.Empty;
+    //        ProductCode = string.Empty;
+    //        Memo = string.Empty;
+    //        Active = true;
+
+    //        // Cac phan chua su dung
+    //        SellCount = 0;
+    //        StartingNumber = 0;
+    //        snyn = false;
+    //        snbegin = string.Empty;
+    //        snend = string.Empty;
+    //        EndDate = DateTime.Now;
+    //    }
+    //}
+    //public class DacSellCountCollection : List<DacSellCount> { }
+}

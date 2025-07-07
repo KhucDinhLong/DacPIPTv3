@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1D9A161D-7FC7-4707-9B15-D1BCF9E5ABD9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DAC.DAL</RootNamespace>
+    <AssemblyName>DAC.DAL</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DacDbAccess.cs" />
+    <Compile Include="DacDbConnection.cs" />
+    <Compile Include="Models\CustomerProductSeri.cs" />
+    <Compile Include="Models\DacAgency.cs" />
+    <Compile Include="Models\DacCatalogue.cs" />
+    <Compile Include="Models\DacContainer.cs" />
+    <Compile Include="Models\DacContainerDetails.cs" />
+    <Compile Include="Models\DacDistributeToAgency.cs" />
+    <Compile Include="Models\DacDistributeToAgencyDetails.cs" />
+    <Compile Include="Models\DacDistributeToFactory.cs" />
+    <Compile Include="Models\DacDistributeToFactoryDetails.cs" />
+    <Compile Include="Models\DacDistributeToStore.cs" />
+    <Compile Include="Models\DacDistributeToStoreDetails.cs" />
+    <Compile Include="Models\DacFactory.cs" />
+    <Compile Include="Models\DacInsertToWarehouse.cs" />
+    <Compile Include="Models\DacInsertToWarehouseDetails.cs" />
+    <Compile Include="Models\DacInventory.cs" />
+    <Compile Include="Models\DacLogBook.cs" />
+    <Compile Include="Models\DacLogNotUpload.cs" />
+    <Compile Include="Models\DacPackage.cs" />
+    <Compile Include="Models\DacPackageDetails.cs" />
+    <Compile Include="Models\DacProduct.cs" />
+    <Compile Include="Models\DacProductCatalogue.cs" />
+    <Compile Include="Models\DacProductCategory.cs" />
+    <Compile Include="Models\DacProductCode.cs" />
+    <Compile Include="Models\DacProductQuery.cs" />
+    <Compile Include="Models\DacProductUnit.cs" />
+    <Compile Include="Models\DacRegion.cs" />
+    <Compile Include="Models\DacSellCount.cs" />
+    <Compile Include="Models\DacStock.cs" />
+    <Compile Include="Models\DacStore.cs" />
+    <Compile Include="Models\District.cs" />
+    <Compile Include="Models\Nationality.cs" />
+    <Compile Include="Models\Province.cs" />
+    <Compile Include="Models\SecAuthorizations.cs" />
+    <Compile Include="Models\SecConfig.cs" />
+    <Compile Include="Models\SecGroupAuthorization.cs" />
+    <Compile Include="Models\SecGroups.cs" />
+    <Compile Include="Models\SecGroupUser.cs" />
+    <Compile Include="Models\SecMenu.cs" />
+    <Compile Include="Models\SecMenuGroup.cs" />
+    <Compile Include="Models\SecModules.cs" />
+    <Compile Include="Models\SecStockUser.cs" />
+    <Compile Include="Models\SecUsers.cs" />
+    <Compile Include="Models_Old\DacAgency.cs" />
+    <Compile Include="Models_Old\DacContainer.cs" />
+    <Compile Include="Models_Old\DacContainerDetails.cs" />
+    <Compile Include="Models_Old\DacDistributeToAgency.cs" />
+    <Compile Include="Models_Old\DacDistributeToAgencyDetails.cs" />
+    <Compile Include="Models_Old\DacDistributeToFactory.cs" />
+    <Compile Include="Models_Old\DacDistributeToFactoryDetails.cs" />
+    <Compile Include="Models_Old\DacDistributeToStore.cs" />
+    <Compile Include="Models_Old\DacDistributeToStoreDetails.cs" />
+    <Compile Include="Models_Old\DacFactory.cs" />
+    <Compile Include="Models_Old\DacInsertToWarehouse.cs" />
+    <Compile Include="Models_Old\DacInsertToWarehouseDetails.cs" />
+    <Compile Include="Models_Old\DacInventory.cs" />
+    <Compile Include="Models_Old\DacLogBook.cs" />
+    <Compile Include="Models_Old\DacPackage.cs" />
+    <Compile Include="Models_Old\DacPackageDetails.cs" />
+    <Compile Include="PIPTDbContext.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\SecUsersService.cs" />
+    <Compile Include="ViewModels\BaseViewModel.cs" />
+    <Compile Include="ViewModels\DacAgencyVM.cs" />
+    <Compile Include="ViewModels\DacDistributeToAgencyDetailVM.cs" />
+    <Compile Include="ViewModels\DacDistributeToAgencyVM.cs" />
+    <Compile Include="ViewModels\DacDistributeToStoreDetailsVM.cs" />
+    <Compile Include="ViewModels\DacDistributeToStoreVM.cs" />
+    <Compile Include="ViewModels\DacInsertToWarehouseVM.cs" />
+    <Compile Include="ViewModels\DacPackageVM.cs" />
+    <Compile Include="ViewModels\DacProductVM.cs" />
+    <Compile Include="ViewModels\DacStoreVM.cs" />
+    <Compile Include="ViewModels\SecUsersVM.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

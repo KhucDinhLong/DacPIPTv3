@@ -1,0 +1,132 @@
+﻿@page "/agencies"
+
+<ContentHeader>
+    <Header>
+        <PageTitle Title="Quản lý khách hàng" />
+    </Header>
+</ContentHeader>
+<ContentMain>
+    <div class="card mb-3">
+        <div class="card-header">
+            <i class="fa fa-table"></i> Quản lý khách hàng
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <div id="datatable_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-8">
+                            <div class="form-group">
+                                <div id="dataTable_filter" class="input-group">
+                                    <div class="input-group-prepend">
+                                        <button type="button" class="btn btn-default">Bộ lọc <i class="fas fa-filter"></i></button>
+                                    </div>
+                                    <input type="search" class="form-control" placeholder="Mã khách hàng" aria-controls="dataTable" @bind-value="AgencyCode" />
+                                    <input type="search" class="form-control" placeholder="Tên khách hàng" aria-controls="dataTable" @bind-value="AgencyName" />
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btn-default" @onclick="@(() => Search(AgencyCode, AgencyName))"><i class="fas fa-search"></i> Tìm kiếm</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-2">
+                            <button class="btn btn-success" @onclick="@(() => OpenDialog(new DacAgency()))"> <i class="fa fa-plus"></i> </button>
+                        </div>
+                        <div class="col-sm-12 col-md-2">
+                            <div class="form-group">
+                                <div id="dataTable_length" class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Show:</span>
+                                    </div>
+                                    <select name="dataTable_length" aria-controls="dataTable" class="form-control">
+                                        <option value="10">10</option>
+                                        <option value="25">25</option>
+                                        <option value="50" selected>50</option>
+                                        <option value="100">100</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            @if (LstAgencies == null)
+                            {
+                                <p><em>Đang tải dữ liệu...</em></p>
+                            }
+                            else
+                            {
+                                <table class="table table-bordered dataTable" id="dataTable" role="grid" aria-describedby="dataTable_info">
+                                    <thead>
+                                        <tr role="row">
+                                            <th>#</th>
+                                            <th>Mã khách hàng</th>
+                                            <th>Tên khách hàng</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{ var i = 1;}
+                                        @foreach (var agency in LstAgencies)
+                                        {
+                                            <tr role="row">
+                                                <td>@i</td>
+                                                <td>@agency.Code</td>
+                                                <td>@agency.Name</td>
+                                                <td>
+                                                    <button class="btn btn-primary btn-sm" @onclick="@(()=> OpenDialog(agency))"><i class="fa fa-edit"></i></button>
+                                                    <button class="btn btn-danger btn-sm" @onclick="@(()=> OpenDeleteDialog(agency))"><i class="fa fa-trash"></i></button>
+                                                </td>
+                                            </tr>
+                                            i++;
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-5">
+                            <div id="dataTable_info" class="dataTables_info" role="status" arial-live="polite">
+                                <PaginationInfo ActualPage="actualPage" TotalPages="totalPages" PageType="PaginationInfo.PageInfoType.PagePerTotal">
+                                    <Text>Nếu PaginationInfo.PageInfoType.Text thì thể hiện ở đây</Text>
+                                </PaginationInfo>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-7">
+                            <div id="dataTable_paginate" class="dataTables_paginate paging_simple_numbers">
+                                <Pagination TotalPages="totalPages" ActualPage="actualPage" Radius="3"
+                                            SelectedPage="SelectedPage"></Pagination>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer small text-muted">
+        </div>
+    </div>
+    <!-- Bordered table end -->
+</ContentMain>
+<PIPTModal @ref="piptModal" Size="PIPTModal.ModalSize.Nomal" OnCancelDialog="CancelDialog">
+    <Title>Thông tin khách hàng</Title>
+    <Body>
+        @if (IsDeleteDialogOpen)
+        {
+            <DacAgenciesDelete agency="_Agency"
+                             OnvalidSubmit="OnSubmitCallBack"
+                             OnClose="CloseDialog" />
+        }
+        else if (_Agency != null && _Agency.ID > 0)
+        {
+            <DacAgenciesEdit agency="_Agency" UserName="@UserName" IsAdmin="IsAdmin" OnvalidSubmit="OnSubmitCallBack" OnClose="CloseDialog" />
+        }
+        else
+        {
+            <DacAgenciesCreate agency="_Agency" UserName="@UserName" IsAdmin="IsAdmin" 
+                             OnvalidSubmit="OnSubmitCallBack"
+                             OnClose="CloseDialog">
+            </DacAgenciesCreate>
+        }
+    </Body>
+</PIPTModal>
+

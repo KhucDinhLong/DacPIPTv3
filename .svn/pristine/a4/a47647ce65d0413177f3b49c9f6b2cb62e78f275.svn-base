@@ -1,0 +1,41 @@
+﻿<EditForm Model="customer" OnValidSubmit="OnvalidSubmit">
+    <div class="modal-body">
+        <div class="card card-success">
+            <div class="card-header">
+                @HeaderText
+            </div>
+            <div class="form-horizontal">
+                <div class="card-body">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-3">Mã khách hàng: </label>
+                        <div class="col-sm-9">
+                            <InputText type="text" @bind-Value="customer.Code" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-3">Tên khách hàng: </label>
+                        <div class="col-sm-9">
+                            <InputText type="text" @bind-Value="customer.Name" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-3">Còn hoạt động: </label>
+                        <div class="col-sm-9">
+                            <input type="checkbox" @bind="customer.Active" class="form-control" />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary mr-auto" @onclick="OnClose">Hủy</button>
+        <button type="submit" class="btn btn-success">@ButtonText</button>
+    </div>
+</EditForm>

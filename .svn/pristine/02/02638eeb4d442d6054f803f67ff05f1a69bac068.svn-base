@@ -1,0 +1,1007 @@
+﻿using DAC.Core;
+using DAC.Core.CoreLogic;
+using DAC.Core.CoreService;
+using DAC.Core.Security;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Configuration;
+using System.Data;
+using System.Drawing;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
+using COMExcel = Microsoft.Office.Interop.Excel;
+
+namespace PIPT
+{
+    public partial class frmDacProductWarehouse : Form
+    {
+        #region Instance of the form
+        /// <summary>
+        /// Instance to store instance of this form
+        /// </summary>
+        private static frmDacProductWarehouse _instance = null;
+
+        /// <summary>
+        /// Instance form.
+        /// </summary>
+        /// <returns>Instance of this Form</returns>
+        public static frmDacProductWarehouse Instance()
+        {
+            if (_instance == null || _instance.IsDisposed)
+            {
+                _instance = new frmDacProductWarehouse();
+            }
+            return _instance;
+        }
+
+        public static frmDacProductWarehouse Instance(Form parent)
+        {
+            _instance = Instance();
+            _instance.MdiParent = parent;
+            return _instance;
+        }
+
+        public static frmDacProductWarehouse Instance(Form parent, bool isActivate)
+        {
+            _instance = Instance(parent);
+            if (isActivate)
+            {
+                _instance.WindowState = FormWindowState.Normal;
+                _instance.Show();
+                _instance.Activate();
+            }
+            return _instance;
+        }
+        #endregion
+        #region Variables
+        DacInsertToWarehouseCollection InsertToWarehouseCollection = new DacInsertToWarehouseCollection();
+        DacInsertToWarehouseDetailsCollection InsertToWarehouseDetailsCollection = new DacInsertToWarehouseDetailsCollection();
+        BindingList<DacInsertToWarehouse> bdlInsertToWarehouse;
+        BindingList<DacInsertToWarehouseDetails> bdlInsertToWarehouseDetails;
+        DacInsertToWarehouseCS InsertToWarehouseCS = new DacInsertToWarehouseCS();
+        DacInsertToWarehouseDetailsCS InsertToWarehouseDetailsCS = new DacInsertToWarehouseDetailsCS();
+        // DataViw for Product table
+        DataView dvProduct;
+        int iCurrentID = 0;
+        public string ProductCode = string.Empty;
+        // Check Box Select All
+        int TotalCheckBoxes = 0;
+        int TotalCheckedCheckBoxes = 0;
+        CheckBox HeaderCheckBox = null;
+        bool IsHeaderCheckBoxClicked = false;
+        DacInsertToWarehouseDetailsCollection LstAddTemp;
+        bool HasOutOfNewRow = false;
+        #endregion
+        #region Form's Events
+        public frmDacProductWarehouse()
+        {
+            InitializeComponent();
+        }
+
+        private void frmDacProductWarehouse_Load(object sender, EventArgs e)
+        {
+            InitData();
+            InitLookUp();
+            // Get Max order number
+            textBoxOrderNumber.Text = DacInsertToWarehouseCS.GetMaxInsertNumber();
+            // Get distributeToAgencyCollection from database
+            // -----------------------------------------
+            // Dinh lai thoi gian de load du lieu tai day
+            // -----------------------------------------
+            InsertToWarehouseCollection = InsertToWarehouseCS.GetListInsertToWarehouse(
+                DateTime.Parse(CommonBO.GetSecConfig("DateStartGettingData").Value), DateTime.Now, string.Empty, CommonBS.CurrentUser.LoginID);
+            AddObjectDistributorIntoBindingList(InsertToWarehouseCollection);
+            // Get data from database
+            AddObjectDetailsIntoBindingList(InsertToWarehouseDetailsCollection);
+            EnableControls(false);
+
+            // Init Events For Select All CheckBox
+            AddHeaderCheckBox();
+
+            HeaderCheckBox.KeyUp += new KeyEventHandler(HeaderCheckBox_KeyUp);
+            HeaderCheckBox.MouseClick += new MouseEventHandler(HeaderCheckBox_MouseClick);
+            dataGridViewDetails.CellValueChanged += new DataGridViewCellEventHandler(dataGridViewDetails_CellValueChanged);
+            dataGridViewDetails.CurrentCellDirtyStateChanged += new EventHandler(dataGridViewDetails_CurrentCellDirtyStateChanged);
+            dataGridViewDetails.CellPainting += new DataGridViewCellPaintingEventHandler(dataGridViewDetails_CellPainting);
+        }
+        #endregion
+
+        #region Function on form
+        /// <summary>
+        /// 
+        /// </summary>
+        private void InitData()
+        {
+            DAC.DAL.DacDbAccess dacDb = new DAC.DAL.DacDbAccess();
+            dacDb.CreateNewSqlCommand();
+            dacDb.AddParameter("@FactoryCode", string.Empty);
+            DataSet ds = new DataSet("Insert_Product");
+            DataTable dataTable = dacDb.ExecuteDataTable("spDacProduct_SelectAll");
+            // Add table Product
+            dataTable.TableName = "Products";
+            ds.Tables.Add(dataTable);
+            DataViewManager dvm = new DataViewManager(ds);
+            dvProduct = dvm.CreateDataView(ds.Tables["Products"]);
+
+            // Add Stock filter by Username
+            dacDb.CreateNewSqlCommand();
+            dacDb.AddParameter("@Code", string.Empty);
+            dacDb.AddParameter("@Name", string.Empty);
+            dacDb.AddParameter("@Email", string.Empty);
+            dacDb.AddParameter("@Mobi", string.Empty);
+            dacDb.AddParameter("@LoginID", CommonBS.CurrentUser.LoginID);
+            dataTable = dacDb.ExecuteDataTable("DacStock_Select");
+            gridLookUpEditDacStock.Properties.DataSource = dataTable;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        private void InitLookUp()
+        {
+            // The data source for the dropdown rows
+            gridLookUpEditProduct.Properties.DataSource = dvProduct;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="DistributeToAgencyCollection"></param>
+        private void AddObjectDistributorIntoBindingList(DacInsertToWarehouseCollection InsertToWarehouseCollection)
+        {
+            bdlInsertToWarehouse = new BindingList<DacInsertToWarehouse>();
+            foreach (DacInsertToWarehouse InsertToWarehouse in InsertToWarehouseCollection)
+            {
+                bdlInsertToWarehouse.Add(InsertToWarehouse);
+            }
+            SetDataSource();
+        }
+        private void EnableControls(bool bIsEnabled)
+        {
+            foreach (Control ctrl in panelInsertToWarehouse.Controls)
+            {
+                if (ctrl.Name != "checkEditKeepOrder")
+                    ctrl.Enabled = bIsEnabled;
+            }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        private void SetDataSource()
+        {
+            CommonCore.ClearDataBinding(panelInsertToWarehouse);
+            // Binding data to Controls
+            textBoxOrderNumber.DataBindings.Add("Text", bdlInsertToWarehouse, "InsertNumber");
+            textBoxQuantity.DataBindings.Add("Text", bdlInsertToWarehouse, "Quantity");
+            gridLookUpEditProduct.DataBindings.Clear();
+            gridLookUpEditProduct.DataBindings.Add("EditValue", bdlInsertToWarehouse, "ProductCode");
+            gridLookUpEditDacStock.DataBindings.Clear();
+            gridLookUpEditDacStock.DataBindings.Add("EditValue", bdlInsertToWarehouse, "StockID");
+            richTextBoxDescription.DataBindings.Add("Text", bdlInsertToWarehouse, "Description");
+            dateTimePickerCreatedDate.DataBindings.Clear();
+            dateTimePickerCreatedDate.DataBindings.Add("Value", bdlInsertToWarehouse, "CreatedDate");
+
+            // Huy su kien SelectionChanged truoc khi gan DataSource
+            this.gridViewWarehouse.FocusedRowChanged -= new DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventHandler(this.gridViewWarehouse_FocusedRowChanged);
+            gridControlWarehouse.DataSource = bdlInsertToWarehouse;
+            this.gridViewWarehouse.FocusedRowChanged += new DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventHandler(this.gridViewWarehouse_FocusedRowChanged);
+            if (bdlInsertToWarehouse.Count > 0)
+            {
+                this.GetDetailData();
+            }
+            EnableControls(false);
+
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="distributeDetailsCollection"></param>
+        private void AddObjectDetailsIntoBindingList(DacInsertToWarehouseDetailsCollection InsertToWarehouseDetailsCollection)
+        {
+            bdlInsertToWarehouseDetails = new BindingList<DacInsertToWarehouseDetails>();
+            foreach (DacInsertToWarehouseDetails InsertToWarehouseDetail in InsertToWarehouseDetailsCollection)
+            {
+                bdlInsertToWarehouseDetails.Add(InsertToWarehouseDetail);
+            }
+            SetDistributeDetailsDataSource();
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        private void SetDistributeDetailsDataSource()
+        {
+            dataGridViewDetails.DataSource = bdlInsertToWarehouseDetails;
+
+            TotalCheckBoxes = dataGridViewDetails.RowCount;
+            TotalCheckedCheckBoxes = 0;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        private bool IsChangedData()
+        {
+            if (ucDataButtonProduct.DataMode == DataState.Insert)
+            {
+            }
+            else if (ucDataButtonProduct.DataMode == DataState.Edit)
+            {
+
+            }
+            return false;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        private bool IsDataOK()
+        {
+            if (gridLookUpEditProduct.EditValue == null)
+            {
+                MessageBox.Show("Bạn chưa chọn mã sản phẩm.", "Thông báo" + Common.formSoftName);
+                gridLookUpEditProduct.Focus();
+                return false;
+            }
+            if (dataGridViewDetails.Rows.Count == 0)
+            {
+                MessageBox.Show("Bạn chưa nhập bất kỳ mã an ninh nào.", "Thông báo" + Common.formSoftName);
+                textBoxDacCode.Focus();
+                return false;
+            }
+            return true;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        private bool SaveData()
+        {
+            if (IsDataOK() == false) return false;
+
+            bool bResult = true;
+            if (ucDataButtonProduct.DataMode == DataState.Insert)
+            {
+                DacInsertToWarehouse InsertToWarehouse = new DacInsertToWarehouse();
+
+                InsertToWarehouse.InsertNumber = textBoxOrderNumber.Text;
+                // Kiem tra lai OrderNumber
+                SecConfig secConfig = CommonBO.GetSecConfig("AutoIncreaseWarehouse");
+                if (secConfig.Value == "true")
+                {
+                    if (DacInsertToWarehouseCS.GetMaxInsertNumber() == InsertToWarehouse.InsertNumber)
+                    {
+                        InsertToWarehouse.InsertNumber = DacInsertToWarehouseCS.GetMaxInsertNumber();
+                        textBoxOrderNumber.Text = InsertToWarehouse.InsertNumber;
+                    }
+                }
+                InsertToWarehouse.CreatedDate = dateTimePickerCreatedDate.Value;
+                InsertToWarehouse.ProductCode = gridLookUpEditProduct.EditValue.ToString();
+                InsertToWarehouse.Quantity = Convert.ToInt32(textBoxQuantity.Text);
+                InsertToWarehouse.Description = richTextBoxDescription.Text;
+                InsertToWarehouse.StockID = gridLookUpEditDacStock.EditValue.ToString();
+                InsertToWarehouse.Active = true;
+
+                bResult = InsertToWarehouseCS.Insert(InsertToWarehouse, ref iCurrentID);
+                if (bResult)
+                {
+                    if (ucDataButtonProduct.DataMode == DataState.Insert && HasOutOfNewRow)
+                        InsertToWarehouseDetailsCollection = LstAddTemp;
+                    // Doi lai ID da luu trong database
+                    for (int i = 0; i < InsertToWarehouseDetailsCollection.Count; i++)
+                    {
+                        InsertToWarehouseDetailsCollection[i].InsertID = iCurrentID;
+                    }
+                    // Convert list to datatable
+                    DataTable dataTable = CommonCore.GetDataTable(InsertToWarehouseDetailsCollection, typeof(DacInsertToWarehouseDetails));
+                    dataTable.TableName = "DacInsertToWarehouseDetails"; // Ten bang trong CSDL
+                    DacInsertToWarehouseDetailsCS InsertToWarehouseDetailsCS = new DacInsertToWarehouseDetailsCS();
+                    // Khai bao mang cac cot trong bang du lieu can mapping
+                    string[] sColumnName = new string[] { "InsertID", "DacCode", "Status" };
+                    InsertToWarehouseDetailsCS.PerformBulkCopy(dataTable, sColumnName);
+                    bResult = true;
+                }
+                if (LstAddTemp != null)
+                    LstAddTemp = null;
+                // Add data inventory if not exists
+                DacInventoryCS inventoryCS = new DacInventoryCS();
+                List<DacInventory> LstInventory = inventoryCS.Find(InsertToWarehouse.ProductCode, DateTime.Now.Year);
+                if (LstInventory == null || LstInventory.Count <= 0)
+                {
+                    DacInventory inventory = new DacInventory();
+                    inventory.ProductCode = InsertToWarehouse.ProductCode;
+                    inventory.StockID = InsertToWarehouse.StockID;
+                    inventory.Quantity = 0;
+                    inventory.Year = DateTime.Now.Year;
+                    inventoryCS.Insert(inventory);
+                }
+                else
+                {
+                    if (LstInventory.Count == 1)
+                    {
+                        if (LstInventory[0].StockID == null || string.IsNullOrWhiteSpace(LstInventory[0].StockID))
+                        {
+                            LstInventory[0].StockID = InsertToWarehouse.StockID;
+                            inventoryCS.Update(LstInventory[0]);
+                        } 
+                    }
+                }
+            }
+            else
+            {
+                // Update data in to DacDistributeToAgency
+                DacInsertToWarehouse InsertToWarehouse = new DacInsertToWarehouse();
+
+                InsertToWarehouse = (DacInsertToWarehouse)gridViewWarehouse.GetRow(gridViewWarehouse.FocusedRowHandle);
+                // Update to DataBase
+                bResult = InsertToWarehouseCS.Update(InsertToWarehouse);
+            }
+            // Kiem tra luu thanh cong khong de load lai du lieu
+            if (bResult)
+            {
+                if (ucDataButtonProduct.DataMode == DataState.Insert)
+                {
+                    // Get distributeToAgencyCollection from database
+                    // -----------------------------------------
+                    // Dinh lai thoi gia de load du lieu tai day
+                    // -----------------------------------------
+                    InsertToWarehouseCollection = InsertToWarehouseCS.GetListInsertToWarehouse(
+                        DateTime.Parse(CommonBO.GetSecConfig("DateStartGettingData").Value), DateTime.Now, string.Empty, CommonBS.CurrentUser.LoginID);
+                    AddObjectDistributorIntoBindingList(InsertToWarehouseCollection);
+                    // Get data from database
+                    AddObjectDetailsIntoBindingList(InsertToWarehouseDetailsCollection);
+                    CommonBS.SaveSuccessfully();
+                }
+                ucDataButtonProduct.DataMode = DataState.View;
+                ucDataButtonProduct.SetInsertFocus();
+                EnableControls(false);
+            }
+            else CommonBS.SaveNotSuccessfully();
+
+            return bResult;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        private void SaveInsertToWarehouse()
+        {
+            SaveData();
+        }
+
+        private void AddDistributDetails(DacInsertToWarehouseDetails InsertToWarehouseDetails)
+        {
+            // Kiem tra su ton tai cua ma QRCode
+            foreach (DacInsertToWarehouseDetails detail in InsertToWarehouseDetailsCollection)
+            {
+                // Neu co roi thi thoat luon khoi ham.
+                if (detail.DacCode == InsertToWarehouseDetails.DacCode)
+                    return;
+            }
+            // Kiem tra trong database
+            DacInsertToWarehouseDetailsCollection detailsCollection = InsertToWarehouseDetailsCS.GetInsertDetails(InsertToWarehouseDetails.DacCode, "spDacInsertToWarehouseDetails_SelectByDacCode");
+            if (detailsCollection.Count > 0)
+            {
+                return;
+            }
+            if (textBoxOrderNumber.Text.Length == 0)
+            {
+                MessageBox.Show("Bạn phải nhập dữ liệu trước khi thêm các QR code!", "Thông báo");
+                textBoxOrderNumber.Focus();
+                return;
+            }
+            // Kiem tra neu khong phai dang Insert thi lay ID cua dong dang focus.
+            if (ucDataButtonProduct.DataMode != DataState.Insert)
+            {
+                int iInsertID = (int)gridViewWarehouse.GetFocusedRowCellValue(gridColumnID);
+                // Gan lai ID cho DistributeDetails
+                InsertToWarehouseDetails.InsertID = iInsertID;
+            }
+            InsertToWarehouseDetailsCollection.Add(InsertToWarehouseDetails);
+            labelProductCount.Text = String.Format("Số sản phẩm đã thêm: {0:0,0}", InsertToWarehouseDetailsCollection.Count);
+            textBoxQuantity.Text = InsertToWarehouseDetailsCollection.Count.ToString();
+            AddObjectDetailsIntoBindingList(InsertToWarehouseDetailsCollection);
+            //Set focus on DataGridView
+            if (dataGridViewDetails.Rows.Count > 0)
+            {
+                dataGridViewDetails.CurrentCell = dataGridViewDetails.Rows[dataGridViewDetails.Rows.Count - 1].Cells[2];
+                dataGridViewDetails.Rows[dataGridViewDetails.Rows.Count - 1].Cells[1].Selected = true;
+            }
+            if (ucDataButtonProduct.DataMode == DataState.Insert 
+                && gridViewWarehouse.GetRowCellValue(gridViewWarehouse.FocusedRowHandle, gridColumnID).ToString() == "-1")
+            {
+                if (!LstAddTemp.Contains(InsertToWarehouseDetails))
+                    LstAddTemp.Add(InsertToWarehouseDetails);
+            }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void gridViewWarehouse_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
+        {
+            this.GetDetailData();
+            if (ucDataButtonProduct.DataMode == DataState.Insert && e.FocusedRowHandle != gridViewWarehouse.RowCount - 1)
+                HasOutOfNewRow = true;
+            if (ucDataButtonProduct.DataMode == DataState.Insert && e.FocusedRowHandle == gridViewWarehouse.RowCount - 1 
+                && LstAddTemp != null && LstAddTemp.Count > 0)
+            {
+                bdlInsertToWarehouseDetails.Clear();
+                foreach (DacInsertToWarehouseDetails item in LstAddTemp)
+                {
+                    bdlInsertToWarehouseDetails.Add(item);
+                }
+                bdlInsertToWarehouseDetails.ResetBindings();
+                if (InsertToWarehouseDetailsCollection == null || InsertToWarehouseDetailsCollection.Count == 0)
+                    InsertToWarehouseDetailsCollection = LstAddTemp;
+            }    
+                
+        }
+        private void GetDetailData()
+        {
+            if (gridViewWarehouse.RowCount == 0)
+                return;
+            try
+            {
+                DacDistributeToAgencyDetailsCS distributeDetailsCS = new DacDistributeToAgencyDetailsCS();
+                int iInsertID = (int)gridViewWarehouse.GetRowCellValue(gridViewWarehouse.FocusedRowHandle, "ID");
+                InsertToWarehouseDetailsCollection = InsertToWarehouseDetailsCS.GetInsertDetails(iInsertID, "spDacInsertToWarehouseDetails_SelectById");
+                AddObjectDetailsIntoBindingList(InsertToWarehouseDetailsCollection);
+                labelProductCount.Text = String.Format("Số sản phẩm đã thêm: {0:0,0}", InsertToWarehouseDetailsCollection.Count);
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show(ex.Message, "PIPT - Thông báo");
+                return;
+            }
+        }
+        public void CreateImportFromPackage(DacContainerDetailsCollection distributeDetailsCollection)
+        {
+            this.ucDataButtonProduct_InsertHandler();
+            ucDataButtonProduct.DataMode = DataState.Insert;
+            this.gridLookUpEditProduct.EditValue = ProductCode;
+            string sRemark = string.Empty;
+            foreach (DacContainerDetails containerDetail in distributeDetailsCollection)
+            {
+                if (!InsertToWarehouseCS.CheckPackage(containerDetail.PackageCode))
+                {
+                    this.GetDacCode(containerDetail.PackageCode);
+                    sRemark += containerDetail.PackageCode + ", ";
+                }
+            }
+            richTextBoxDescription.Text = sRemark;
+        }
+        #endregion
+
+        #region Buttons' Event
+        private void ucDataButtonProduct_InsertHandler()
+        {
+            // Lay gia tri Agency va Product de giu lai
+            string ProductCode = gridLookUpEditProduct.EditValue.ToString();
+            string Order = textBoxOrderNumber.Text;
+            string StockID = gridLookUpEditDacStock.EditValue.ToString();
+            //bdlDistributeToAgency.AddNew();
+            DevExpress.XtraGrid.Views.Grid.GridView view = gridControlWarehouse.FocusedView as DevExpress.XtraGrid.Views.Grid.GridView;
+            view.AddNewRow();
+            gridControlWarehouse.RefreshDataSource();
+            EnableControls(true);
+            //Set focus for DataGridView
+            gridViewWarehouse.FocusedRowHandle = gridViewWarehouse.GetVisibleRowHandle(gridViewWarehouse.RowCount - 1);
+            // Kiem tra neu giu lai lenh thi khong tang lenh len nua
+            if (checkEditKeepOrder.Checked)
+            {
+                textBoxOrderNumber.Text = Order;
+                gridLookUpEditProduct.EditValue = ProductCode;
+            }
+            else
+            {
+                // Get Max order number
+                textBoxOrderNumber.Text = DacInsertToWarehouseCS.GetMaxInsertNumber();
+            }
+            gridLookUpEditDacStock.EditValue = StockID;
+            LstAddTemp = new DacInsertToWarehouseDetailsCollection();
+        }
+
+        private void ucDataButtonProduct_SaveHandler()
+        {
+            if (ucDataButtonProduct.DataMode == DataState.Insert
+                && gridViewWarehouse.GetRowCellValue(gridViewWarehouse.FocusedRowHandle, gridColumnID).ToString() != "-1" && HasOutOfNewRow)
+            {
+                MessageBox.Show("Bạn cần chọn đúng dòng để thêm mới!", "Thông báo"
+                    , MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            // Lưu nhật ký
+            CommonBO.Instance().TraceLogEvent("Save Warehouse: " + textBoxOrderNumber.Text + " - "
+                + textBoxQuantity.Text + " - " + gridLookUpEditProduct.EditValue, CommonBS.CurrentUser.LoginID);
+            Common objCommon = new Common();
+            objCommon.CurrentForm = this;
+            objCommon.CurrentFormMethodInvoker = SaveInsertToWarehouse;
+            objCommon.App_ShowWaitForm(DataState.Insert);
+        }
+
+        private void ucDataButtonProduct_EditHandler()
+        {
+            if (gridViewWarehouse.FocusedRowHandle < 0)
+                return;
+            // Kiem tra quyen de Sua, Xoa hoac Them mã QR khi lenh xuat duoc khoa
+            bool bActive = (bool)gridViewWarehouse.GetRowCellValue(gridViewWarehouse.FocusedRowHandle, "Active");
+            if (!bActive) // Neu la false thi kiem tra quyen
+            {
+                if (!CommonBS.IsAdminUser)
+                {
+                    MessageBox.Show("Bạn không có quyền thêm các mã qrcode này!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    ucDataButtonProduct.DataMode = DataState.View;
+                    return;
+                }
+            }
+            if (dataGridViewDetails.Rows.Count >= 0)
+            {
+                // Lưu nhật ký
+                CommonBO.Instance().TraceLogEvent("Edit Warehouse: " + textBoxOrderNumber.Text + " - "
+                    + textBoxQuantity.Text + " - " + gridLookUpEditProduct.EditValue, CommonBS.CurrentUser.LoginID);
+                EnableControls(true);
+            }
+            else
+            {
+                MessageBox.Show("Bạn không thể sửa lệnh nếu lệnh đó đang chứa các sản phẩm!", "Thông báo");
+                return;
+            }
+            // Lay du lieu de sua
+        }
+
+        private void ucDataButtonProduct_DeleteHandler()
+        {
+            // Kiem tra xem co du lieu nao khong
+            //if (dataGridViewDetails.Rows.Count > 0)
+            //{
+            //    MessageBox.Show("Lệnh không chứa các QR code mới xóa được!", "Thông báo");
+            //    return;
+            //}
+            // Lay du lieu de xoa
+            int ID = (int)gridViewWarehouse.GetFocusedRowCellValue(gridColumnID);
+            if (ID > -1)
+            {
+                if (MessageBox.Show("Bạn có chắc chắn muốn xóa mục này?", "Thong bao", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                {
+                    InsertToWarehouseCS.Delete(ID);
+                    DevExpress.XtraGrid.Views.Grid.GridView view = gridControlWarehouse.FocusedView as DevExpress.XtraGrid.Views.Grid.GridView;
+                    view.DeleteRow(view.FocusedRowHandle);
+                    // Lưu nhật ký
+                    CommonBO.Instance().TraceLogEvent("Delete Warehouse: ID = " + ID + " - " + textBoxOrderNumber.Text + " - "
+                        + textBoxQuantity.Text + " - " + gridLookUpEditProduct.EditValue, CommonBS.CurrentUser.LoginID);
+                }
+            }
+            // Kiem tra moi lien quan voi du lieu khac neu co
+        }
+
+        private void ucDataButtonProduct_CancelHandler()
+        {
+            EnableControls(false);
+            if (ucDataButtonProduct.DataMode == DataState.Insert)
+            {
+                DevExpress.XtraGrid.Views.Grid.GridView view = gridControlWarehouse.FocusedView as DevExpress.XtraGrid.Views.Grid.GridView;
+                view.DeleteRow(view.FocusedRowHandle);
+            }
+            // Gan lai trang thai view
+            ucDataButtonProduct.DataMode = DataState.View;
+            //Set focus for DataGridView
+            if (LstAddTemp != null)
+                LstAddTemp = null;
+        }
+
+        private void ucDataButtonProduct_CloseHandler()
+        {
+            if (IsChangedData())
+            {
+                if (CommonBS.ConfirmChangedData() == DialogResult.Yes)
+                {
+                    if (SaveData() == false)
+                        return;
+                }
+            }
+            this.Close();
+        }
+
+        private void buttonUpdateDetail_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string sContent = string.Empty;
+                foreach (DacInsertToWarehouseDetails details in InsertToWarehouseDetailsCollection)
+                {
+                    // Nhung ID moi them se co ID = -1
+                    // Neu ID = -1 thi Insert vao database
+                    if (details.ID == -1)
+                    {
+                        InsertToWarehouseDetailsCS.Insert(details, "spDacInsertToWarehouseDetails_Insert");
+                        sContent += details.DacCode + ", ";
+                    }
+                }
+                // Lưu nhật ký
+                CommonBO.Instance().TraceLogEvent("Update DacCode to Warehouse: " + textBoxOrderNumber.Text + " - "
+                    + textBoxQuantity.Text + " - " + gridLookUpEditProduct.EditValue + ": " + sContent, CommonBS.CurrentUser.LoginID);
+                MessageBox.Show("Bạn đã thêm các mã QRCode thành công!", "Thông báo");
+            }
+            catch
+            {
+                MessageBox.Show("Có lỗi đã xảy ra khi thêm các mã QRCode!", "Thông báo");
+            }
+        }
+
+        private void buttonDetailDelete_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Bạn có chắc chắn xóa mã QRCode này?", "Thong bao - Xoa ma QRCode", MessageBoxButtons.OKCancel) == DialogResult.OK)
+            {
+                if (ucDataButtonProduct.DataMode == DataState.Insert && LstAddTemp != null)
+                {
+                    for (int i = 0; i < dataGridViewDetails.Rows.Count; i++)
+                    {
+                        if (((DataGridViewCheckBoxCell)dataGridViewDetails.Rows[i].Cells["IsSelected"]).Value != null
+                            && (bool)((DataGridViewCheckBoxCell)dataGridViewDetails.Rows[i].Cells["IsSelected"]).Value)
+                        {
+                            DacInsertToWarehouseDetails InsertToWarehouseDetails 
+                                = (DacInsertToWarehouseDetails)dataGridViewDetails.Rows[i].DataBoundItem;
+                            LstAddTemp.Remove(InsertToWarehouseDetails);
+                            bdlInsertToWarehouseDetails.Remove(InsertToWarehouseDetails);
+                            i--;
+                        }
+                    }
+                    bdlInsertToWarehouseDetails.ResetBindings();
+                }
+                else
+                {
+                    string sContent = string.Empty;
+                    DacInsertToWarehouseDetailsCollection detailsCollection = new DacInsertToWarehouseDetailsCollection();
+                    foreach (DataGridViewRow Row in dataGridViewDetails.Rows)
+                        if (((DataGridViewCheckBoxCell)Row.Cells["IsSelected"]).Value != null)
+                        {
+                            if ((bool)((DataGridViewCheckBoxCell)Row.Cells["IsSelected"]).Value)
+                            {
+                                DacInsertToWarehouseDetails InsertToWarehouseDetails = (DacInsertToWarehouseDetails)Row.DataBoundItem;
+                                detailsCollection.Add(InsertToWarehouseDetails);
+                                if (InsertToWarehouseDetails.ID > 0)
+                                {
+                                    // Xoa tren Database
+                                    InsertToWarehouseDetailsCS.Delete(InsertToWarehouseDetails.ID, "spDacInsertToWarehouseDetails_Delete");
+                                    sContent += InsertToWarehouseDetails.DacCode + "-" + gridLookUpEditProduct.EditValue + ", ";
+                                }
+                            }
+                        }
+                    // Lưu nhật ký
+                    CommonBO.Instance().TraceLogEvent("Xóa QRCode khỏi nhập kho: " + textBoxOrderNumber.Text + " - "
+                        + textBoxQuantity.Text + " - " + gridLookUpEditProduct.EditValue + " - " + sContent, CommonBS.CurrentUser.LoginID);
+                    foreach (DacInsertToWarehouseDetails InsertToWarehouseDetails in detailsCollection)
+                    {
+                        bdlInsertToWarehouseDetails.Remove(InsertToWarehouseDetails);
+                        InsertToWarehouseDetailsCollection.Remove(InsertToWarehouseDetails);
+                    }
+                    bdlInsertToWarehouseDetails.ResetBindings();
+                }
+            }
+        }
+
+        private void textBoxDacCode_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == 13)
+            {
+                this.GetDacCode(textBoxDacCode.Text.Trim());
+            }
+        }
+
+        private void buttonEnter_Click(object sender, EventArgs e)
+        {
+            this.GetDacCode(textBoxDacCode.Text.Trim());
+        }
+
+        private void GetDacCode(string DacCode)
+        {
+            if (DacCode.Length >= 7)
+            {
+                string serial = CommonCore.GetSerialFromScanner(DacCode);
+                StringBuilder sbPackageType = new StringBuilder();
+                foreach (char item in serial)
+                {
+                    if (char.IsLetter(item))
+                        sbPackageType.Append(item);
+                }
+                string PackageType = sbPackageType.ToString().ToUpper();
+                if (!string.IsNullOrWhiteSpace(PackageType))
+                {
+                    DacPackageDetailsCS dacPackageDetailsCS = new DacPackageDetailsCS();
+                    DacPackageDetailsCollection PackageDetailsCollection = dacPackageDetailsCS.GetPackageDetails(DacCode, PackageType);
+                    if (PackageDetailsCollection.Count > 0)
+                    {
+                        foreach (DacPackageDetails packageDetails in PackageDetailsCollection)
+                        {
+                            AddDistributDetails(new DacInsertToWarehouseDetails(-1, Convert.ToInt32(textBoxOrderNumber.Text), packageDetails.DacCode, 1));
+                            textBoxDacCode.Text = string.Empty;
+                        }
+                    }
+                }
+                else
+                {
+                    if (gridLookUpEditProduct.Properties.GetIndexByKeyValue(gridLookUpEditProduct.EditValue) >= 0)
+                    {
+                        AddDistributDetails(new DacInsertToWarehouseDetails(-1, Convert.ToInt32(textBoxOrderNumber.Text), serial, 1));
+                        textBoxDacCode.Text = string.Empty;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Bạn chưa chọn sản phẩm nào, hãy chọn một sản phẩm để tiếp tục!", "Thông báo", MessageBoxButtons.OK);
+                    }
+                }
+            }
+        }
+
+        private void GetRangSerialNumber(string frSerie, string toSerie)
+        {
+            try
+            {
+                string sPreSeriValue = ConfigurationManager.AppSettings["PreSeri"].ToString();
+                string[] sPreSeris = sPreSeriValue.Split(',');
+                string sPreSeri = string.Empty;
+                if (sPreSeriValue.Length > 0)
+                {
+                    foreach (string PreSeri in sPreSeris)
+                    {
+                        if (frSerie.Contains(PreSeri.Trim()))
+                        {
+                            sPreSeri = PreSeri.Trim();
+                            break;
+                        }
+                    }
+                }
+                long iFrSerie = 0;
+                long iToSerie = 0;
+                if (sPreSeri.Length == 0)
+                {
+                    iFrSerie = Convert.ToInt64(frSerie);
+                    iToSerie = Convert.ToInt64(toSerie);
+                }
+                else
+                {
+                    sPreSeri = frSerie.Substring(0, sPreSeri.Length);
+                    iFrSerie = Convert.ToInt64(frSerie.Substring(sPreSeri.Length, frSerie.Length - sPreSeri.Length));
+                    iToSerie = Convert.ToInt64(toSerie.Substring(sPreSeri.Length, toSerie.Length - sPreSeri.Length));
+                }
+                if (iToSerie > iFrSerie)
+                {
+                    for (long i = iFrSerie; i <= iToSerie; i++)
+                    {
+                        AddDistributDetails(new DacInsertToWarehouseDetails(-1, gridLookUpEditProduct.Properties.GetIndexByKeyValue(gridLookUpEditProduct.EditValue),
+                            String.Format("{0}{1:" + CommonBO.GetSecConfig("SeriLength").Pattern + "}", sPreSeri, i), 1));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        private void FrSeriTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == 13)
+            {
+                string DacCode = FrSeriTextBox.Text.Trim();
+                if (DacCode.Length >= 7)
+                {
+                    string serial = CommonCore.GetSerialFromScanner(DacCode);
+                    FrSeriTextBox.Text = serial;
+                    ToSeriTextBox.Focus();
+                }
+            }
+        }
+
+        private void ToSeriTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == 13)
+            {
+                string DacCode = ToSeriTextBox.Text.Trim();
+                if (DacCode.Length >= 7)
+                {
+                    string serial = CommonCore.GetSerialFromScanner(DacCode);
+                    ToSeriTextBox.Text = serial;
+                    if (gridLookUpEditProduct.Properties.GetIndexByKeyValue(gridLookUpEditProduct.EditValue) >= 0)
+                    {
+                        GetRangSerialNumber(FrSeriTextBox.Text, ToSeriTextBox.Text);
+                        ToSeriTextBox.Text = string.Empty;
+                        FrSeriTextBox.Text = string.Empty;
+                        FrSeriTextBox.Focus();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Bạn chưa chọn sản phẩm nào, hãy chọn một sản phẩm để tiếp tục!", "Thông báo", MessageBoxButtons.OK);
+                    }
+                }
+            }
+        }
+
+        private void addSerialCodeButton_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ucDataButtonProduct_PrintHandler()
+        {
+            if (gridViewWarehouse.RowCount <= 0 || gridViewWarehouse.SelectedRowsCount <= 0
+                || dataGridViewDetails.Rows == null || dataGridViewDetails.Rows.Count <= 0)
+            {
+                MessageBox.Show("Không có dữ liệu để in! ", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            COMExcel.Application exApp = new COMExcel.Application();
+            string workbookpath;
+            workbookpath = Application.StartupPath + @"\Excel\PhieuNhapKho.xlsx";
+            COMExcel.Workbook exBook = exApp.Workbooks.Open(workbookpath, false, true, Type.Missing, Type.Missing, Type.Missing,
+                    Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+            COMExcel.Worksheet exSheet = (COMExcel.Worksheet)exBook.Worksheets[1];
+            exSheet.Cells[1, 2] = ConfigurationManager.AppSettings["CompanyName"];
+            exSheet.Cells[2, 2] = ConfigurationManager.AppSettings["CompanyAddress"];
+            int selectedRow = gridViewWarehouse.GetSelectedRows()[0];
+            COMExcel.Range SoPhieu = exSheet.Range[exSheet.Cells[3, 5], exSheet.Cells[3, 6]];
+            SoPhieu.HorizontalAlignment = COMExcel.XlHAlign.xlHAlignRight;
+            SoPhieu.Value2 = "Số: " + textBoxOrderNumber.Text;
+            COMExcel.Range MaKho = exSheet.Range[exSheet.Cells[4, 5], exSheet.Cells[4, 6]];
+            MaKho.HorizontalAlignment = COMExcel.XlHAlign.xlHAlignRight;
+            MaKho.Value2 = "Mã kho: " + gridLookUpEditDacStock.Text;
+            COMExcel.Range CreateDate = exSheet.Range[exSheet.Cells[6, 1], exSheet.Cells[6, 6]];
+            DateTime dtCreateDate = dateTimePickerCreatedDate.Value.Date;
+            CreateDate.Value2 = "Ngày " + dtCreateDate.Day + " tháng " + dtCreateDate.Month + " năm " + dtCreateDate.Year;
+            exSheet.Cells[9, 3] = richTextBoxDescription.Text;
+            exSheet.Cells[11, 5] = "Time: " + DateTime.Now.TimeOfDay.ToString("hh\\:mm\\:ss");
+            exSheet.Cells[11, 6] = DateTime.Now.Date.ToString("dd/MM/yyyy");
+            if (chkPrintType.Checked)
+            {
+                exSheet.Cells[14, 2] = textBoxOrderNumber.Text;
+                DacProductCS productcs = new DacProductCS();
+                string ProductCode = gridViewWarehouse.GetRowCellValue(selectedRow, gridColumProductCode).ToString();
+                DacProductCollection productCollection = productcs.GetListProduct(ProductCode);
+                if (productCollection.Count > 0)
+                {
+                    exSheet.Cells[14, 3] = productCollection[0].Name;
+                    DacProductUnitCS productunitcs = new DacProductUnitCS();
+                    DacProductUnitCollection productUnitCollection = productunitcs.GetListProductUnit(productCollection[0].ProductUnitId);
+                    if (productUnitCollection.Count > 0)
+                    {
+                        exSheet.Cells[14, 4] = productUnitCollection[0].Name;
+                    }
+                }
+                exSheet.Cells[14, 5] = string.Empty;
+                exSheet.Cells[14, 6] = textBoxQuantity.Text;
+                exSheet.Cells[19, 6] = textBoxQuantity.Text;
+            }
+            else
+            {
+                int countRowDetail = dataGridViewDetails.Rows.Count;
+                for (int i = 0; i < countRowDetail; i++)
+                {
+                    exSheet.Cells[i + 14, 1] = i + 1;
+                    if (i + 14 >= 17)
+                    {
+                        COMExcel.Range rowLast = exSheet.Rows[i + 14 + 1];
+                        rowLast.Insert();
+                    }
+                    exSheet.Cells[i + 14, 2] = textBoxOrderNumber.Text;
+                    DacProductCS productcs = new DacProductCS();
+                    string ProductCode = gridViewWarehouse.GetRowCellValue(selectedRow, gridColumProductCode).ToString();
+                    DacProductCollection productCollection = productcs.GetListProduct(ProductCode);
+                    if (productCollection.Count > 0)
+                    {
+                        exSheet.Cells[i + 14, 3] = productCollection[0].Name;
+                        DacProductUnitCS productunitcs = new DacProductUnitCS();
+                        DacProductUnitCollection productUnitCollection = productunitcs.GetListProductUnit(productCollection[0].ProductUnitId);
+                        if (productUnitCollection.Count > 0)
+                        {
+                            exSheet.Cells[i + 14, 4] = productUnitCollection[0].Name;
+                        }
+                    }
+                    exSheet.Cells[i + 14, 5] = dataGridViewDetails.Rows[i].Cells[3].Value.ToString();
+                    exSheet.Cells[i + 14, 6] = "1";
+                }
+
+                if (countRowDetail >= 5)
+                {
+                    for (int i = 0; i < 2; i++)
+                    {
+                        COMExcel.Range DeleteRange = exSheet.Rows[countRowDetail + 14];
+                        DeleteRange.Delete();
+                    }
+                    exSheet.Cells[countRowDetail + 14, 6] = countRowDetail;
+                }               
+            }
+            exApp.Visible = true;
+        }
+
+        #endregion
+
+        #region Events For Select All CheckBox
+        private void AddHeaderCheckBox()
+        {
+            HeaderCheckBox = new CheckBox();
+
+            HeaderCheckBox.Size = new Size(15, 15);
+
+            //Add the CheckBox into the DataGridView
+            this.dataGridViewDetails.Controls.Add(HeaderCheckBox);
+        }
+
+        private void HeaderCheckBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Space)
+                HeaderCheckBoxClick((CheckBox)sender);
+        }
+        private void HeaderCheckBox_MouseClick(object sender, MouseEventArgs e)
+        {
+            HeaderCheckBoxClick((CheckBox)sender);
+        }
+
+        private void HeaderCheckBoxClick(CheckBox HCheckBox)
+        {
+            IsHeaderCheckBoxClicked = true;
+
+            foreach (DataGridViewRow Row in dataGridViewDetails.Rows)
+                ((DataGridViewCheckBoxCell)Row.Cells["IsSelected"]).Value = HCheckBox.Checked;
+
+            dataGridViewDetails.RefreshEdit();
+
+            TotalCheckedCheckBoxes = HCheckBox.Checked ? TotalCheckBoxes : 0;
+
+            IsHeaderCheckBoxClicked = false;
+        }
+
+        private void dataGridViewDetails_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        {
+            if (e.RowIndex == -1 && e.ColumnIndex == 0)
+                ResetHeaderCheckBoxLocation(e.ColumnIndex, e.RowIndex);
+        }
+
+        private void dataGridViewDetails_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        {
+            if (dataGridViewDetails.CurrentCell is DataGridViewCheckBoxCell)
+                dataGridViewDetails.CommitEdit(DataGridViewDataErrorContexts.Commit);
+        }
+
+        private void dataGridViewDetails_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (!IsHeaderCheckBoxClicked)
+                RowCheckBoxClick((DataGridViewCheckBoxCell)dataGridViewDetails[e.ColumnIndex, e.RowIndex]);
+        }
+
+        private void ResetHeaderCheckBoxLocation(int ColumnIndex, int RowIndex)
+        {
+            //Get the column header cell bounds
+            Rectangle oRectangle = this.dataGridViewDetails.GetCellDisplayRectangle(ColumnIndex, RowIndex, true);
+
+            Point oPoint = new Point();
+
+            oPoint.X = oRectangle.Location.X + (oRectangle.Width - HeaderCheckBox.Width) / 2 + 1;
+            oPoint.Y = oRectangle.Location.Y + (oRectangle.Height - HeaderCheckBox.Height) / 2 + 1;
+
+            //Change the location of the CheckBox to make it stay on the header
+            HeaderCheckBox.Location = oPoint;
+        }
+
+        private void RowCheckBoxClick(DataGridViewCheckBoxCell RCheckBox)
+        {
+            if (RCheckBox != null)
+            {
+                //Modify Counter;
+                if ((bool)RCheckBox.Value && TotalCheckedCheckBoxes < TotalCheckBoxes)
+                    TotalCheckedCheckBoxes++;
+                else if (TotalCheckedCheckBoxes > 0)
+                    TotalCheckedCheckBoxes--;
+
+                //Change state of the header CheckBox;
+                if (TotalCheckedCheckBoxes < TotalCheckBoxes)
+                    HeaderCheckBox.Checked = false;
+                else if (TotalCheckedCheckBoxes == TotalCheckBoxes)
+                    HeaderCheckBox.Checked = true;
+            }
+        }
+
+
+        #endregion
+
+    }
+}

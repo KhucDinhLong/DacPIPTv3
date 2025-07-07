@@ -1,0 +1,23 @@
+﻿@page "/role-edit"
+@using PIPTWeb.Client.Services
+@inject IRoleService roleService
+<!-- Form Edit -->
+<RoleForm Role="Role" HeaderText="Sửa thông tin nhóm quyền" ButtonText="Sửa" OnvalidSubmit="@(() => HandleValidSubmit())" OnClose="Close" />
+
+@code {
+
+    [Parameter] public PIPTWeb.Shared.Models.SecRoles Role { get; set; }
+    [Parameter] public EventCallback OnvalidSubmit { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    public async Task HandleValidSubmit()
+    {
+        await roleService.EditRoleById(Role.Id, Role);
+        await OnvalidSubmit.InvokeAsync();
+    }
+
+    public async Task Close()
+    {
+        await OnClose.InvokeAsync();
+    }
+}

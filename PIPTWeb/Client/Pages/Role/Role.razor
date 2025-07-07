@@ -1,0 +1,269 @@
+﻿@page "/roles"
+@using PIPTWeb.Client.Services
+@using Blazored.LocalStorage
+@using Microsoft.AspNetCore.Identity
+@inject IRoleService roleService
+@inject IMenuService menuService
+@inject IRoleMenuService roleMenuService
+@inject ILocalStorageService localStorage
+@inject NotificationService NotificationService
+
+
+<ContentHeader>
+    <Header>
+        <PageTitle Title="Quản lý nhóm quyền" />
+    </Header>
+</ContentHeader>
+<ContentMain>
+    <div class="card mb-3">
+        <div class="card-header">
+            <i class="fa fa-table"></i> Quản lý nhóm quyền
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <div id="datatable_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                            <div id="dataTable_length" class="dataTables_length">
+                                <div class="col-12">
+                                    <div class="card-body">
+                                        <div class="demo-inline-spacing">
+                                            <RadzenButton Style="background-color: #449D44" Text="Thêm mới nhóm quyền" Click="@(() => OpenDialog(""))" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-5">
+                            <div class="form-group">
+                                <div id="dataTable_filter" class="input-group">
+                                    <div class="input-group-prepend">
+                                        <button type="button" class="btn btn-default">Bộ lọc <i class="fas fa-filter"></i></button>
+                                    </div>
+                                    <input type="search" class="form-control" placeholder="Tên nhóm" aria-controls="dataTable" @bind-value="RoleName" />
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btn-default" @onclick="@(() => Search(RoleName))"><i class="fas fa-search"></i> Tìm kiếm</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-4">
+                        </div>
+                        <div class="col-sm-12 col-md-3">
+                            <div class="form-group">
+                                <div id="dataTable_length" class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Show:</span>
+                                    </div>
+                                    <select name="dataTable_length" aria-controls="dataTable" class="form-control">
+                                        <option value="10">10</option>
+                                        <option value="25">25</option>
+                                        <option value="50" selected>50</option>
+                                        <option value="100">100</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            @if (LstRole == null)
+                            {
+                                <p><em>Đang tải dữ liệu...</em></p>
+                            }
+                            else
+                            {
+                                <table class="table table-bordered dataTable" id="dataTable" role="grid" aria-describedby="dataTable_info">
+                                    <thead>
+                                        <tr role="row">
+                                            <th>#</th>
+                                            <th>Tên nhóm</th>
+                                            <th>Hành động</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{ var i = 1;}
+                                        @foreach (SecRoles role in LstRole)
+                                        {
+                                            <tr role="row">
+                                                <td>@i</td>
+                                                <td>@role.Name</td>
+                                                <td>
+                                                    <button class="btn btn-primary btn-sm" @onclick="@(()=> OpenDialog(role.Id))"><i class="fa fa-edit"></i></button>
+                                                    <button class="btn btn-danger btn-sm" @onclick="@(()=> OpenDeleteDialog(role.Id))"><i class="fa fa-trash"></i></button>
+                                                    @*@if (!(bool)role.IsAdmin)
+                                                        {
+                                                            <a href="/role-menus/@role.Id" class="btn btn-success btn-sm"><i class="fa fa-user-shield"></i></a>
+                                                        }*@
+                                                </td>
+                                            </tr>
+                                            i++;
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-5">
+                            <div id="dataTable_info" class="dataTables_info" role="status" arial-live="polite">
+                                <p>Trang @actualPage trong tổng @totalPages trang</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-7">
+                            <div id="dataTable_paginate" class="dataTables_paginate paging_simple_numbers">
+                                <Pagination TotalPages="totalPages" ActualPage="actualPage" Radius="3"
+                                            SelectedPage="SelectedPage"></Pagination>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer small text-muted">
+        </div>
+    </div>
+</ContentMain>
+<PIPTModal @ref="piptModal" Size="PIPTModal.ModalSize.Nomal" OnCancelDialog="CancelDialog">
+    <Title>Thông tin nhóm quyền</Title>
+    <Body>
+        @if (IsDeleteDialogOpen)
+        {
+            <RoleDelete Role="role"
+                        OnvalidSubmit="OnSubmitCallBack"
+                        OnClose="CloseDialog" />
+        }
+        else if (!string.IsNullOrWhiteSpace(role.Name))
+        {
+            <RoleEdit Role="role" OnvalidSubmit="OnSubmitCallBack" OnClose="CloseDialog" />
+        }
+        else
+        {
+            <RoleCreate Role="role"
+                        OnvalidSubmit="OnSubmitCallBack"
+                        OnClose="CloseDialog">
+            </RoleCreate>
+        }
+    </Body>
+</PIPTModal>
+@code
+{
+    private PIPTWeb.Shared.Models.SecRoles role = new PIPTWeb.Shared.Models.SecRoles();
+    private bool IsDeleteDialogOpen = false;
+    private bool IsSetMenuDialogOpen = false;
+    private PIPTModal piptModal { get; set; }
+    private PaginatedInputModel pagination { get; set; } = new PaginatedInputModel();
+    private List<SysMenu> LstMenu { get; set; } = new List<SysMenu>();
+    private List<int> LstSelectedMenu { get; set; } = new List<int>();
+
+    private IEnumerable<PIPTWeb.Shared.Models.SecRoles> LstRole { get; set; } = new List<PIPTWeb.Shared.Models.SecRoles>();
+
+    public int totalPages { get; set; }
+    private int actualPage = 1;
+    private string RoleName = string.Empty;
+
+    protected async override Task OnInitializedAsync()
+    {
+        roleService.OnChange += StateHasChanged;
+        menuService.OnChange += StateHasChanged;
+        pagination.PageNumber = 1;
+        pagination.PageSize = 50;
+        await roleService.LoadRoles(pagination);
+        LstRole = roleService.LstRole;
+        totalPages = roleService.totalPages;
+    }
+    public void Dispose()
+    {
+        roleService.OnChange -= StateHasChanged;
+        menuService.OnChange -= StateHasChanged;
+    }
+
+    private async Task OpenDialog(string roleId)
+    {
+        if (string.IsNullOrWhiteSpace(roleId))
+        {
+            role = new PIPTWeb.Shared.Models.SecRoles();
+        }
+        else
+        {
+            role = await roleService.GetRoleById(roleId);
+        }
+
+        await piptModal.Open();
+    }
+
+    private async Task OpenDeleteDialog(string roleId)
+    {
+        role = await roleService.GetRoleById(roleId);
+        IsDeleteDialogOpen = true;
+        await piptModal.Open();
+    }
+
+    private async Task OpenSetMenuDialog(string id)
+    {
+        IsSetMenuDialogOpen = true;
+        role = await roleService.GetRoleById(id);
+        await menuService.LoadMenus(pagination);
+        //LstMenu = menuService.LstMenu.ToList();
+        //var lst = await roleMenuService.GetMenuByRole(id);
+        //LstSelectedMenu = lst.ToList();
+        await piptModal.Open();
+    }
+
+    private async Task OnSubmitCallBack()
+    {
+        IsDeleteDialogOpen = false;
+        IsSetMenuDialogOpen = false;
+        await piptModal.Close();
+        await roleService.LoadRoles(pagination);
+        totalPages = roleService.totalPages;
+        LstRole = roleService.LstRole;
+        ShowNotification(new Radzen.NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Cập nhật dữ liệu nhóm quyền", Detail = "Thành công!" });
+        StateHasChanged();
+    }
+
+    private async Task CloseDialog()
+    {
+        IsDeleteDialogOpen = false;
+        IsSetMenuDialogOpen = false;
+        await piptModal.Close();
+        pagination.PageNumber = actualPage;
+        await roleService.LoadRoles(pagination);
+        LstRole = roleService.LstRole;
+        StateHasChanged();
+    }
+
+    private async Task SelectedPage(int page)
+    {
+        actualPage = page;
+        pagination.PageNumber = actualPage;
+        await roleService.LoadRoles(pagination);
+        LstRole = roleService.LstRole;
+        StateHasChanged();
+    }
+
+    void ShowNotification(Radzen.NotificationMessage message)
+    {
+        NotificationService.Notify(message);
+    }
+
+    private async Task Search(string RoleName)
+    {
+        actualPage = 1;
+        pagination.PageNumber = actualPage;
+        // Thêm bộ lọc tìm kiếm
+        pagination.FilterParams = new List<FilterUtility.FilterParams> {
+            new FilterUtility.FilterParams { ColumnName = "Name", FilterValue = RoleName, FilterOption = FilterUtility.FilterOptions.Contains }
+            };
+        await roleService.LoadRoles(pagination);
+        LstRole = roleService.LstRole;
+        totalPages = roleService.totalPages;
+    }
+    void CancelDialog()
+    {
+        IsDeleteDialogOpen = false;
+        IsSetMenuDialogOpen = false;
+    }
+}

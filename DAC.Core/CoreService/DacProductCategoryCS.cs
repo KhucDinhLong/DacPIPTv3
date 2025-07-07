@@ -1,0 +1,180 @@
+﻿using DAC.DAL;
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DAC.Core
+{
+    public class DacProductCategoryCS
+    {
+        /// <summary>
+        /// Nhan danh sach cac chuyen muc nhu Unit, Category
+        /// </summary>
+        /// <param name="sStoredProcedureName">Ten StoredProcedure tuong ung</param>
+        /// <returns></returns>
+        public List<DacProductCatalogue> GetListCategory()
+        {
+            List<DacProductCatalogue> dacCatalogueCollection = new List<DacProductCatalogue>();
+            DacDbAccess dacDb = new DacDbAccess();
+            dacDb.CreateNewSqlCommand();
+            SqlDataReader reader = dacDb.ExecuteReader("spDacProductCategory_SelectAll");
+
+            while (reader.Read())
+            {
+                DacProductCatalogue dacCatalogue = new DacProductCatalogue();
+
+                dacCatalogue.Id = (int)reader["Id"];
+                dacCatalogue.Code = reader["Code"].ToString();
+                dacCatalogue.Name = reader["Name"].ToString();
+                dacCatalogue.LargeGroupCode = reader["LargeGroupCode"].ToString();
+                dacCatalogue.Remark = reader["Remark"].ToString();
+                dacCatalogue.CreatedUser = reader["CreatedUser"].ToString();
+                dacCatalogue.CreatedDate = (DateTime)reader["CreatedDate"];
+                dacCatalogue.ModifiedUser = reader["ModifiedUser"].ToString();
+                dacCatalogue.ModifiedDate = (DateTime)reader["ModifiedDate"];
+                dacCatalogueCollection.Add(dacCatalogue);
+            }
+
+            //Call Close when reading done.
+            reader.Close();
+
+            return dacCatalogueCollection;
+        }
+        /// <summary>
+        /// Nhan danh sach cac chuyen muc lon hon id
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        public List<DacProductCatalogue> GetListCategory(int Id)
+        {
+            List<DacProductCatalogue> dacCatalogueCollection = new List<DacProductCatalogue>();
+            DacDbAccess dacDb = new DacDbAccess();
+            dacDb.CreateNewSqlCommand();
+            // Add parameters
+            dacDb.AddParameter("@Id", Id);
+            SqlDataReader reader = dacDb.ExecuteReader("spDacProductCategory_LargerThanById");
+            while (reader.Read())
+            {
+                DacProductCatalogue dacCatalogue = new DacProductCatalogue();
+
+                dacCatalogue.Id = (int)reader["Id"];
+                dacCatalogue.Code = reader["Code"].ToString();
+                dacCatalogue.Name = reader["Name"].ToString();
+                dacCatalogue.LargeGroupCode = reader["LargeGroupCode"].ToString();
+                dacCatalogue.Remark = reader["Remark"].ToString();
+                dacCatalogue.CreatedUser = reader["CreatedUser"].ToString();
+                dacCatalogue.CreatedDate = (DateTime)reader["CreatedDate"];
+                dacCatalogue.ModifiedUser = reader["ModifiedUser"].ToString();
+                dacCatalogue.ModifiedDate = (DateTime)reader["ModifiedDate"];
+                dacCatalogueCollection.Add(dacCatalogue);
+            }
+            //Call Close when reading done.
+            reader.Close();
+
+            return dacCatalogueCollection;
+        }
+        /// <summary>
+        /// Luu nhom san pham vao co so du lieu tai Server
+        /// </summary>
+        /// <param name="dacCatalogue"></param>
+        /// <returns></returns>
+        public bool Insert(DacProductCatalogue dacCatalogue)
+        {
+            DacDbAccess dacDb = new DacDbAccess();
+            try
+            {
+                dacDb.CreateNewSqlCommand();
+                // Add parameters
+                dacDb.AddParameter("@Code", dacCatalogue.Code);
+                dacDb.AddParameter("@Name", dacCatalogue.Name);
+                dacDb.AddParameter("@LargeGroupCode", dacCatalogue.LargeGroupCode);
+                dacDb.AddParameter("@Remark", dacCatalogue.Remark);
+                dacDb.AddParameter("@CreatedUser", dacCatalogue.CreatedUser);
+                dacDb.AddParameter("@CreatedDate", dacCatalogue.CreatedDate);
+                dacDb.AddParameter("@ModifiedUser", dacCatalogue.ModifiedUser);
+                dacDb.AddParameter("@ModifiedDate", dacCatalogue.ModifiedDate);
+
+                dacDb.ExecuteNonQuery("spDacProductCategory_Insert");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        /// <summary>
+        /// Luu nhom san pham vao co so du lieu tai Agency
+        /// </summary>
+        /// <param name="dacCatalogue"></param>
+        /// <returns></returns>
+        public bool Insert(DacProductCatalogue dacCatalogue, int Id)
+        {
+            DacDbAccess dacDb = new DacDbAccess();
+            try
+            {
+                dacDb.CreateNewSqlCommand();
+                // Add parameters
+                dacDb.AddParameter("@Id", Id);
+                dacDb.AddParameter("@Code", dacCatalogue.Code);
+                dacDb.AddParameter("@Name", dacCatalogue.Name);
+                dacDb.AddParameter("@LargeGroupCode", dacCatalogue.LargeGroupCode);
+                dacDb.AddParameter("@Remark", dacCatalogue.Remark);
+                dacDb.AddParameter("@CreatedUser", dacCatalogue.CreatedUser);
+                dacDb.AddParameter("@CreatedDate", dacCatalogue.CreatedDate);
+                dacDb.AddParameter("@ModifiedUser", dacCatalogue.ModifiedUser);
+                dacDb.AddParameter("@ModifiedDate", dacCatalogue.ModifiedDate);
+
+                dacDb.ExecuteNonQuery("spDacProductCategory_Insert");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public bool Update(DacProductCatalogue dacCatalogue)
+        {
+            DacDbAccess dacDb = new DacDbAccess();
+            try
+            {
+                dacDb.CreateNewSqlCommand();
+                // Add parameters
+                dacDb.AddParameter("@Code", dacCatalogue.Code);
+                dacDb.AddParameter("@Name", dacCatalogue.Name);
+                dacDb.AddParameter("@LargeGroupCode", dacCatalogue.LargeGroupCode);
+                dacDb.AddParameter("@Remark", dacCatalogue.Remark);
+                dacDb.AddParameter("@CreatedUser", dacCatalogue.CreatedUser);
+                dacDb.AddParameter("@CreatedDate", dacCatalogue.CreatedDate);
+                dacDb.AddParameter("@ModifiedUser", dacCatalogue.ModifiedUser);
+                dacDb.AddParameter("@ModifiedDate", dacCatalogue.ModifiedDate);
+
+                dacDb.ExecuteNonQuery("spDacProductCategory_Update");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public bool Delete(string sCode)
+        {
+            DacDbAccess dacDb = new DacDbAccess();
+            try
+            {
+                dacDb.CreateNewSqlCommand();
+                // Add parameters
+                dacDb.AddParameter("@Code", sCode);
+
+                dacDb.ExecuteNonQuery("spDacProductCategory_Delete");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+    }
+}

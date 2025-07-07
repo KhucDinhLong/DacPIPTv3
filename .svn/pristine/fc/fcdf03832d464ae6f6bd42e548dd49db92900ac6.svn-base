@@ -1,0 +1,8 @@
+﻿@namespace PIPTWeb.Select2
+
+@typeparam TItem
+@typeparam TSource
+
+<div @attributes="AdditionalAttributes">
+    <select id="@(HTML_ID_PREFIX + inputGuid)" class="select2-hidden-accessible form-control" multiple="@Multiselect"></select>
+</div>

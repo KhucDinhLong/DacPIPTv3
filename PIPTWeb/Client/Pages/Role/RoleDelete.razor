@@ -1,0 +1,30 @@
+﻿@page "/role-delete"
+@using PIPTWeb.Client.Services
+@inject IRoleService roleService
+
+<div class="modal-body">
+    <div class="text-center">
+        <h3 class="text-red">Bạn có chăc chắn muốn xóa nhóm quyền này không?</h3>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-primary mr-auto" @onclick="OnClose">Hủy</button>
+    <button type="button" class="btn btn-danger" @onclick="DeleteAsync">Xóa</button>
+</div>
+@code {
+    [Parameter] public PIPTWeb.Shared.Models.SecRoles Role { get; set; }
+    [Parameter] public EventCallback OnvalidSubmit { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    public async Task DeleteAsync()
+    {
+        string roleId = Role.Id;
+        await roleService.DeleteRoleById(roleId);
+        await OnvalidSubmit.InvokeAsync();
+    }
+
+    public async Task Close()
+    {
+        await OnClose.InvokeAsync();
+    }
+}

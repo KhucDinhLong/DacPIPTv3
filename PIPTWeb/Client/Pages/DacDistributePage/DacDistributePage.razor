@@ -1,0 +1,271 @@
+﻿@page "/xuat-hang"
+@using PIPTWeb.Select2
+@using PIPTWeb.Shared.Models
+
+<ContentHeader>
+    <Header>
+        <PageTitle Title="Xuất hàng cho đại lý" />
+    </Header>
+</ContentHeader>
+<ContentMain>
+    @if (IsAdmin == null || currentDistribute == null || LstDistributeModel == null || LstSrcAgency == null || LstSrcAgency.Count <= 0
+   || LstProduct == null || LstProduct.Count <= 0 || LstDesAgency == null)
+    {
+        <p>Đang tải dữ liệu</p>
+    }
+    else
+    {
+        <div class="card mb-3">
+            <div class="card-header">
+                <i class="fa fa-table"></i> Xuất hàng
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+                        <EditForm Model="currentDistribute" OnValidSubmit="SubmitData">
+                            <div class="form-horizontal">
+                                <div class="card-body">
+                                    <DataAnnotationsValidator />
+                                    <ValidationSummary />
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group row">
+                                                <label class="col-form-label col-sm-3">Lệnh xuất: </label>
+                                                <div class="col-sm-9">
+                                                    <InputText type="text" @bind-Value="currentDistribute.dacDistributeToAgency.OrderNumber" class="form-control" disabled />
+                                                </div>
+                                            </div>
+                                            @if (IsAdmin.HasValue && IsAdmin.Value)
+                                            {
+                                                <div class="form-group row">
+                                                    <label class="col-form-label col-sm-3">Từ đại lý: </label>
+                                                    <div class="col-sm-9">
+                                                        <Select2 TItem="DacAgency"
+                                                                 TSource="List<DacAgency>"
+                                                                 IdSelector="c => c?.ID.ToString()"
+                                                                 TextSelector="c => c?.Name"
+                                                                 Datasource="LstSrcAgency"
+                                                                 Value="LstSelectedSrcAgency"
+                                                                 GetElementById="getAgencyByIdAsync"
+                                                                 FilterFunction="filterAgencyFunction"
+                                                                 OnValueChanged="OnSrcAgencyChange" Select2Options="select2Option"></Select2>
+                                                    </div>
+                                                </div>
+                                            }
+                                            <div class="form-group row">
+                                                <label class="col-form-label col-sm-3">Khách hàng: </label>
+                                                <div class="col-sm-9">
+                                                    <Select2 TItem="DacAgency"
+                                                             TSource="List<DacAgency>"
+                                                             IdSelector="c => c?.ID.ToString()"
+                                                             TextSelector="c => c?.Name"
+                                                             Datasource="LstDesAgency"
+                                                             Value="LstSelectedDesAgency"
+                                                             GetElementById="getAgencyByIdAsync"
+                                                             FilterFunction="filterAgencyFunction"
+                                                             OnValueChanged="OnDesAgencyChange" Select2Options="select2Option"></Select2>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-form-label col-sm-3">Sản phẩm: </label>
+                                                <div class="col-sm-9">
+                                                    <Select2 TItem="DacProduct"
+                                                             TSource="List<DacProduct>"
+                                                             IdSelector="c => c?.Id.ToString()"
+                                                             TextSelector="c => c?.Name"
+                                                             Datasource="LstProduct"
+                                                             Value="LstSelectedProduct"
+                                                             GetElementById="getProductByIdAsync"
+                                                             FilterFunction="filterProductFunction"
+                                                             OnValueChanged="OnProductChange" Select2Options="select2Option"></Select2>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-form-label col-sm-3">Số lượng: </label>
+                                                <div class="col-sm-9">
+                                                    <InputNumber @bind-Value="currentDistribute.dacDistributeToAgency.Quantity" class="form-control" disabled="@disableControl" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-form-label col-sm-3">Ghi chú: </label>
+                                                <div class="col-sm-9">
+                                                    <textarea @bind="currentDistribute.dacDistributeToAgency.Description" class="form-control" disabled="@disableControl"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-form-label col-sm-3">Ngày: </label>
+                                                <div class="col-sm-9">
+                                                    <InputDate @bind-Value="currentDistribute.dacDistributeToAgency.CreatedDate" class="form-control" disabled="@disableControl" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group row">
+                                                <label class="col-form-label col-sm-3">Quét hoặc nhập mã: </label>
+                                                <div class="col-sm-9">
+                                                    <InputText id="txtSeri" @bind-Value="Seri" class="form-control" disabled="@disableControl" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-form-label col-sm-3">Từ seri: </label>
+                                                <div class="col-sm-9">
+                                                    <InputText id="txtFromSeri" @bind-Value="FromSeri" class="form-control" disabled="@disableControl" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-form-label col-sm-3">Đến seri: </label>
+                                                <div class="col-sm-9">
+                                                    <InputText id="txtToSeri" @bind-Value="ToSeri" class="form-control" disabled="@disableControl" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-form-label col-sm-3"></label>
+                                                <div class="col-sm-9">
+                                                    <button class="btn btn-success" @onclick="@(() => Add())" disabled="@DisableAdd">Thêm</button>
+                                                    <button class="btn btn-info" @onclick="@(() => Save())" disabled="@DisableSave">Lưu</button>
+                                                    <button class="btn btn-success" @onclick="@(() => Update())" disabled="@DisableUpdate">Sửa</button>
+                                                    <button class="btn btn-warning" @onclick="@(() => Cancel())" disabled="@DisableCancel">Bỏ qua</button>
+                                                    <button class="btn btn-danger" @onclick="@(() => Delete())" disabled="@DisableDelete">Xóa</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </EditForm>
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="table-responsive overflow-auto">
+                            <div id="datatable_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+                                <div class="row">
+                                    <div class="col-12" style="height:600px">
+                                        <table class="table-sm table-bordered table-head-fixed dataTable table-hover w-100" id="dataTable" role="grid" aria-describedby="dataTable_info">
+                                            <thead>
+                                                <tr role="row">
+                                                    <th>Lệnh</th>
+                                                    @if (IsAdmin.HasValue && IsAdmin.Value)
+                                                    {
+                                                        <th>Từ đại lý</th>
+                                                    }
+                                                    <th>Mã đại lý</th>
+                                                    <th>Số lượng</th>
+                                                    <th>Ghi chú</th>
+                                                    <th>Ngày tạo</th>
+                                                    <th>Active</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in LstDistributeModel)
+                                                {
+                                                    <tr @onclick="() => ChangeModel(item)" id="@item.dacDistributeToAgency.ID">
+                                                        <td>@item.dacDistributeToAgency.OrderNumber</td>
+                                                        @if (IsAdmin.HasValue && IsAdmin.Value)
+                                                        {
+                                                            <td>@item.dacDistributeToAgency.SrcAgencyCode</td>
+                                                        }
+                                                        <td>@item.dacDistributeToAgency.DesAgencyCode</td>
+                                                        <td>@item.dacDistributeToAgency.Quantity</td>
+                                                        <td>@item.dacDistributeToAgency.Description</td>
+                                                        <td>@item.dacDistributeToAgency.CreatedDate</td>
+                                                        <td>@item.dacDistributeToAgency.Active</td>
+                                                    </tr>
+                                                }
+
+                                            </tbody>
+                                            <tfoot class="bg-light">
+                                                <tr>
+                                                    <th colspan="2" class="font-weight-normal">
+                                                        <PaginationInfo ActualPage="actualPage" TotalPages="totalPages" PageType="PaginationInfo.PageInfoType.PagePerTotal">
+                                                            <Text>Nếu PaginationInfo.PageInfoType.Text thì thể hiện ở đây</Text>
+                                                        </PaginationInfo>
+                                                    </th>
+                                                    <th colspan="50" class="font-weight-normal">
+                                                        <Pagination TotalPages="totalPages" ActualPage="actualPage" Radius="3"
+                                                                    SelectedPage="SelectedPage"></Pagination>
+                                                    </th>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="table-responsive overflow-auto">
+                            <div id="datatable_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+                                <div class="row">
+                                    <button class="btn btn-danger" @onclick="@(() => DeleteSeri())" disabled="@DisableDelete">Xóa</button>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12" style="height:600px">
+                                        <table class="table-sm table-bordered table-head-fixed dataTable table-hover w-100" id="dataTable" role="grid" aria-describedby="dataTable_info">
+                                            <thead>
+                                                <tr role="row">
+                                                    <th></th>
+                                                    <th>Id khách hàng</th>
+                                                    <th>Mã QR code</th>
+                                                    <th>Mã sản phẩm</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (currentDistribute.LstDistributeDetail != null && currentDistribute.LstDistributeDetail.Count > 0)
+                                                {
+                                                    foreach (var item in currentDistribute.LstDistributeDetail)
+                                                    {
+                                                        <tr>
+                                                            <td class="text-center"><input type="checkbox" @onchange="eventArgs => { CheckboxClicked(item, eventArgs.Value); }" /></td>
+                                                            <td>@currentDistribute.dacDistributeToAgency.DesAgencyId</td>
+                                                            <td>@item.DacCode</td>
+                                                            <td>@item.ProductCode</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                            <tfoot class="bg-light">
+                                                <tr>
+                                                    <th colspan="2" class="font-weight-normal">
+                                                        <PaginationInfo ActualPage="actualPage" TotalPages="totalPages" PageType="PaginationInfo.PageInfoType.PagePerTotal">
+                                                            <Text>Nếu PaginationInfo.PageInfoType.Text thì thể hiện ở đây</Text>
+                                                        </PaginationInfo>
+                                                    </th>
+                                                    <th colspan="50" class="font-weight-normal inline">
+                                                        <Pagination TotalPages="totalPages" ActualPage="actualPage" Radius="3"
+                                                                    SelectedPage="SelectedPage"></Pagination>
+                                                    </th>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</ContentMain>
+<PIPTModal @ref="piptModal" Size="PIPTModal.ModalSize.Nomal" OnCancelDialog="CancelDialog">
+    <Title>Thông tin xuất hàng</Title>
+    <Body>
+        @if (IsDeleteDialogOpen)
+        {
+            <DacDistributeDelete DistributeId="currentDistribute.dacDistributeToAgency.ID"
+                                 OnvalidSubmit="OnSubmitCallBack"
+                                 OnClose="CloseDialog" />
+        }
+        else if (isDeleteSeri)
+        {
+            <DeleteSeri LstDeleteSeri="LstDeleteSeri" OnvalidSubmit="OnSubmitCallBack" OnClose="CloseDialog" />
+        }
+        else
+        {
+            <InvalidSeri LstInvalidSeri="LstInvalidSeri" OnClose="CloseDialog" />
+        }
+    </Body>
+</PIPTModal>

@@ -1,0 +1,160 @@
+﻿using DAC.Core;
+using DAC.DAL;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Windows.Forms;
+
+namespace PIPT
+{
+    public partial class frmReportImExStockBaseStock : Form
+    {
+        #region Instance of the form
+        /// <summary>
+        /// Instance to store instance of this form
+        /// </summary>
+        private static frmReportImExStockBaseStock _instance = null;
+
+        /// <summary>
+        /// Instance form.
+        /// </summary>
+        /// <returns>Instance of this Form</returns>
+        public static frmReportImExStockBaseStock Instance()
+        {
+            if (_instance == null || _instance.IsDisposed)
+            {
+                _instance = new frmReportImExStockBaseStock();
+            }
+            return _instance;
+        }
+
+        public static frmReportImExStockBaseStock Instance(Form parent)
+        {
+            _instance = Instance();
+            _instance.MdiParent = parent;
+            return _instance;
+        }
+
+        public static frmReportImExStockBaseStock Instance(Form parent, bool isActivate)
+        {
+            _instance = Instance(parent);
+            if (isActivate)
+            {
+                _instance.WindowState = FormWindowState.Normal;
+                _instance.Show();
+                _instance.Activate();
+            }
+            return _instance;
+        }
+        #endregion
+        #region Variables
+        DacDbAccess dacDb = new DacDbAccess();
+        #endregion
+        public frmReportImExStockBaseStock()
+        {
+            InitializeComponent();
+        }
+
+        private void simpleButtonGetData_Click(object sender, EventArgs e)
+        {
+            if (DateTime.Parse(dateEditTo.EditValue.ToString()).Year > DateTime.Now.Year)
+            {
+                if (MessageBox.Show("Năm tìm kiếm lơn hơn năm hiện tại, dữ liệu tồn kho của năm tới hiện chưa có. " +
+                    "Bạn có muốn tiếp tục tìm kiếm?", "Thông báo"
+                    , MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                    return;
+            }
+            DataTable dataTableInventory = new DataTable();
+            if (cbbStock.SelectedIndex != 0)
+                dataTableInventory = DAC.Core.Inventory.GetInventoryByStock(dateEditFrom.EditValue.ToString()
+                    , dateEditTo.EditValue.ToString(), cbbStock.SelectedValue.ToString());
+            else
+                dataTableInventory = DAC.Core.Inventory.GetInventoryByStock(dateEditFrom.EditValue.ToString()
+                    , dateEditTo.EditValue.ToString(), "");
+            gridControlReport.DataSource = dataTableInventory;
+        }
+
+        private void simpleButtonExcel_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog fileDialog = new SaveFileDialog();
+            fileDialog.Filter = "Excel 2007-2016(*.xlsx)|*.xlsx";
+
+            if (fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                //gridViewAgency.ExportToXlsx(@"\khachhang.xlsx");
+                gridViewReport.ExportToXlsx(fileDialog.FileName);
+            }
+        }
+
+        private void frmReportImExStock_Load(object sender, EventArgs e)
+        {
+            dateEditFrom.EditValue = DateTime.Now;
+            dateEditTo.EditValue = DateTime.Now.AddDays(1);
+            DacStockCS dacStockCS = new DacStockCS();
+            List<DacStock> LstStock = dacStockCS.GetAllActiveStock();
+            DacStock firstItem = new DacStock();
+            firstItem.Name = "Tất cả";
+            LstStock.Insert(0, firstItem);
+            cbbStock.DataSource = LstStock;
+            cbbStock.DisplayMember = "Name";
+            cbbStock.ValueMember = "Code";
+        }
+
+        private void simpleButtonOpeningStock_Click(object sender, EventArgs e)
+        {
+            DateTime dateTimeFr = (DateTime)dateEditFrom.EditValue;
+            if (dateTimeFr.Year >= DateTime.Now.Year)
+            {
+                MessageBox.Show("Không thể chuyển dữ liệu tồn kho khi chưa hết năm!", "Thông báo"
+                    , MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            string dateFr = "01-01-" + dateTimeFr.Year;
+            string dateTo = "12-31-" + dateTimeFr.Year;
+            // Năm tiếp theo
+            int iYear = dateTimeFr.Year + 1;
+            // Nhận hàng tồn kho từ đầu năm
+            DataTable dataTableInventory;
+            if (cbbStock.SelectedIndex != 0)
+                dataTableInventory = DAC.Core.Inventory.GetInventoryByStock(dateFr, dateTo, cbbStock.SelectedText);
+            else
+                dataTableInventory = DAC.Core.Inventory.GetInventoryByStock(dateFr, dateTo, "");
+            dataTableInventory.Columns.Remove("TonDau");
+            dataTableInventory.Columns.Remove("StockName");
+            dataTableInventory.Columns.Remove("SL_Nhap");
+            dataTableInventory.Columns.Remove("SL_Xuat");
+            dataTableInventory.Columns.Add("Year", typeof(int));
+            foreach (DataRow dr in dataTableInventory.Rows)
+            {
+                if (dr["TonCuoi"] == DBNull.Value)
+                {
+                    dr["TonCuoi"] = 0;
+                }
+                dr["Year"] = iYear;
+            }
+            dataTableInventory.Columns["TonCuoi"].ColumnName = "Quantity";
+            dataTableInventory.TableName = "DacInventory";
+            // Xóa các dữ liệu tồn cũ
+            foreach (DataRow row in dataTableInventory.Rows)
+            {
+                dacDb.CreateNewSqlCommand();
+                // Add parameters
+                
+                dacDb.AddParameter("@ProductCode", row["ProductCode"]);
+                dacDb.AddParameter("@StockID", row["StockID"]);
+                dacDb.AddParameter("@Year", row["Year"]);
+                dacDb.ExecuteNonQuery("spDacInventory_Delete");
+            }
+            // Lưu vào bảng tồn.
+            try
+            {
+                dacDb.PerformBulkCopy(dataTableInventory, new string[] { "ProductCode", "Quantity", "Year", "StockID" });
+                MessageBox.Show("Bạn đã chuyển tồn kho sang năm mới thành công!", "Thông báo");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.StackTrace, "Thông báo");
+            }
+        }
+    }
+}

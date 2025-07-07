@@ -1,0 +1,31 @@
+﻿@using System.IO
+@using System.Net.Http
+@using System.Net.Http.Json
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.AspNetCore.Components.WebAssembly.Http
+@using Microsoft.AspNetCore.Hosting
+@using Microsoft.JSInterop
+@using PIPTWeb.Components
+@using PIPTWeb.Client
+@using PIPTWeb.Client.Components
+@using PIPTWeb.Client.PolicyProvider
+@using PIPTWeb.Client.Services
+@using PIPTWeb.Client.Shared
+@using PIPTWeb.Client.Utils
+@using PIPTWeb.Shared
+@using PIPTWeb.Shared.Models
+@using PIPTWeb.Shared.ViewModels
+@using Blazor.AdminLte
+@using Radzen
+@using Radzen.Blazor
+@using Tewr.Blazor.FileReader
+@using PIPTWeb.TreeView
+@attribute [PIPTWeb.Generators.Blazor.GenerateSetParametersAsync(RequireExactMatch = true)]
+
+@inject NavigationManager _navigationManager
+@inject IJSRuntime _jsRuntime
+@inject AuthenticationStateProvider _stateProvider

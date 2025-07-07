@@ -1,0 +1,444 @@
+﻿namespace PIPT
+{
+    partial class frmDacGetData
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmDacGetData));
+            this.groupBoxDacQueryCode = new System.Windows.Forms.GroupBox();
+            this.textBoxUnitCode = new System.Windows.Forms.TextBox();
+            this.dateTimePickerToDate = new System.Windows.Forms.DateTimePicker();
+            this.dateTimePickerFrDate = new System.Windows.Forms.DateTimePicker();
+            this.dataGridViewLoadDacQueryCode = new System.Windows.Forms.DataGridView();
+            this.ColQueryRecID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColLoadQueryDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColLoadPhoneNumber = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColLoadUnitCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColLoadDacCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColLoadStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.labelUnitCodeSample = new System.Windows.Forms.Label();
+            this.labelUnitCode = new System.Windows.Forms.Label();
+            this.labelToDate = new System.Windows.Forms.Label();
+            this.labelFrDate = new System.Windows.Forms.Label();
+            this.buttonQueryData = new System.Windows.Forms.Button();
+            this.buttonSave = new System.Windows.Forms.Button();
+            this.dataGridViewDacQueryCode = new System.Windows.Forms.DataGridView();
+            this.ColumnID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnQRID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnQueryDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnPhone = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnUnitCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnDacCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnSeries = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.buttonSearch = new System.Windows.Forms.Button();
+            this.buttonExcel = new System.Windows.Forms.Button();
+            this.labelAmount = new System.Windows.Forms.Label();
+            this.labelSearchPhone = new System.Windows.Forms.Label();
+            this.textBoxSearchPhone = new System.Windows.Forms.TextBox();
+            this.labelSearchDacCode = new System.Windows.Forms.Label();
+            this.textBoxSearchDacCode = new System.Windows.Forms.TextBox();
+            this.groupBoxDacQueryCode.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLoadDacQueryCode)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewDacQueryCode)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // groupBoxDacQueryCode
+            // 
+            this.groupBoxDacQueryCode.Controls.Add(this.textBoxUnitCode);
+            this.groupBoxDacQueryCode.Controls.Add(this.dateTimePickerToDate);
+            this.groupBoxDacQueryCode.Controls.Add(this.dateTimePickerFrDate);
+            this.groupBoxDacQueryCode.Controls.Add(this.dataGridViewLoadDacQueryCode);
+            this.groupBoxDacQueryCode.Controls.Add(this.labelUnitCodeSample);
+            this.groupBoxDacQueryCode.Controls.Add(this.labelUnitCode);
+            this.groupBoxDacQueryCode.Controls.Add(this.labelToDate);
+            this.groupBoxDacQueryCode.Controls.Add(this.labelFrDate);
+            this.groupBoxDacQueryCode.Controls.Add(this.buttonQueryData);
+            this.groupBoxDacQueryCode.Location = new System.Drawing.Point(12, 12);
+            this.groupBoxDacQueryCode.Name = "groupBoxDacQueryCode";
+            this.groupBoxDacQueryCode.Size = new System.Drawing.Size(629, 191);
+            this.groupBoxDacQueryCode.TabIndex = 1;
+            this.groupBoxDacQueryCode.TabStop = false;
+            this.groupBoxDacQueryCode.Text = "Truy vấn dữ liệu";
+            // 
+            // textBoxUnitCode
+            // 
+            this.textBoxUnitCode.Location = new System.Drawing.Point(371, 19);
+            this.textBoxUnitCode.Name = "textBoxUnitCode";
+            this.textBoxUnitCode.Size = new System.Drawing.Size(100, 20);
+            this.textBoxUnitCode.TabIndex = 4;
+            this.textBoxUnitCode.Text = "\'9988\'";
+            this.textBoxUnitCode.Visible = false;
+            // 
+            // dateTimePickerToDate
+            // 
+            this.dateTimePickerToDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dateTimePickerToDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dateTimePickerToDate.Location = new System.Drawing.Point(224, 19);
+            this.dateTimePickerToDate.Name = "dateTimePickerToDate";
+            this.dateTimePickerToDate.Size = new System.Drawing.Size(90, 21);
+            this.dateTimePickerToDate.TabIndex = 3;
+            // 
+            // dateTimePickerFrDate
+            // 
+            this.dateTimePickerFrDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dateTimePickerFrDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dateTimePickerFrDate.Location = new System.Drawing.Point(62, 19);
+            this.dateTimePickerFrDate.Name = "dateTimePickerFrDate";
+            this.dateTimePickerFrDate.Size = new System.Drawing.Size(90, 21);
+            this.dateTimePickerFrDate.TabIndex = 3;
+            // 
+            // dataGridViewLoadDacQueryCode
+            // 
+            this.dataGridViewLoadDacQueryCode.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewLoadDacQueryCode.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.ColQueryRecID,
+            this.ColLoadQueryDate,
+            this.ColLoadPhoneNumber,
+            this.ColLoadUnitCode,
+            this.ColLoadDacCode,
+            this.ColLoadStatus});
+            this.dataGridViewLoadDacQueryCode.Location = new System.Drawing.Point(6, 48);
+            this.dataGridViewLoadDacQueryCode.Name = "dataGridViewLoadDacQueryCode";
+            this.dataGridViewLoadDacQueryCode.RowHeadersVisible = false;
+            this.dataGridViewLoadDacQueryCode.Size = new System.Drawing.Size(614, 136);
+            this.dataGridViewLoadDacQueryCode.TabIndex = 2;
+            // 
+            // ColQueryRecID
+            // 
+            this.ColQueryRecID.DataPropertyName = "QueryRecID";
+            this.ColQueryRecID.HeaderText = "QRID";
+            this.ColQueryRecID.Name = "ColQueryRecID";
+            this.ColQueryRecID.Width = 70;
+            // 
+            // ColLoadQueryDate
+            // 
+            this.ColLoadQueryDate.DataPropertyName = "QueryDate";
+            this.ColLoadQueryDate.HeaderText = "QueryDate";
+            this.ColLoadQueryDate.Name = "ColLoadQueryDate";
+            this.ColLoadQueryDate.Width = 150;
+            // 
+            // ColLoadPhoneNumber
+            // 
+            this.ColLoadPhoneNumber.DataPropertyName = "PhoneNumber";
+            this.ColLoadPhoneNumber.HeaderText = "Phone";
+            this.ColLoadPhoneNumber.Name = "ColLoadPhoneNumber";
+            this.ColLoadPhoneNumber.Width = 110;
+            // 
+            // ColLoadUnitCode
+            // 
+            this.ColLoadUnitCode.DataPropertyName = "UnitCode";
+            this.ColLoadUnitCode.HeaderText = "Code";
+            this.ColLoadUnitCode.Name = "ColLoadUnitCode";
+            this.ColLoadUnitCode.Width = 50;
+            // 
+            // ColLoadDacCode
+            // 
+            this.ColLoadDacCode.DataPropertyName = "DacCode";
+            this.ColLoadDacCode.HeaderText = "DacCode";
+            this.ColLoadDacCode.Name = "ColLoadDacCode";
+            this.ColLoadDacCode.Width = 150;
+            // 
+            // ColLoadStatus
+            // 
+            this.ColLoadStatus.DataPropertyName = "QueryStatus";
+            this.ColLoadStatus.HeaderText = "Status";
+            this.ColLoadStatus.Name = "ColLoadStatus";
+            this.ColLoadStatus.Width = 55;
+            // 
+            // labelUnitCodeSample
+            // 
+            this.labelUnitCodeSample.AutoSize = true;
+            this.labelUnitCodeSample.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelUnitCodeSample.Location = new System.Drawing.Point(477, 23);
+            this.labelUnitCodeSample.Name = "labelUnitCodeSample";
+            this.labelUnitCodeSample.Size = new System.Drawing.Size(78, 15);
+            this.labelUnitCodeSample.TabIndex = 1;
+            this.labelUnitCodeSample.Text = "\'2318\',\'2319\'";
+            this.labelUnitCodeSample.Visible = false;
+            // 
+            // labelUnitCode
+            // 
+            this.labelUnitCode.AutoSize = true;
+            this.labelUnitCode.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelUnitCode.Location = new System.Drawing.Point(320, 20);
+            this.labelUnitCode.Name = "labelUnitCode";
+            this.labelUnitCode.Size = new System.Drawing.Size(45, 15);
+            this.labelUnitCode.TabIndex = 1;
+            this.labelUnitCode.Text = "Mã KH";
+            this.labelUnitCode.Visible = false;
+            // 
+            // labelToDate
+            // 
+            this.labelToDate.AutoSize = true;
+            this.labelToDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelToDate.Location = new System.Drawing.Point(159, 20);
+            this.labelToDate.Name = "labelToDate";
+            this.labelToDate.Size = new System.Drawing.Size(59, 15);
+            this.labelToDate.TabIndex = 1;
+            this.labelToDate.Text = "Đến ngày";
+            // 
+            // labelFrDate
+            // 
+            this.labelFrDate.AutoSize = true;
+            this.labelFrDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelFrDate.Location = new System.Drawing.Point(6, 20);
+            this.labelFrDate.Name = "labelFrDate";
+            this.labelFrDate.Size = new System.Drawing.Size(50, 15);
+            this.labelFrDate.TabIndex = 1;
+            this.labelFrDate.Text = "Từ ngày";
+            // 
+            // buttonQueryData
+            // 
+            this.buttonQueryData.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonQueryData.Location = new System.Drawing.Point(558, 18);
+            this.buttonQueryData.Name = "buttonQueryData";
+            this.buttonQueryData.Size = new System.Drawing.Size(62, 24);
+            this.buttonQueryData.TabIndex = 0;
+            this.buttonQueryData.Text = "Truy vấn";
+            this.buttonQueryData.UseVisualStyleBackColor = true;
+            this.buttonQueryData.Click += new System.EventHandler(this.buttonQueryData_Click);
+            // 
+            // buttonSave
+            // 
+            this.buttonSave.Enabled = false;
+            this.buttonSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonSave.Location = new System.Drawing.Point(651, 30);
+            this.buttonSave.Name = "buttonSave";
+            this.buttonSave.Size = new System.Drawing.Size(64, 24);
+            this.buttonSave.TabIndex = 0;
+            this.buttonSave.Text = "Lưu";
+            this.buttonSave.UseVisualStyleBackColor = true;
+            this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
+            // 
+            // dataGridViewDacQueryCode
+            // 
+            this.dataGridViewDacQueryCode.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewDacQueryCode.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.ColumnID,
+            this.ColumnQRID,
+            this.ColumnQueryDate,
+            this.ColumnPhone,
+            this.ColumnUnitCode,
+            this.ColumnDacCode,
+            this.ColumnSeries,
+            this.ColumnStatus});
+            this.dataGridViewDacQueryCode.Location = new System.Drawing.Point(12, 209);
+            this.dataGridViewDacQueryCode.Name = "dataGridViewDacQueryCode";
+            this.dataGridViewDacQueryCode.RowHeadersVisible = false;
+            this.dataGridViewDacQueryCode.Size = new System.Drawing.Size(816, 370);
+            this.dataGridViewDacQueryCode.TabIndex = 3;
+            // 
+            // ColumnID
+            // 
+            this.ColumnID.DataPropertyName = "ID";
+            this.ColumnID.HeaderText = "STT";
+            this.ColumnID.Name = "ColumnID";
+            this.ColumnID.Width = 70;
+            // 
+            // ColumnQRID
+            // 
+            this.ColumnQRID.DataPropertyName = "QueryRecID";
+            this.ColumnQRID.HeaderText = "QRID";
+            this.ColumnQRID.Name = "ColumnQRID";
+            this.ColumnQRID.Width = 70;
+            // 
+            // ColumnQueryDate
+            // 
+            this.ColumnQueryDate.DataPropertyName = "QueryDate";
+            this.ColumnQueryDate.HeaderText = "QueryDate";
+            this.ColumnQueryDate.Name = "ColumnQueryDate";
+            this.ColumnQueryDate.Width = 160;
+            // 
+            // ColumnPhone
+            // 
+            this.ColumnPhone.DataPropertyName = "PhoneNumber";
+            this.ColumnPhone.HeaderText = "Phone";
+            this.ColumnPhone.Name = "ColumnPhone";
+            this.ColumnPhone.Width = 120;
+            // 
+            // ColumnUnitCode
+            // 
+            this.ColumnUnitCode.DataPropertyName = "UnitCode";
+            this.ColumnUnitCode.HeaderText = "UnitCode";
+            this.ColumnUnitCode.Name = "ColumnUnitCode";
+            this.ColumnUnitCode.Width = 70;
+            // 
+            // ColumnDacCode
+            // 
+            this.ColumnDacCode.DataPropertyName = "DacCode";
+            this.ColumnDacCode.HeaderText = "DacCode";
+            this.ColumnDacCode.Name = "ColumnDacCode";
+            this.ColumnDacCode.Width = 160;
+            // 
+            // ColumnSeries
+            // 
+            this.ColumnSeries.DataPropertyName = "Series";
+            this.ColumnSeries.HeaderText = "Series";
+            this.ColumnSeries.Name = "ColumnSeries";
+            this.ColumnSeries.Width = 70;
+            // 
+            // ColumnStatus
+            // 
+            this.ColumnStatus.DataPropertyName = "QueryStatus";
+            this.ColumnStatus.HeaderText = "Status";
+            this.ColumnStatus.Name = "ColumnStatus";
+            this.ColumnStatus.Width = 70;
+            // 
+            // buttonSearch
+            // 
+            this.buttonSearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonSearch.Location = new System.Drawing.Point(651, 147);
+            this.buttonSearch.Name = "buttonSearch";
+            this.buttonSearch.Size = new System.Drawing.Size(52, 23);
+            this.buttonSearch.TabIndex = 4;
+            this.buttonSearch.Text = "Tìm";
+            this.buttonSearch.UseVisualStyleBackColor = true;
+            this.buttonSearch.Click += new System.EventHandler(this.buttonSearch_Click);
+            // 
+            // buttonExcel
+            // 
+            this.buttonExcel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonExcel.Location = new System.Drawing.Point(764, 147);
+            this.buttonExcel.Name = "buttonExcel";
+            this.buttonExcel.Size = new System.Drawing.Size(64, 23);
+            this.buttonExcel.TabIndex = 4;
+            this.buttonExcel.Text = "Xuất";
+            this.buttonExcel.UseVisualStyleBackColor = true;
+            this.buttonExcel.Visible = false;
+            this.buttonExcel.Click += new System.EventHandler(this.buttonExcel_Click);
+            // 
+            // labelAmount
+            // 
+            this.labelAmount.AutoSize = true;
+            this.labelAmount.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelAmount.Location = new System.Drawing.Point(647, 177);
+            this.labelAmount.Name = "labelAmount";
+            this.labelAmount.Size = new System.Drawing.Size(40, 15);
+            this.labelAmount.TabIndex = 1;
+            this.labelAmount.Text = "SL: 0";
+            // 
+            // labelSearchPhone
+            // 
+            this.labelSearchPhone.AutoSize = true;
+            this.labelSearchPhone.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelSearchPhone.Location = new System.Drawing.Point(648, 60);
+            this.labelSearchPhone.Name = "labelSearchPhone";
+            this.labelSearchPhone.Size = new System.Drawing.Size(35, 15);
+            this.labelSearchPhone.TabIndex = 1;
+            this.labelSearchPhone.Text = "Số đt";
+            // 
+            // textBoxSearchPhone
+            // 
+            this.textBoxSearchPhone.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBoxSearchPhone.Location = new System.Drawing.Point(650, 78);
+            this.textBoxSearchPhone.Name = "textBoxSearchPhone";
+            this.textBoxSearchPhone.Size = new System.Drawing.Size(129, 21);
+            this.textBoxSearchPhone.TabIndex = 4;
+            // 
+            // labelSearchDacCode
+            // 
+            this.labelSearchDacCode.AutoSize = true;
+            this.labelSearchDacCode.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelSearchDacCode.Location = new System.Drawing.Point(648, 102);
+            this.labelSearchDacCode.Name = "labelSearchDacCode";
+            this.labelSearchDacCode.Size = new System.Drawing.Size(52, 15);
+            this.labelSearchDacCode.TabIndex = 1;
+            this.labelSearchDacCode.Text = "Mã DAC";
+            // 
+            // textBoxSearchDacCode
+            // 
+            this.textBoxSearchDacCode.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBoxSearchDacCode.Location = new System.Drawing.Point(651, 120);
+            this.textBoxSearchDacCode.Name = "textBoxSearchDacCode";
+            this.textBoxSearchDacCode.Size = new System.Drawing.Size(177, 21);
+            this.textBoxSearchDacCode.TabIndex = 4;
+            // 
+            // frmDacGetData
+            // 
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.ClientSize = new System.Drawing.Size(840, 591);
+            this.Controls.Add(this.textBoxSearchDacCode);
+            this.Controls.Add(this.textBoxSearchPhone);
+            this.Controls.Add(this.buttonExcel);
+            this.Controls.Add(this.buttonSearch);
+            this.Controls.Add(this.dataGridViewDacQueryCode);
+            this.Controls.Add(this.groupBoxDacQueryCode);
+            this.Controls.Add(this.labelSearchDacCode);
+            this.Controls.Add(this.buttonSave);
+            this.Controls.Add(this.labelSearchPhone);
+            this.Controls.Add(this.labelAmount);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Name = "frmDacGetData";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Lấy dữ liệu khách hàng đã truy vấn từ DAC";
+            this.groupBoxDacQueryCode.ResumeLayout(false);
+            this.groupBoxDacQueryCode.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLoadDacQueryCode)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewDacQueryCode)).EndInit();
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
+        }
+
+        #endregion
+
+        private System.Windows.Forms.GroupBox groupBoxDacQueryCode;
+        private System.Windows.Forms.DataGridView dataGridViewLoadDacQueryCode;
+        private System.Windows.Forms.Label labelFrDate;
+        private System.Windows.Forms.Button buttonSave;
+        private System.Windows.Forms.Button buttonQueryData;
+        private System.Windows.Forms.DataGridView dataGridViewDacQueryCode;
+        private System.Windows.Forms.TextBox textBoxUnitCode;
+        private System.Windows.Forms.DateTimePicker dateTimePickerToDate;
+        private System.Windows.Forms.DateTimePicker dateTimePickerFrDate;
+        private System.Windows.Forms.Label labelUnitCode;
+        private System.Windows.Forms.Label labelToDate;
+        private System.Windows.Forms.Label labelUnitCodeSample;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnID;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnQRID;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnQueryDate;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnPhone;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnUnitCode;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnDacCode;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnSeries;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnStatus;
+        private System.Windows.Forms.Button buttonSearch;
+        private System.Windows.Forms.Button buttonExcel;
+        private System.Windows.Forms.Label labelAmount;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColQueryRecID;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColLoadQueryDate;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColLoadPhoneNumber;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColLoadUnitCode;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColLoadDacCode;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColLoadStatus;
+        private System.Windows.Forms.Label labelSearchPhone;
+        private System.Windows.Forms.TextBox textBoxSearchPhone;
+        private System.Windows.Forms.Label labelSearchDacCode;
+        private System.Windows.Forms.TextBox textBoxSearchDacCode;
+    }
+}

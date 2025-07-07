@@ -1,0 +1,945 @@
+USE [DacPIPTDB]
+GO
+/****** Object:  Table [dbo].[DacStock]    Script Date: 27/01/2021 12:20:19 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[DacStock](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Code] [varchar](24) NULL,
+	[Name] [nvarchar](128) NULL,
+	[Contact] [nvarchar](128) NULL,
+	[Address] [nvarchar](256) NULL,
+	[Email] [nvarchar](64) NULL,
+	[Telephone] [varchar](20) NULL,
+	[Fax] [varchar](20) NULL,
+	[Mobi] [varchar](20) NULL,
+	[Manager] [nvarchar](128) NULL,
+	[BranchID] [varchar](24) NULL,
+	[Description] [nvarchar](256) NULL,
+	[Active] [bit] NOT NULL,
+ CONSTRAINT [PK_DacStock] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY],
+ CONSTRAINT [UK_DacStock] UNIQUE NONCLUSTERED 
+(
+	[Code] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[SecStockUser]    Script Date: 27/01/2021 12:21:05 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[SecStockUser](
+	[StockID] [varchar](24) NOT NULL,
+	[LoginID] [varchar](50) NOT NULL,
+ CONSTRAINT [PK_SecStockUser] PRIMARY KEY CLUSTERED 
+(
+	[StockID] ASC,
+	[LoginID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[SecStockUser]  WITH CHECK ADD  CONSTRAINT [FK_SecStockUser_DacStock] FOREIGN KEY([StockID])
+REFERENCES [dbo].[DacStock] ([Code])
+GO
+
+ALTER TABLE [dbo].[SecStockUser] CHECK CONSTRAINT [FK_SecStockUser_DacStock]
+GO
+
+ALTER TABLE [dbo].[SecStockUser]  WITH CHECK ADD  CONSTRAINT [FK_SecStockUser_SecUsers] FOREIGN KEY([LoginID])
+REFERENCES [dbo].[SecUsers] ([LoginID])
+GO
+
+ALTER TABLE [dbo].[SecStockUser] CHECK CONSTRAINT [FK_SecStockUser_SecUsers]
+GO
+ALTER TABLE [dbo].[DacDistributeToAgency] add [StockID] [varchar](24) NULL
+ALTER TABLE [dbo].[DacDistributeToStore] add [StockID] [varchar](24) NULL
+ALTER TABLE [dbo].[DacInsertToWarehouse] add [StockID] [varchar](24) NULL
+GO
+/****** Object:  StoredProcedure [dbo].[spDacDistributeToAgency_Insert]    Script Date: 27/01/2021 12:00:14 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[spDacDistributeToAgency_Insert]
+       (@OrderNumber nvarchar(10)
+       ,@CreatedDate datetime
+       ,@ProvinceCode nvarchar(10)
+       ,@AgencyCode nvarchar(20)
+       ,@ProductCode nvarchar(20)
+       ,@Quantity float
+       ,@Description ntext
+	   ,@StockID nvarchar(24)
+       ,@Active bit
+       ,@NewID int output)
+AS
+BEGIN
+INSERT INTO [dbo].[DacDistributeToAgency]
+       ([OrderNumber]
+       ,[CreatedDate]
+       ,[ProvinceCode]
+       ,[AgencyCode]
+       ,[ProductCode]
+       ,[Quantity]
+       ,[Description]
+	   ,[StockID]
+       ,[Active])
+ VALUES
+       (@OrderNumber
+       ,@CreatedDate
+       ,@ProvinceCode
+       ,@AgencyCode
+       ,@ProductCode
+       ,@Quantity
+       ,@Description
+	   ,@StockID
+       ,@Active);
+SELECT @NewID = SCOPE_IDENTITY();
+END
+GO
+/****** Object:  StoredProcedure [dbo].[spDacDistributeToAgency_Select]    Script Date: 27/01/2021 12:00:42 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[spDacDistributeToAgency_Select]
+       (@FrDate datetime
+       ,@ToDate datetime
+       ,@AgencyCode nvarchar(20)
+       ,@ProductCode nvarchar(20),
+		@LoginID varchar(24))
+AS
+BEGIN
+	Declare @AdminUser varchar(24);
+	SELECT @AdminUser = gu.[LoginID]
+	FROM   [dbo].[SecGroupUser] as gu
+		INNER JOIN [dbo].[SecGroups] as g on gu.GroupID = g.GroupID
+		INNER JOIN [dbo].[SecUsers] as u on gu.LoginID = u.LoginID
+	WHERE  gu.[LoginID] = @LoginID AND g.IsAdmin = 1;
+	-- Nguoi dung la quan tri vien
+	IF @AdminUser is not null
+	BEGIN
+		SELECT *
+		FROM [dbo].[DacDistributeToAgency]
+		WHERE (@FrDate IS NULL OR DATEDIFF(day, @FrDate, [CreatedDate]) >= 0)
+			AND (@ToDate IS NULL OR DATEDIFF(day, @ToDate, [CreatedDate]) <= 0)
+			AND [AgencyCode] LIKE '%' + @AgencyCode + '%' AND [ProductCode] LIKE '%' + @ProductCode + '%'
+		ORDER BY ID DESC;
+	END
+	ELSE
+	BEGIN
+		SELECT *
+		FROM [dbo].[DacDistributeToAgency]
+		WHERE (@FrDate IS NULL OR DATEDIFF(day, @FrDate, [CreatedDate]) >= 0)
+			AND (@ToDate IS NULL OR DATEDIFF(day, @ToDate, [CreatedDate]) <= 0)
+			AND [AgencyCode] LIKE '%' + @AgencyCode + '%' AND [ProductCode] LIKE '%' + @ProductCode + '%'
+			AND [StockID] IN (SELECT StockID FROM [dbo].[SecStockUser] WHERE LoginID = @LoginID)
+		ORDER BY ID DESC;
+	END
+END
+GO
+/****** Object:  StoredProcedure [dbo].[spDacDistributeToAgency_SelectJoin]    Script Date: 27/01/2021 12:01:25 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[spDacDistributeToAgency_SelectJoin]
+       (@FrDate datetime
+       ,@ToDate datetime
+       ,@AgencyCode nvarchar(20)
+       ,@ProductCode nvarchar(20),
+		@LoginID varchar(24))
+AS
+BEGIN
+	Declare @AdminUser varchar(24);
+	SELECT @AdminUser = gu.[LoginID]
+	FROM   [dbo].[SecGroupUser] as gu
+		INNER JOIN [dbo].[SecGroups] as g on gu.GroupID = g.GroupID
+		INNER JOIN [dbo].[SecUsers] as u on gu.LoginID = u.LoginID
+	WHERE  gu.[LoginID] = @LoginID AND g.IsAdmin = 1;
+	-- Nguoi dung la quan tri vien
+	IF @AdminUser is not null
+	BEGIN	
+		SELECT a.ID, a.OrderNumber, a.CreatedDate, a.AgencyCode, d.Name AS AgencyName, a.ProvinceCode, b.ProductCode,
+		 c.Name AS ProductName, 1 AS Quantity, b.DacCode, b.ID AS DetailID
+		FROM [DacDistributeToAgency] AS a
+		INNER JOIN [DacDistributeToAgencyDetails] AS b ON a.ID = b.DistributorID
+		INNER JOIN [DacProduct] AS c ON b.ProductCode = c.Code
+		INNER JOIN [DacAgency] AS d ON a.AgencyCode = d.Code
+		WHERE (@FrDate IS NULL OR DATEDIFF(day, @FrDate ,a.[CreatedDate]) >= 0)
+			AND (@ToDate IS NULL OR DATEDIFF(day, @ToDate, a.[CreatedDate]) <= 0)
+			AND [AgencyCode] LIKE '%' + @AgencyCode + '%' AND b.[ProductCode] LIKE '%' + @ProductCode + '%';
+	END
+	ELSE
+	BEGIN
+		SELECT a.ID, a.OrderNumber, a.CreatedDate, a.AgencyCode, d.Name AS AgencyName, a.ProvinceCode, b.ProductCode,
+		 c.Name AS ProductName, 1 AS Quantity, b.DacCode, b.ID AS DetailID
+		FROM [DacDistributeToAgency] AS a
+		INNER JOIN [DacDistributeToAgencyDetails] AS b ON a.ID = b.DistributorID
+		INNER JOIN [DacProduct] AS c ON b.ProductCode = c.Code
+		INNER JOIN [DacAgency] AS d ON a.AgencyCode = d.Code
+		WHERE (@FrDate IS NULL OR DATEDIFF(day, @FrDate ,a.[CreatedDate]) >= 0)
+			AND (@ToDate IS NULL OR DATEDIFF(day, @ToDate, a.[CreatedDate]) <= 0)
+			AND [AgencyCode] LIKE '%' + @AgencyCode + '%' AND b.[ProductCode] LIKE '%' + @ProductCode + '%'
+			AND a.[StockID] IN (SELECT StockID FROM [dbo].[SecStockUser] WHERE LoginID = @LoginID);		
+	END
+END
+GO
+/****** Object:  StoredProcedure [dbo].[spDacDistributeToAgency_SelectQuantity]    Script Date: 27/01/2021 12:01:41 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[spDacDistributeToAgency_SelectQuantity]
+       (@FrDate datetime
+       ,@ToDate datetime
+       ,@AgencyCode nvarchar(20)
+       ,@ProductCode nvarchar(20),
+		@LoginID varchar(24))
+AS
+BEGIN
+	Declare @AdminUser varchar(24);
+	SELECT @AdminUser = gu.[LoginID]
+	FROM   [dbo].[SecGroupUser] as gu
+		INNER JOIN [dbo].[SecGroups] as g on gu.GroupID = g.GroupID
+		INNER JOIN [dbo].[SecUsers] as u on gu.LoginID = u.LoginID
+	WHERE  gu.[LoginID] = @LoginID AND g.IsAdmin = 1;
+	-- Nguoi dung la quan tri vien
+	IF @AdminUser is not null
+	BEGIN
+		SELECT a.ID, a.OrderNumber, a.CreatedDate, a.AgencyCode, da.Name AS AgencyName, da.ProvinceCode, b.ProductCode,
+			dp.Name AS ProductName, b.Quantity, '' as DacCode, -1 as DetailID, a.Active
+		FROM [dbo].[DacDistributeToAgency] as a
+		INNER JOIN (SELECT [DistributorID]
+					  ,[ProductCode]
+					  ,COUNT([DacCode]) as Quantity
+					FROM [dbo].[DacDistributeToAgencyDetails]
+					GROUP BY [DistributorID], [ProductCode]) as b on a.ID = b.DistributorID
+		INNER JOIN [DacProduct] AS dp ON b.ProductCode = dp.Code
+		INNER JOIN [DacAgency] AS da ON a.AgencyCode = da.Code
+		WHERE (@FrDate IS NULL OR DATEDIFF(day, @FrDate, a.[CreatedDate]) >= 0)
+			AND (@ToDate IS NULL OR DATEDIFF(day, @ToDate, a.[CreatedDate]) <= 0)
+			AND [AgencyCode] LIKE '%' + @AgencyCode + '%' AND b.[ProductCode] LIKE '%' + @ProductCode + '%'
+		ORDER BY a.CreatedDate
+	END
+	ELSE
+	BEGIN
+		SELECT a.ID, a.OrderNumber, a.CreatedDate, a.AgencyCode, da.Name AS AgencyName, da.ProvinceCode, b.ProductCode,
+			dp.Name AS ProductName, b.Quantity, '' as DacCode, -1 as DetailID, a.Active
+		FROM [dbo].[DacDistributeToAgency] as a
+		INNER JOIN (SELECT [DistributorID]
+					  ,[ProductCode]
+					  ,COUNT([DacCode]) as Quantity
+					FROM [dbo].[DacDistributeToAgencyDetails]
+					GROUP BY [DistributorID], [ProductCode]) as b on a.ID = b.DistributorID
+		INNER JOIN [DacProduct] AS dp ON b.ProductCode = dp.Code
+		INNER JOIN [DacAgency] AS da ON a.AgencyCode = da.Code
+		WHERE (@FrDate IS NULL OR DATEDIFF(day, @FrDate, a.[CreatedDate]) >= 0)
+			AND (@ToDate IS NULL OR DATEDIFF(day, @ToDate, a.[CreatedDate]) <= 0)
+			AND [AgencyCode] LIKE '%' + @AgencyCode + '%' AND b.[ProductCode] LIKE '%' + @ProductCode + '%'
+			AND a.[StockID] IN (SELECT StockID FROM [dbo].[SecStockUser] WHERE LoginID = @LoginID)
+		ORDER BY a.CreatedDate
+	END
+END
+GO
+/****** Object:  StoredProcedure [dbo].[spDacDistributeToAgency_Total]    Script Date: 27/01/2021 12:02:02 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[spDacDistributeToAgency_Total]
+	@DacCode varchar(50),
+	@QRCode varchar(30),
+	@FrDate datetime,
+	@ToDate datetime,
+	@TenKH nvarchar(100),
+	@TenSP nvarchar(100),
+	@SoDT varchar(15),
+	@LoginID varchar(24)
+AS
+BEGIN
+	Declare @AdminUser varchar(24);
+	SELECT @AdminUser = gu.[LoginID]
+	FROM   [dbo].[SecGroupUser] as gu
+		INNER JOIN [dbo].[SecGroups] as g on gu.GroupID = g.GroupID
+		INNER JOIN [dbo].[SecUsers] as u on gu.LoginID = u.LoginID
+	WHERE  gu.[LoginID] = @LoginID AND g.IsAdmin = 1;
+	-- Nguoi dung la quan tri vien
+	IF @AdminUser is not null
+	BEGIN
+		select a.DacCode, a.Series, ag.CreatedDate AS NgayXuat, kh.Code As MaKH,
+			kh.[Name] as TenKH, ag.ProductCode as MaSP, d.[Name] as TenSP, p.Code as MaTinh, p.[Name] as Tinh,
+			pq.QueryDate as NgayKH, pq.PhoneNumber as SoDT, pq.DacCode as MaAnNinh
+		from DacProductCode as a left join DacDistributeToAgencyDetails as agd on a.Series = agd.DacCode
+			left join DacDistributeToAgency as ag on ag.ID = agd.DistributorID
+			left join DacAgency as kh on kh.Code = ag.AgencyCode
+			left join DacProduct as d on d.Code = ag.ProductCode
+			left join Province as p on p.Code = ag.ProvinceCode
+			left join DacProductQuery as pq on pq.DacCode = a.DacCode
+		where (@FrDate IS NULL OR DATEDIFF(day, @FrDate, ag.[CreatedDate]) >= 0)
+			AND (@ToDate IS NULL OR DATEDIFF(day, @ToDate, ag.[CreatedDate]) <= 0)
+			AND a.DacCode LIKE  '%' + @DacCode + '%' AND a.Series like '%' + @QRCode + '%'
+			AND (kh.[Name] LIKE '%' + @TenKH + '%' OR kh.[Name] is null)
+			AND (d.[Name] LIKE '%' + @TenSP + '%' OR d.[Name] is null)
+			AND (pq.PhoneNumber like '%' + @SoDT + '%' OR pq.PhoneNumber is null);
+	END
+	ELSE
+	BEGIN
+		select a.DacCode, a.Series, ag.CreatedDate AS NgayXuat, kh.Code As MaKH,
+			kh.[Name] as TenKH, ag.ProductCode as MaSP, d.[Name] as TenSP, p.Code as MaTinh, p.[Name] as Tinh,
+			pq.QueryDate as NgayKH, pq.PhoneNumber as SoDT, pq.DacCode as MaAnNinh
+		from DacProductCode as a left join DacDistributeToAgencyDetails as agd on a.Series = agd.DacCode
+			left join DacDistributeToAgency as ag on ag.ID = agd.DistributorID
+			left join DacAgency as kh on kh.Code = ag.AgencyCode
+			left join DacProduct as d on d.Code = ag.ProductCode
+			left join Province as p on p.Code = ag.ProvinceCode
+			left join DacProductQuery as pq on pq.DacCode = a.DacCode
+		where (@FrDate IS NULL OR DATEDIFF(day, @FrDate, ag.[CreatedDate]) >= 0)
+			AND (@ToDate IS NULL OR DATEDIFF(day, @ToDate, ag.[CreatedDate]) <= 0)
+			AND a.DacCode LIKE  '%' + @DacCode + '%' AND a.Series like '%' + @QRCode + '%'
+			AND (kh.[Name] LIKE '%' + @TenKH + '%' OR kh.[Name] is null)
+			AND (d.[Name] LIKE '%' + @TenSP + '%' OR d.[Name] is null)
+			AND (pq.PhoneNumber like '%' + @SoDT + '%' OR pq.PhoneNumber is null)
+			AND ag.[StockID] IN (SELECT StockID FROM [dbo].[SecStockUser] WHERE LoginID = @LoginID);
+	END
+END
+GO
+/****** Object:  StoredProcedure [dbo].[spDacDistributeToAgency_Update]    Script Date: 27/01/2021 12:04:37 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[spDacDistributeToAgency_Update]
+       (@ID int
+       ,@OrderNumber nvarchar(10)
+       ,@CreatedDate datetime
+       ,@ProvinceCode nvarchar(10)
+       ,@AgencyCode nvarchar(20)
+       ,@ProductCode nvarchar(20)
+       ,@Quantity float
+       ,@Description ntext
+	   ,@StockID nvarchar(24)
+       ,@Active bit)
+AS
+BEGIN
+UPDATE [DacDistributeToAgency]
+SET     [OrderNumber] = @OrderNumber
+	   ,[CreatedDate] = @CreatedDate
+	   ,[ProvinceCode] = @ProvinceCode
+	   ,[AgencyCode] = @AgencyCode
+	   ,[ProductCode] = @ProductCode
+       ,[Quantity] = @Quantity
+	   ,[Description] = @Description
+	   ,[StockID] = @StockID
+	   ,[Active] = @Active
+WHERE ID = @ID;
+END
+GO
+/****** Object:  StoredProcedure [dbo].[spDacDistributeToStore_Insert]    Script Date: 27/01/2021 12:06:41 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[spDacDistributeToStore_Insert]
+       (@ID varchar(25)
+       ,@OrderNumber nvarchar(10)
+       ,@CreatedDate datetime
+       ,@StoreCode nvarchar(20)
+       ,@ProductCode nvarchar(20)
+       ,@Quantity float
+       ,@Description ntext
+	   ,@StockID nvarchar(24)
+       ,@Active bit)
+AS
+BEGIN
+INSERT INTO [dbo].[DacDistributeToStore]
+   ([ID]
+   ,[OrderNumber]
+   ,[CreatedDate]
+   ,[StoreCode]
+   ,[ProductCode]
+   ,[Quantity]
+   ,[Description]
+   ,[StockID]
+   ,[Active])
+VALUES
+   (@ID
+   ,@OrderNumber
+   ,@CreatedDate
+   ,@StoreCode
+   ,@ProductCode
+   ,@Quantity
+   ,@Description   
+   ,@StockID
+   ,@Active);
+END
+GO
+/****** Object:  StoredProcedure [dbo].[spDacDistributeToStore_Select]    Script Date: 27/01/2021 12:08:57 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[spDacDistributeToStore_Select]
+       (@FrDate datetime
+       ,@ToDate datetime
+       ,@StoreCode nvarchar(20)
+       ,@ProductCode nvarchar(20)
+	   ,@LoginID varchar(24))
+AS
+BEGIN
+	Declare @AdminUser varchar(24);
+	SELECT @AdminUser = gu.[LoginID]
+	FROM   [dbo].[SecGroupUser] as gu
+		INNER JOIN [dbo].[SecGroups] as g on gu.GroupID = g.GroupID
+		INNER JOIN [dbo].[SecUsers] as u on gu.LoginID = u.LoginID
+	WHERE  gu.[LoginID] = @LoginID AND g.IsAdmin = 1;
+	-- Nguoi dung la quan tri vien
+	IF @AdminUser is not null
+	BEGIN
+		SELECT *
+		FROM [dbo].[DacDistributeToStore]
+		WHERE (@FrDate IS NULL OR [CreatedDate] >= @FrDate)
+			AND (@ToDate IS NULL OR [CreatedDate] <= @ToDate)
+			AND [StoreCode] Like '%' + @StoreCode + '%' AND [ProductCode] LIKE '%' + @ProductCode + '%'
+		ORDER BY ID DESC;
+	END
+	ELSE
+	BEGIN
+		SELECT *
+		FROM [dbo].[DacDistributeToStore]
+		WHERE (@FrDate IS NULL OR [CreatedDate] >= @FrDate)
+			AND (@ToDate IS NULL OR [CreatedDate] <= @ToDate)
+			AND [StoreCode] Like '%' + @StoreCode + '%' AND [ProductCode] LIKE '%' + @ProductCode + '%'
+			AND [StockID] IN (SELECT StockID FROM [dbo].[SecStockUser] WHERE LoginID = @LoginID)
+		ORDER BY ID DESC;
+	END
+END
+GO
+/****** Object:  StoredProcedure [dbo].[spDacDistributeToStore_SelectJoin]    Script Date: 27/01/2021 12:09:51 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[spDacDistributeToStore_SelectJoin]
+       (@FrDate datetime
+       ,@ToDate datetime
+       ,@StoreCode nvarchar(20)
+       ,@ProductCode nvarchar(20)
+	   ,@LoginID varchar(24))
+AS
+BEGIN
+	Declare @AdminUser varchar(24);
+	SELECT @AdminUser = gu.[LoginID]
+	FROM   [dbo].[SecGroupUser] as gu
+		INNER JOIN [dbo].[SecGroups] as g on gu.GroupID = g.GroupID
+		INNER JOIN [dbo].[SecUsers] as u on gu.LoginID = u.LoginID
+	WHERE  gu.[LoginID] = @LoginID AND g.IsAdmin = 1;
+	-- Nguoi dung la quan tri vien
+	IF @AdminUser is not null
+	BEGIN
+		SELECT a.ID, a.OrderNumber, a.CreatedDate, a.StoreCode AS AgencyCode, d.Name AS AgencyName, b.ProductCode, c.Name AS ProductName, b.DacCode, b.ID AS DetailID
+		FROM [DacDistributeToStore] AS a
+		INNER JOIN [DacDistributeToStoreDetails] AS b ON a.ID = b.DistributorID
+		INNER JOIN [DacProduct] AS c ON b.ProductCode = c.Code
+		INNER JOIN [DacStore] AS d ON a.StoreCode = d.Code
+		WHERE (@FrDate IS NULL OR DATEDIFF(day, @FrDate, a.[CreatedDate]) >= 0)
+			AND (@ToDate IS NULL OR DATEDIFF(day, @ToDate, a.[CreatedDate]) <= 0)
+			AND [StoreCode] LIKE '%' + @StoreCode + '%' AND b.[ProductCode] LIKE '%' + @ProductCode + '%';
+	END
+	ELSE
+	BEGIN
+		SELECT a.ID, a.OrderNumber, a.CreatedDate, a.StoreCode AS AgencyCode, d.Name AS AgencyName, b.ProductCode, c.Name AS ProductName, b.DacCode, b.ID AS DetailID
+		FROM [DacDistributeToStore] AS a
+		INNER JOIN [DacDistributeToStoreDetails] AS b ON a.ID = b.DistributorID
+		INNER JOIN [DacProduct] AS c ON b.ProductCode = c.Code
+		INNER JOIN [DacStore] AS d ON a.StoreCode = d.Code
+		WHERE (@FrDate IS NULL OR DATEDIFF(day, @FrDate, a.[CreatedDate]) >= 0)
+			AND (@ToDate IS NULL OR DATEDIFF(day, @ToDate, a.[CreatedDate]) <= 0)
+			AND [StoreCode] LIKE '%' + @StoreCode + '%' AND b.[ProductCode] LIKE '%' + @ProductCode + '%'
+			AND a.[StockID] IN (SELECT StockID FROM [dbo].[SecStockUser] WHERE LoginID = @LoginID);
+	END
+END
+GO
+/****** Object:  StoredProcedure [dbo].[spDacDistributeToStore_SelectQuantity]    Script Date: 27/01/2021 12:10:28 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[spDacDistributeToStore_SelectQuantity]
+       (@FrDate datetime
+       ,@ToDate datetime
+       ,@StoreCode nvarchar(20)
+       ,@ProductCode nvarchar(20)
+	   ,@LoginID varchar(24))
+AS
+BEGIN
+	Declare @AdminUser varchar(24);
+	SELECT @AdminUser = gu.[LoginID]
+	FROM   [dbo].[SecGroupUser] as gu
+		INNER JOIN [dbo].[SecGroups] as g on gu.GroupID = g.GroupID
+		INNER JOIN [dbo].[SecUsers] as u on gu.LoginID = u.LoginID
+	WHERE  gu.[LoginID] = @LoginID AND g.IsAdmin = 1;
+	-- Nguoi dung la quan tri vien
+	IF @AdminUser is not null
+	BEGIN
+		SELECT dts.ID, dts.OrderNumber, dts.CreatedDate, dts.StoreCode AS AgencyCode, ds.Name AS AgencyName, ds.ProvinceCode, Result.ProductCode, dp.Name AS ProductName, Result.Quantity, Result.DacCode, Result.DetailID
+		FROM [DacDistributeToStore] AS dts INNER JOIN
+			(SELECT a.OrderNumber, a.StoreCode, b.ProductCode, COUNT(b.ProductCode) AS Quantity, '' AS DacCode, -1 AS DetailID
+			FROM [DacDistributeToStore] AS a
+			INNER JOIN [DacDistributeToStoreDetails] AS b ON a.ID = b.DistributorID
+			INNER JOIN [DacProduct] AS c ON b.ProductCode = c.Code
+			INNER JOIN [DacStore] AS d ON a.StoreCode = d.Code
+			WHERE (@FrDate IS NULL OR a.[CreatedDate] >= @FrDate)
+				AND (@ToDate IS NULL OR a.[CreatedDate] <= @ToDate)
+				AND [StoreCode] LIKE '%' + @StoreCode + '%' AND b.[ProductCode] LIKE '%' + @ProductCode + '%'
+			GROUP BY a.[OrderNumber], a.StoreCode, b.[ProductCode]) AS Result ON Result.OrderNumber = dts.OrderNumber
+		INNER JOIN [DacProduct] AS dp ON Result.ProductCode = dp.Code
+		INNER JOIN [DacStore] AS ds ON Result.StoreCode = ds.Code
+	END
+	ELSE
+	BEGIN
+		SELECT dts.ID, dts.OrderNumber, dts.CreatedDate, dts.StoreCode AS AgencyCode, ds.Name AS AgencyName, ds.ProvinceCode, Result.ProductCode, dp.Name AS ProductName, Result.Quantity, Result.DacCode, Result.DetailID
+		FROM [DacDistributeToStore] AS dts INNER JOIN
+			(SELECT a.OrderNumber, a.StoreCode, b.ProductCode, COUNT(b.ProductCode) AS Quantity, '' AS DacCode, -1 AS DetailID
+			FROM [DacDistributeToStore] AS a
+			INNER JOIN [DacDistributeToStoreDetails] AS b ON a.ID = b.DistributorID
+			INNER JOIN [DacProduct] AS c ON b.ProductCode = c.Code
+			INNER JOIN [DacStore] AS d ON a.StoreCode = d.Code
+			WHERE (@FrDate IS NULL OR a.[CreatedDate] >= @FrDate)
+				AND (@ToDate IS NULL OR a.[CreatedDate] <= @ToDate)
+				AND [StoreCode] LIKE '%' + @StoreCode + '%' AND b.[ProductCode] LIKE '%' + @ProductCode + '%'
+				AND a.[StockID] IN (SELECT StockID FROM [dbo].[SecStockUser] WHERE LoginID = @LoginID)
+			GROUP BY a.[OrderNumber], a.StoreCode, b.[ProductCode]) AS Result ON Result.OrderNumber = dts.OrderNumber
+		INNER JOIN [DacProduct] AS dp ON Result.ProductCode = dp.Code
+		INNER JOIN [DacStore] AS ds ON Result.StoreCode = ds.Code
+	END
+END
+GO
+/****** Object:  StoredProcedure [dbo].[spDacDistributeToStore_Update]    Script Date: 27/01/2021 12:11:09 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[spDacDistributeToStore_Update]
+       (@ID varchar(25)
+       ,@OrderNumber nvarchar(10)
+       ,@CreatedDate datetime
+       ,@StoreCode nvarchar(20)
+       ,@ProductCode nvarchar(20)
+       ,@Quantity float
+       ,@Description ntext
+	   ,@StockID nvarchar(24)
+       ,@Active bit)
+AS
+UPDATE [dbo].[DacDistributeToStore]
+SET [OrderNumber] = @OrderNumber
+   ,[CreatedDate] = @CreatedDate
+   ,[StoreCode] = @StoreCode
+   ,[ProductCode] = @ProductCode
+   ,[Quantity] = @Quantity
+   ,[Description] = @Description
+   ,[StockID] = @StockID
+   ,[Active] = @Active
+WHERE ID = @ID;
+GO
+/****** Object:  StoredProcedure [dbo].[spDacInsertToWarehouse_Insert]    Script Date: 27/01/2021 12:14:15 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[spDacInsertToWarehouse_Insert]
+       (@InsertNumber nvarchar(10)
+       ,@CreatedDate datetime
+       ,@ProductCode nvarchar(20)
+       ,@Quantity float
+       ,@Description ntext
+	   ,@StockID nvarchar(24)
+       ,@Active bit	 
+       ,@NewID int output)
+AS
+BEGIN
+INSERT INTO [dbo].[DacInsertToWarehouse]
+       ([InsertNumber]
+       ,[CreatedDate]    
+       ,[ProductCode]
+       ,[Quantity]
+       ,[Description]
+	   ,[StockID]
+       ,[Active]	 
+)
+ VALUES
+       (@InsertNumber
+       ,@CreatedDate    
+       ,@ProductCode
+       ,@Quantity
+       ,@Description
+	   ,@StockID
+       ,@Active	  
+);
+SELECT @NewID = SCOPE_IDENTITY();
+END
+GO
+/****** Object:  StoredProcedure [dbo].[spDacInsertToWarehouse_Select]    Script Date: 27/01/2021 12:14:52 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[spDacInsertToWarehouse_Select]
+       (@FrDate datetime
+       ,@ToDate datetime     
+       ,@ProductCode nvarchar(20)
+	   ,@LoginID varchar(24))
+AS
+BEGIN
+	Declare @AdminUser varchar(24);
+	SELECT @AdminUser = gu.[LoginID]
+	FROM   [dbo].[SecGroupUser] as gu
+		INNER JOIN [dbo].[SecGroups] as g on gu.GroupID = g.GroupID
+		INNER JOIN [dbo].[SecUsers] as u on gu.LoginID = u.LoginID
+	WHERE  gu.[LoginID] = @LoginID AND g.IsAdmin = 1;
+	-- Nguoi dung la quan tri vien
+	IF @AdminUser is not null
+	BEGIN
+		SELECT *
+		FROM [dbo].[DacInsertToWarehouse]
+		WHERE (@FrDate IS NULL OR datediff(day, @FrDate, [CreatedDate]) >= 0)
+			AND (@ToDate IS NULL OR datediff(day, @ToDate, [CreatedDate]) <= 0)
+			AND [ProductCode] LIKE '%' + @ProductCode + '%'
+		ORDER BY ID DESC;
+	END
+	ELSE
+	BEGIN
+		SELECT *
+		FROM [dbo].[DacInsertToWarehouse]
+		WHERE (@FrDate IS NULL OR datediff(day, @FrDate, [CreatedDate]) >= 0)
+			AND (@ToDate IS NULL OR datediff(day, @ToDate, [CreatedDate]) <= 0)
+			AND [ProductCode] LIKE '%' + @ProductCode + '%'
+			AND [StockID] IN (SELECT StockID FROM [dbo].[SecStockUser] WHERE LoginID = @LoginID)
+		ORDER BY ID DESC;
+	END
+END
+GO
+/****** Object:  StoredProcedure [dbo].[spDacInsertToWarehouse_SelectJoin]    Script Date: 27/01/2021 12:15:24 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[spDacInsertToWarehouse_SelectJoin]
+       (@FrDate datetime
+       ,@ToDate datetime
+       ,@ProductCode nvarchar(20)
+	   ,@LoginID varchar(24))
+AS
+BEGIN
+	Declare @AdminUser varchar(24);
+	SELECT @AdminUser = gu.[LoginID]
+	FROM   [dbo].[SecGroupUser] as gu
+		INNER JOIN [dbo].[SecGroups] as g on gu.GroupID = g.GroupID
+		INNER JOIN [dbo].[SecUsers] as u on gu.LoginID = u.LoginID
+	WHERE  gu.[LoginID] = @LoginID AND g.IsAdmin = 1;
+	-- Nguoi dung la quan tri vien
+	IF @AdminUser is not null
+	BEGIN
+		SELECT a.ID, a.InsertNumber, a.CreatedDate, a.ProductCode, c.Name AS ProductName, 1 AS Quantity, b.DacCode, b.ID AS DetailID, a.[Description]
+		FROM [DacInsertToWarehouse] AS a
+		INNER JOIN [DacInsertToWarehouseDetails] AS b ON a.ID = b.InsertID
+		INNER JOIN [DacProduct] AS c ON a.ProductCode = c.Code
+		WHERE (@FrDate IS NULL OR datediff(day, @FrDate, a.[CreatedDate]) >= 0)
+			AND (@ToDate IS NULL OR datediff(day, @ToDate, a.[CreatedDate]) <= 0)
+			AND [ProductCode] LIKE '%' + @ProductCode + '%';
+	END
+	ELSE
+	BEGIN
+		SELECT a.ID, a.InsertNumber, a.CreatedDate, a.ProductCode, c.Name AS ProductName, 1 AS Quantity, b.DacCode, b.ID AS DetailID, a.[Description]
+		FROM [DacInsertToWarehouse] AS a
+		INNER JOIN [DacInsertToWarehouseDetails] AS b ON a.ID = b.InsertID
+		INNER JOIN [DacProduct] AS c ON a.ProductCode = c.Code
+		WHERE (@FrDate IS NULL OR datediff(day, @FrDate, a.[CreatedDate]) >= 0)
+			AND (@ToDate IS NULL OR datediff(day, @ToDate, a.[CreatedDate]) <= 0)
+			AND [ProductCode] LIKE '%' + @ProductCode + '%'
+			AND a.[StockID] IN (SELECT StockID FROM [dbo].[SecStockUser] WHERE LoginID = @LoginID);
+	END
+END
+GO
+/****** Object:  StoredProcedure [dbo].[spDacInsertToWarehouse_SelectQuantity]    Script Date: 27/01/2021 12:15:53 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[spDacInsertToWarehouse_SelectQuantity]
+       (@FrDate datetime
+       ,@ToDate datetime
+       ,@ProductCode nvarchar(20)
+	   ,@LoginID varchar(24))
+AS
+BEGIN
+	Declare @AdminUser varchar(24);
+	SELECT @AdminUser = gu.[LoginID]
+	FROM   [dbo].[SecGroupUser] as gu
+		INNER JOIN [dbo].[SecGroups] as g on gu.GroupID = g.GroupID
+		INNER JOIN [dbo].[SecUsers] as u on gu.LoginID = u.LoginID
+	WHERE  gu.[LoginID] = @LoginID AND g.IsAdmin = 1;
+	-- Nguoi dung la quan tri vien
+	IF @AdminUser is not null
+	BEGIN
+		SELECT a.ID, a.InsertNumber, a.CreatedDate, a.ProductCode, c.Name AS ProductName, a.Quantity, '' AS DacCode, -1 AS DetailID, a.[Description]
+		FROM [DacInsertToWarehouse] AS a
+		INNER JOIN [DacProduct] AS c ON a.ProductCode = c.Code
+		WHERE (@FrDate IS NULL OR datediff(day, @FrDate, a.[CreatedDate]) >= 0)
+			AND (@ToDate IS NULL OR datediff(day, @ToDate, a.[CreatedDate]) <= 0)
+			AND [ProductCode] LIKE '%' + @ProductCode + '%';
+	END
+	ELSE
+	BEGIN
+		SELECT a.ID, a.InsertNumber, a.CreatedDate, a.ProductCode, c.Name AS ProductName, a.Quantity, '' AS DacCode, -1 AS DetailID, a.[Description]
+		FROM [DacInsertToWarehouse] AS a
+		INNER JOIN [DacProduct] AS c ON a.ProductCode = c.Code
+		WHERE (@FrDate IS NULL OR datediff(day, @FrDate, a.[CreatedDate]) >= 0)
+			AND (@ToDate IS NULL OR datediff(day, @ToDate, a.[CreatedDate]) <= 0)
+			AND [ProductCode] LIKE '%' + @ProductCode + '%'
+			AND a.[StockID] IN (SELECT StockID FROM [dbo].[SecStockUser] WHERE LoginID = @LoginID);
+	END
+END
+GO
+/****** Object:  StoredProcedure [dbo].[spDacInsertToWarehouse_Update]    Script Date: 27/01/2021 12:16:12 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[spDacInsertToWarehouse_Update]
+       (@ID int
+       ,@InsertNumber nvarchar(10)
+       ,@CreatedDate datetime    
+       ,@ProductCode nvarchar(20)
+       ,@Quantity float
+       ,@Description ntext
+	   ,@StockID nvarchar(24)
+       ,@Active bit)
+AS
+BEGIN
+UPDATE [DacInsertToWarehouse]
+SET     [InsertNumber] = @InsertNumber
+	   ,[CreatedDate] = @CreatedDate
+	   ,[ProductCode] = @ProductCode
+       ,[Quantity] = @Quantity
+	   ,[Description] = @Description
+	   ,[StockID] = @StockID
+	   ,[Active] = @Active	   
+WHERE ID = @ID;
+END
+GO
+
+/****** Object:  StoredProcedure [dbo].[DacStock_Delete]    Script Date: 28/01/2021 10:53:22 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[DacStock_Delete]
+    @ID int
+AS
+declare @count int
+declare @StockID varchar(24)
+
+SELECT @StockID = Code FROM [dbo].[DacStock] WHERE ID = @ID;
+
+select @count = count(*) from [dbo].[DacInsertToWarehouse] where StockID = @StockID
+if @count > 0 
+begin
+		RAISERROR('117.Dữ liệu đã có giao dịch xảy ra.',16,5)	
+		 IF @@TRANCOUNT >0 ROLLBACK TRANSACTION
+		return
+END
+
+DELETE FROM [dbo].[DacStock]
+WHERE ID = @ID
+GO
+/****** Object:  StoredProcedure [dbo].[DacStock_Insert]    Script Date: 28/01/2021 10:53:31 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[DacStock_Insert]
+    @Code varchar(24),
+    @Name nvarchar(128),
+    @Contact nvarchar(128),
+    @Address nvarchar(256),
+    @Email nvarchar(64),
+    @Telephone varchar(20),
+    @Fax varchar(20),
+    @Mobi varchar(20),
+    @Manager nvarchar(128),    
+    @BranchID nvarchar(24),
+    @Description nvarchar(256),
+    @Active bit
+AS
+INSERT INTO [dbo].[DacStock] (
+    Code,
+    [Name],
+    Contact,
+    [Address],
+    Email,
+    Telephone,
+    Fax,
+    Mobi,
+    Manager,
+    BranchID,
+    [Description],
+    Active
+)
+VALUES (
+    @Code,
+    @Name,
+    @Contact,
+    @Address,
+    @Email,
+    @Telephone,
+    @Fax,
+    @Mobi,
+    @Manager,
+    @BranchID,
+    @Description,
+    @Active)
+GO
+
+/****** Object:  StoredProcedure [dbo].[DacStock_Select]    Script Date: 28/01/2021 10:53:57 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[DacStock_Select]
+    @Code nvarchar(24),
+    @Name nvarchar(128),
+    @Email nvarchar(64),
+    @Mobi varchar(20),
+	@LoginID varchar(24)
+AS
+BEGIN
+	Declare @AdminUser varchar(24);
+	SELECT @AdminUser = gu.[LoginID]
+	FROM   [dbo].[SecGroupUser] as gu
+		INNER JOIN [dbo].[SecGroups] as g on gu.GroupID = g.GroupID
+		INNER JOIN [dbo].[SecUsers] as u on gu.LoginID = u.LoginID
+	WHERE  gu.[LoginID] = @LoginID AND g.IsAdmin = 1;
+	-- Nguoi dung la quan tri vien
+	IF @AdminUser is not null
+	BEGIN 
+		SELECT * FROM [dbo].[DacStock]
+		WHERE [Name] LIKE N'%' + @Name + '%' AND Email LIKE '%' + @Email + '%'
+			AND Code LIKE '%' + @Code + '%' AND Mobi LIKE '%' + @Mobi + '%';
+	END
+	ELSE --Nguoi dung khong la quan tri vien
+	BEGIN
+		SELECT * FROM [dbo].[DacStock]
+		WHERE [Name] LIKE N'%' + @Name + '%' AND Email LIKE '%' + @Email + '%'
+			AND Code LIKE '%' + @Code + '%' AND Mobi LIKE '%' + @Mobi + '%'
+			AND Code IN (SELECT StockID FROM [dbo].[SecStockUser] WHERE LoginID = @LoginID);
+	END
+END
+GO
+
+/****** Object:  StoredProcedure [dbo].[DacStock_Update]    Script Date: 28/01/2021 10:54:15 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[DacStock_Update]
+    @ID int,
+    @Code nvarchar(24),
+    @Name nvarchar(128),
+    @Contact nvarchar(128),
+    @Address nvarchar(256),
+    @Email nvarchar(64),
+    @Telephone varchar(20),
+    @Fax varchar(20),
+    @Mobi varchar(20),
+    @Manager nvarchar(128),
+    @BranchID nvarchar(24),
+    @Description nvarchar(256),
+    @Active bit
+AS
+UPDATE [dbo].[DacStock]
+SET Name = @Name,
+	Code = @Code,
+    Contact = @Contact,
+    [Address] = @Address,
+    Email = @Email,
+    Telephone = @Telephone,
+    Fax = @Fax,
+    Mobi = @Mobi,
+    Manager = @Manager,
+    BranchID = @BranchID,
+    [Description] = @Description,
+    Active = @Active
+WHERE ID = @ID
+GO
+GO
+
+/****** Object:  StoredProcedure [dbo].[spSecStockUser_Delete]    Script Date: 28/01/2021 10:54:59 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[spSecStockUser_Delete]
+	@StockID varchar(24), @LoginID VARCHAR(50)
+AS
+DELETE FROM SecStockUser WHERE StockID = @StockID AND LoginID = @LoginID
+GO
+
+/****** Object:  StoredProcedure [dbo].[spSecStockUser_Insert]    Script Date: 28/01/2021 10:55:25 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[spSecStockUser_Insert]
+	@StockID varchar(24), @LoginID VARCHAR(50)
+AS
+INSERT INTO SecStockUser VALUES(@StockID, @LoginID)
+GO
+
+/****** Object:  StoredProcedure [dbo].[spSecStockUser_SelectByID]    Script Date: 28/01/2021 10:55:47 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[spSecStockUser_SelectByID]
+	@StockID varchar(24), @LoginID VARCHAR(50)
+AS
+SELECT	*
+FROM	SecStockUser
+WHERE	StockID = @StockID AND LoginID = @LoginID
+GO
+/****** Object:  StoredProcedure [dbo].[spSecStockUser_SelectByLoginID]    Script Date: 28/01/2021 10:56:12 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[spSecStockUser_SelectByLoginID]
+	@LoginID VARCHAR(50)
+AS
+SELECT	*
+FROM	SecStockUser
+WHERE	LOWER(LoginID) = @LoginID
+GO

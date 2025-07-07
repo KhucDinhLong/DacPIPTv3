@@ -1,0 +1,1 @@
+﻿<CustomersForm customer="customer" HeaderText="Thêm thông tin khách hàng" ButtonText="Lưu" OnvalidSubmit="@(() => HandleValidSubmit())" OnClose="Close" />

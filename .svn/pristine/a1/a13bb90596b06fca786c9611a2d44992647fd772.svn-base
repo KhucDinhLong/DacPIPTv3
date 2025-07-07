@@ -1,0 +1,262 @@
+﻿using System;
+using DAC.DAL;
+using System.Data.SqlClient;
+using System.Data;
+
+namespace DAC.Core
+{
+    public class DacAgencyCS
+    {
+        public DacAgencyCollection GetListAgency()
+        {
+            DacAgencyCollection dacAgencyCollection = new DacAgencyCollection();
+            DacDbAccess dacDb = new DacDbAccess();
+            dacDb.CreateNewSqlCommand();
+            SqlDataReader reader = dacDb.ExecuteReader("spDacAgency_SelectAll");
+            while (reader.Read())
+            {
+                DacAgency dacAgency = new DacAgency();
+
+                dacAgency.ID = (int)reader["ID"];
+                dacAgency.Code = reader["Code"].ToString();
+                dacAgency.Name = reader["Name"].ToString();
+                dacAgency.Address = reader["Address"].ToString();
+                dacAgency.ProvinceCode = reader["ProvinceCode"].ToString();
+                dacAgency.OwnerName = reader["OwnerName"].ToString();
+                dacAgency.PhoneNum = reader["PhoneNum"].ToString();
+                dacAgency.MobileNum = reader["MobileNum"].ToString();
+                dacAgency.Email = reader["Email"].ToString();
+                dacAgency.Description = reader["Description"].ToString();
+                dacAgency.CreatedDate = (DateTime)reader["CreatedDate"];
+                dacAgency.TaxCode = reader["TaxCode"].ToString();
+                dacAgency.JoinContact = reader["JoinContact"].ToString();
+                dacAgency.DependCode = reader["DependCode"].ToString();
+                dacAgency.Region = reader["Region"].ToString();
+                dacAgency.CreatedUser = reader["CreatedUser"].ToString();
+                dacAgency.ModifiedUser = reader["ModifiedUser"].ToString();
+                dacAgency.ModifiedDate = (DateTime)reader["ModifiedDate"];
+                dacAgency.Active = (bool)reader["Active"];
+
+                dacAgencyCollection.Add(dacAgency);
+            }
+
+            // Call Close when reading done
+            reader.Close();
+
+            return dacAgencyCollection;
+        }
+        public DacAgencyCollection GetListAgency(string sCode, string sName, string sMobileNum)
+        {
+            DacAgencyCollection dacAgencyCollection = new DacAgencyCollection();
+            DacDbAccess dacDb = new DacDbAccess();
+            dacDb.CreateNewSqlCommand();
+            dacDb.AddParameter("@Code", sCode.ToUpper());
+            dacDb.AddParameter("@Name", sName);
+            dacDb.AddParameter("@MobileNum", sMobileNum);
+            SqlDataReader reader = dacDb.ExecuteReader("spDacAgency_SelectByCode");
+            while (reader.Read())
+            {
+                DacAgency dacAgency = new DacAgency();
+                dacAgency.ID = (int)reader["ID"];
+                dacAgency.Code = reader["Code"].ToString();
+                dacAgency.Name = reader["Name"].ToString();
+                dacAgency.Address = reader["Address"].ToString();
+                dacAgency.ProvinceCode = reader["ProvinceCode"].ToString();
+                dacAgency.OwnerName = reader["OwnerName"].ToString();
+                dacAgency.PhoneNum = reader["PhoneNum"].ToString();
+                dacAgency.MobileNum = reader["MobileNum"].ToString();
+                dacAgency.Email = reader["Email"].ToString();
+                dacAgency.Description = reader["Description"].ToString();
+                dacAgency.CreatedDate = (DateTime)reader["CreatedDate"];
+                dacAgency.TaxCode = reader["TaxCode"].ToString();
+                dacAgency.JoinContact = reader["JoinContact"].ToString();
+                dacAgency.DependCode = reader["DependCode"].ToString();
+                dacAgency.Region = reader["Region"].ToString();
+                dacAgency.CreatedUser = reader["CreatedUser"].ToString();
+                dacAgency.ModifiedUser = reader["ModifiedUser"].ToString();
+                dacAgency.ModifiedDate = (DateTime)reader["ModifiedDate"];
+                dacAgency.Active = (bool)reader["Active"];
+
+                dacAgencyCollection.Add(dacAgency);
+            }
+
+            // Call Close when reading done
+            reader.Close();
+
+            return dacAgencyCollection;
+        }
+        public bool Insert(DacAgency dacAgency)
+        {
+            DacDbAccess dacDb = new DacDbAccess();
+            try
+            {
+                dacDb.CreateNewSqlCommand();
+                // Add parameters
+                dacDb.AddParameter("@Code", dacAgency.Code);
+                dacDb.AddParameter("@Name", dacAgency.Name);
+                dacDb.AddParameter("@Address", dacAgency.Address);
+                dacDb.AddParameter("@ProvinceCode", dacAgency.ProvinceCode);
+                dacDb.AddParameter("@OwnerName", dacAgency.OwnerName);
+                dacDb.AddParameter("@PhoneNum", dacAgency.PhoneNum);
+                dacDb.AddParameter("@MobileNum", dacAgency.MobileNum);
+                dacDb.AddParameter("@Email", dacAgency.Email);
+                dacDb.AddParameter("@Description", dacAgency.Description);
+                dacDb.AddParameter("@CreatedDate", dacAgency.CreatedDate);
+                dacDb.AddParameter("@TaxCode", dacAgency.TaxCode);
+                dacDb.AddParameter("@JoinContact", dacAgency.JoinContact);
+                dacDb.AddParameter("@DependCode", dacAgency.DependCode);
+                dacDb.AddParameter("@Region", dacAgency.Region);
+                dacDb.AddParameter("@CreatedUser", dacAgency.CreatedUser);
+                dacDb.AddParameter("@ModifiedUser", dacAgency.ModifiedUser);
+                dacDb.AddParameter("@ModifiedDate", dacAgency.ModifiedDate);
+                dacDb.AddParameter("@Active", dacAgency.Active);
+
+                dacDb.ExecuteNonQuery("spDacAgency_Insert");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public bool Update(DacAgency dacAgency)
+        {
+            DacDbAccess dacDb = new DacDbAccess();
+            try
+            {
+                dacDb.CreateNewSqlCommand();
+                // Add parameters
+                dacDb.AddParameter("@ID", dacAgency.ID);
+                dacDb.AddParameter("@Code", dacAgency.Code);
+                dacDb.AddParameter("@Name", dacAgency.Name);
+                dacDb.AddParameter("@Address", dacAgency.Address);
+                dacDb.AddParameter("@ProvinceCode", dacAgency.ProvinceCode);
+                dacDb.AddParameter("@OwnerName", dacAgency.OwnerName);
+                dacDb.AddParameter("@PhoneNum", dacAgency.PhoneNum);
+                dacDb.AddParameter("@MobileNum", dacAgency.MobileNum);
+                dacDb.AddParameter("@Email", dacAgency.Email);
+                dacDb.AddParameter("@Description", dacAgency.Description);
+                dacDb.AddParameter("@TaxCode", dacAgency.TaxCode);
+                dacDb.AddParameter("@JoinContact", dacAgency.JoinContact);
+                dacDb.AddParameter("@DependCode", dacAgency.DependCode);
+                dacDb.AddParameter("@Region", dacAgency.Region);
+                dacDb.AddParameter("@CreatedUser", dacAgency.CreatedUser);
+                dacDb.AddParameter("@ModifiedDate", dacAgency.ModifiedDate);
+                dacDb.AddParameter("@ModifiedUser", dacAgency.ModifiedUser);
+                dacDb.AddParameter("@Active", dacAgency.Active);
+
+                dacDb.ExecuteNonQuery("spDacAgency_Update");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public bool Delete(string sCode)
+        {
+            DacDbAccess dacDb = new DacDbAccess();
+            try
+            {
+                dacDb.CreateNewSqlCommand();
+                // Add parameters
+                dacDb.AddParameter("@Code", sCode);
+
+                dacDb.ExecuteNonQuery("spDacAgency_Delete");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public Models.AgencyTrackViewModel GetAgencyTrack(string DacCode)
+        {
+            Models.AgencyTrackViewModel agencyTrackViewModel = new Models.AgencyTrackViewModel();
+            string sProductCode = string.Empty;
+            DacDbAccess dacDb = new DacDbAccess();
+            dacDb.CreateNewSqlCommand();
+            dacDb.AddParameter("@DacCode", DacCode);
+            DataTable dataTableAgency = dacDb.ExecuteDataTable("dbo.spDacDistributeToAgency_SelectDacCode");
+            DataTable dataTableStore = dacDb.ExecuteDataTable("dbo.spDacDistributeToStore_SelectDacCode");
+            if (dataTableAgency.Rows.Count > 0)
+            {
+                Models.DistributeToAgencyModel distributeToAgencyModel = new Models.DistributeToAgencyModel();
+                DataRow dataRow = dataTableAgency.Rows[0];
+                distributeToAgencyModel.ID = (int)dataRow["ID"];
+                distributeToAgencyModel.CreatedDate = (DateTime)dataRow["CreatedDate"];
+                distributeToAgencyModel.AgencyCode = dataRow["AgencyCode"].ToString();
+                distributeToAgencyModel.Name = dataRow["Name"].ToString();
+                distributeToAgencyModel.Address = dataRow["Address"].ToString();
+                distributeToAgencyModel.OwnerName = dataRow["OwnerName"].ToString();
+                distributeToAgencyModel.MobileNum = dataRow["MobileNum"].ToString();
+                distributeToAgencyModel.Email = dataRow["Email"].ToString();
+                distributeToAgencyModel.ProvinceName = dataRow["ProvinceName"].ToString();
+                distributeToAgencyModel.ProductCode = dataRow["ProductCode"].ToString();
+                distributeToAgencyModel.DependCode = dataRow["DependCode"].ToString();
+                distributeToAgencyModel.JoinContact = dataRow["JoinContact"].ToString();
+                distributeToAgencyModel.PhoneNum = dataRow["PhoneNum"].ToString();
+                distributeToAgencyModel.Region = dataRow["Region"].ToString();
+                sProductCode = distributeToAgencyModel.ProductCode;
+
+                agencyTrackViewModel.DistributeToAgencyModel = distributeToAgencyModel;
+            }
+            else
+            {
+                agencyTrackViewModel.DistributeToAgencyModel = null;
+            }
+            if (dataTableStore.Rows.Count > 0)
+            {
+                Models.DistributeToStoreModel distributeToStoreModel = new Models.DistributeToStoreModel();
+                DataRow dataRow = dataTableStore.Rows[0];
+                distributeToStoreModel.ID = dataRow["ID"].ToString();
+                distributeToStoreModel.CreatedDate = (DateTime)dataRow["CreatedDate"];
+                distributeToStoreModel.StoreCode = dataRow["StoreCode"].ToString();
+                distributeToStoreModel.Name = dataRow["Name"].ToString();
+                distributeToStoreModel.Address = dataRow["Address"].ToString();
+                distributeToStoreModel.OwnerName = dataRow["OwnerName"].ToString();
+                distributeToStoreModel.MobileNum = dataRow["MobileNum"].ToString();
+                distributeToStoreModel.Email = dataRow["Email"].ToString();
+                distributeToStoreModel.ProductCode = dataRow["ProductCode"].ToString();
+                sProductCode = distributeToStoreModel.ProductCode;
+
+                agencyTrackViewModel.DistributeToStoreModel = distributeToStoreModel;
+            }
+            else
+            {
+                agencyTrackViewModel.DistributeToStoreModel = null;
+            }
+            if (sProductCode.Length != 0)
+            {
+                dacDb.CreateNewSqlCommand();
+                dacDb.AddParameter("@Code", sProductCode);
+                dacDb.AddParameter("@Name", string.Empty);
+                DataTable dataTableProduct = dacDb.ExecuteDataTable("spDacProduct_SelectByCode");
+                if (dataTableProduct.Rows.Count > 0)
+                {
+                    Models.ProductModel productModel = new Models.ProductModel();
+                    DataRow dataRow = dataTableProduct.Rows[0];
+                    productModel.Id = (int)dataRow["Id"];
+                    productModel.Code = dataRow["Code"].ToString();
+                    productModel.Name = dataRow["Name"].ToString();
+                    productModel.ProductCategoryName = dataRow["ProductCategoryName"].ToString();
+                    productModel.RegisterNumber = dataRow["RegisterNumber"].ToString();
+                    productModel.Manufacture = dataRow["Manufacture"].ToString();
+                    productModel.GeneralFormat = dataRow["GeneralFormat"].ToString();
+
+                    agencyTrackViewModel.ProductModel = productModel;
+                }
+                else
+                {
+                    agencyTrackViewModel.ProductModel = null;
+                }
+            }
+            else
+            {
+                agencyTrackViewModel.ProductModel = null;
+            }
+            return agencyTrackViewModel;
+        }
+    }
+}

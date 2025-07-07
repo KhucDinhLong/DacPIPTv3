@@ -1,0 +1,141 @@
+﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+
+html, body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+a, .btn-link {
+    color: #0366d6;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+.content {
+    padding-top: 1.1rem;
+}
+
+.valid.modified:not([type=checkbox]) {
+    outline: 1px solid #26b050;
+}
+
+.invalid {
+    outline: 1px solid red;
+}
+
+.validation-message {
+    color: red;
+}
+
+#blazor-error-ui {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+    #blazor-error-ui .dismiss {
+        cursor: pointer;
+        position: absolute;
+        right: 0.75rem;
+        top: 0.5rem;
+    }
+
+.avatar {
+    background-color: #C3C3C3;
+    border-radius: 50%;
+    position: relative;
+    cursor: pointer;
+    color: #FFF;
+    display: -webkit-inline-box;
+    display: -webkit-inline-flex;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    font-size: 1rem;
+    text-align: center;
+    vertical-align: middle;
+    font-weight: 600;
+}
+
+    .avatar img {
+        border-radius: 50%;
+    }
+
+.avatar, .divider, .navigation li {
+    white-space: nowrap;
+}
+
+    .avatar .avatar-status-online {
+        background-color: #28C76F;
+    }
+
+    .avatar [class*=avatar-status-] {
+        border-radius: 50%;
+        width: 11px;
+        height: 11px;
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        border: 1px solid #FFF;
+    }
+/*.addScroll {
+    height: 800px;
+    overflow-y: scroll;
+}*/
+
+.ten-may:hover {
+    background: #007bff;
+    color: #fff;
+    box-shadow: 0 0 1px rgb(0 0 0 / 13%), 0 1px 3px rgb(0 0 0 / 20%);
+    border-radius: .25rem;
+}
+
+.table{
+    line-height:1rem
+}
+
+.dropdown-toggle:after {
+    content: none;
+}
+
+.carousel-indicators {
+    margin-right: 1%;
+    margin-left: 1%;
+    bottom: unset;
+    top: -45px
+}
+
+@media screen and (min-width: 1621px) {
+    .carousel-indicators {
+        top: -45px !important;
+    }
+}
+
+@media screen and (min-width: 1161px) {
+    .carousel-indicators {
+        top: -45px !important;
+    }
+}
+
+@media screen and (max-width: 1160px) {
+    .carousel-indicators{
+        margin-right:1%;
+        margin-left:1%;
+        bottom:unset;
+        top:-5px!important;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .carousel-indicators {
+        top:-5px!important;
+    }
+}

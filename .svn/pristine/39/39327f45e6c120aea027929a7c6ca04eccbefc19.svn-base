@@ -1,0 +1,161 @@
+﻿@using PIPTWeb.Select2
+<EditForm Model="agency" OnValidSubmit="OnvalidSubmit">
+    <div class="modal-body">
+        <div class="card card-success">
+            <div class="card-header">
+                @HeaderText
+            </div>
+            <div class="form-horizontal">
+                <div class="card-body">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-3">Mã đại lý: </label>
+                        <div class="col-sm-9">
+                            <InputText type="text" @bind-Value="agency.Code" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-3">Tên đại lý: </label>
+                        <div class="col-sm-9">
+                            <InputText type="text" @bind-Value="agency.Name" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-3">Địa chỉ: </label>
+                        <div class="col-sm-9">
+                            <textarea @bind="agency.Address" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-3">Tỉnh / TP: </label>
+                        <div class="col-sm-9">
+                            <Select2 TItem="Province"
+                                     TSource="List<Province>"
+                                     IdSelector="c => c?.Code"
+                                     TextSelector="c => c?.Name"
+                                     Datasource="LstProvinces"
+                                     Value="LstSelectedProvinces"
+                                     GetElementById="getProvinceByIdAsync"
+                                     FilterFunction="filterProvinceFunction"
+                                     OnValueChanged="OnProvinceChange"></Select2>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-3">Khu vực / Miền: </label>
+                        <div class="col-sm-9">
+                            <Select2 TItem="DacRegion"
+                                     TSource="List<DacRegion>"
+                                     IdSelector="c => c?.RegionCode"
+                                     TextSelector="c => c?.RegionArea"
+                                     Datasource="LstRegions"
+                                     Value="LstSelectedRegions"
+                                     GetElementById="getRegionByIdAsync"
+                                     FilterFunction="filterRegionFunction"
+                                     OnValueChanged="OnRegionChange"></Select2>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-3">Người đại diện: </label>
+                        <div class="col-sm-9">
+                            <InputText type="text" @bind-Value="agency.OwnerName" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-3">Mã số thuế: </label>
+                        <div class="col-sm-9">
+                            <InputText type="text" @bind-Value="agency.TaxCode" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-3">Số điện thoại: </label>
+                        <div class="col-sm-9">
+                            <InputText type="text" @bind-Value="agency.PhoneNum" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-3">Di động: </label>
+                        <div class="col-sm-9">
+                            <InputText type="text" @bind-Value="agency.MobileNum" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-3">Email: </label>
+                        <div class="col-sm-9">
+                            <InputText type="text" @bind-Value="agency.Email" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-3">Hợp đồng: </label>
+                        <div class="col-sm-9">
+                            <InputText type="text" @bind-Value="agency.JoinContact" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-3">Đại lý cấp trên: </label>
+                        <div class="col-sm-9">
+                            <Select2 TItem="DacAgency"
+                                     TSource="List<DacAgency>"
+                                     IdSelector="c => c?.Code"
+                                     TextSelector="c => c?.Name"
+                                     Datasource="LstAgencies"
+                                     Value="LstSelectedAgencies"
+                                     GetElementById="getAgencyByIdAsync"
+                                     FilterFunction="filterAgencyFunction"
+                                     OnValueChanged="OnAgencyChange"></Select2>
+                        </div>
+                    </div>
+
+                    @if (IsAdmin)
+                    {
+                        <div class="form-group row">
+                            <label class="col-form-label col-sm-3">Mã khách hàng: </label>
+                            <div class="col-sm-9">
+                                <Select2 TItem="Customers"
+                                         TSource="List<Customers>"
+                                         IdSelector="c => c?.Code"
+                                         TextSelector="c => c?.Name"
+                                         Datasource="LstCustomers"
+                                         Value="LstSelectedCustomers"
+                                         GetElementById="getCustomerByIdAsync"
+                                         FilterFunction="filterCustomerFunction"
+                                         OnValueChanged="OnCustomerChange"></Select2>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-3">Còn Hoạt động: </label>
+                        <div class="col-sm-9">
+                            <input type="checkbox" @bind="agency.Active" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-3">Ghi chú: </label>
+                        <div class="col-sm-9">
+                            <InputText type="text" @bind-Value="agency.Description" class="form-control" />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary mr-auto" @onclick="OnClose">Hủy</button>
+        <button type="submit" class="btn btn-success">@ButtonText</button>
+    </div>
+</EditForm>

@@ -1,0 +1,10 @@
+﻿<AuthorizeView>
+    <Authorized>
+        Xin chào, @context.User.FindFirst("FullName").Value
+        <a href="/logout">Đăng xuất</a>
+    </Authorized>
+    <NotAuthorized>
+        <a href="/register">Đăng ký</a>
+        <a href="/login">Đăng nhập</a>
+    </NotAuthorized>
+</AuthorizeView>

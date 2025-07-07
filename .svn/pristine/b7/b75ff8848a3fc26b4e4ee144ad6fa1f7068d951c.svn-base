@@ -1,0 +1,217 @@
+﻿@page "/profile"
+@using PIPTWeb.Client.Services
+@inject ISecUsersService userService
+@inject IAuthenticationService authService
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject NotificationService NotificationService
+
+@if (CurrentUser != null)
+{
+    <ContentMain>
+        <div class="card mb-3">
+            <div class="content-header row">
+                <div class="content-header-left col-md-9 col-12 mb-2">
+                    <div class="row breadcrumbs-top">
+                        <div class="col-12">
+                            <h2 class="content-header-title float-left mb-0">Thông tin tài khoản</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-body">
+                <section id="page-account-settings">
+                    <div class="row">
+                        <div class="col-md-3 mb-2 mb-md-0">
+                            <ul class="nav nav-pills flex-column nav-left">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="account-pill-general" data-toggle="pill" href="#account-vertical-general" aria-expanded="true">
+                                        <i data-feather="user" class="font-medium-3 mr-1"></i>
+                                        <span class="font-weight-bold">Thông tin</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="account-pill-password" data-toggle="pill" href="#account-vertical-password" aria-expanded="false">
+                                        <i data-feather="lock" class="font-medium-3 mr-1"></i>
+                                        <span class="font-weight-bold">Đổi mật khẩu</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/logout" aria-expanded="false">
+                                        <i data-feather="lock" class="font-medium-3 mr-1"></i>
+                                        <span class="font-weight-bold">Đăng xuất</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="tab-content">
+                                        <div role="tabpanel" class="tab-pane active" id="account-vertical-general" aria-labelledby="account-pill-general" aria-expanded="true">
+                                            <div class="media">
+                                                <a href="javascript:void(0);" class="mr-25">
+                                                    <img src="@Avatar" id="account-upload-img" class="rounded mr-50" alt="profile image" height="80" width="80" />
+                                                </a>
+                                                <div class="media-body mt-75 ml-1">
+                                                    <label for="account-upload" class="btn btn-sm btn-primary mb-75 mr-75">Tải lên</label>
+                                                    <InputFile class="custom-file-input" id="account-upload" hidden accept="image/*" OnChange="OnChange" />
+                                                    <p>Chấp nhận file dạng JPG, GIF hoặc PNG. Kích thước lớn nhất của file có thể tải lên là 800kB</p>
+                                                </div>
+                                            </div>
+                                            <EditForm Model="CurrentUser" class="validate-form mt-2">
+                                                <div class="row">
+                                                    <div class="col-12 col-sm-6">
+                                                        <div class="form-group">
+                                                            <label for="account-username">Tên đăng nhập</label>
+                                                            <InputText class="form-control" id="account-username" name="username" placeholder="Tên đăng nhập" @bind-Value="CurrentUser.UserName" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12 col-sm-6">
+                                                        <div class="form-group">
+                                                            <label for="account-e-mail">E-mail</label>
+                                                            <InputText class="form-control" id="account-e-mail" name="email" placeholder="Email" @bind-Value="CurrentUser.Email" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12 col-sm-6">
+                                                        <div class="form-group">
+                                                            <label for="account-name">Họ</label>
+                                                            <InputText class="form-control" id="account-name" name="name" placeholder="Họ" @bind-Value="CurrentUser.FirstName" />
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-12 col-sm-6">
+                                                        <div class="form-group">
+                                                            <label for="account-company">Tên</label>
+                                                            <InputText class="form-control" id="account-company" name="company" placeholder="Tên" @bind-Value="CurrentUser.LastName" />
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-12 col-sm-6">
+                                                        <div class="form-group">
+                                                            <label for="account-company">Điện thoại</label>
+                                                            <InputText class="form-control" id="account-company" name="company" placeholder="Điện thoại" @bind-Value="CurrentUser.PhoneNumber" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <button class="btn btn-primary mt-2 mr-1" @onclick="ChangeInfo">Lưu</button>
+                                                    </div>
+                                                </div>
+                                            </EditForm>
+                                        </div>
+                                        <div class="tab-pane fade" id="account-vertical-password" role="tabpanel" aria-labelledby="account-pill-password" aria-expanded="false">
+                                            <EditForm Model="CurrentUser" class="validate-form">
+                                                <div class="row">
+                                                    <div class="col-12 col-sm-6">
+                                                        <div class="form-group">
+                                                            <label for="account-old-password">Mật khẩu hiện tại</label>
+                                                            <div class="input-group form-password-toggle input-group-merge">
+                                                                <InputText type="password" class="form-control" id="account-old-password" name="password" placeholder="Mật khẩu hiện tại" @bind-Value="ChangePwdModel.OldPassword" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12 col-sm-6">
+                                                        <div class="form-group">
+                                                            <label for="account-new-password">Mật khẩu mới</label>
+                                                            <div class="input-group form-password-toggle input-group-merge">
+                                                                <InputText type="password" id="account-new-password" name="new-password" class="form-control" placeholder="Mật khẩu mới" @bind-Value="ChangePwdModel.NewPassword" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12 col-sm-6">
+                                                        <div class="form-group">
+                                                            <label for="account-retype-new-password">Nhập lại mật khẩu mới</label>
+                                                            <div class="input-group form-password-toggle input-group-merge">
+                                                                <InputText type="password" class="form-control" id="account-retype-new-password" name="confirm-new-password" placeholder="Mật khẩu mới" @bind-Value="ChangePwdModel.NewPasswordConfirm" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <button class="btn btn-primary mr-1 mt-1" @onclick="ChangePassword">Lưu</button>
+                                                    </div>
+                                                </div>
+                                            </EditForm>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </ContentMain>
+}
+else
+{
+    <p><em>Đang tải dữ liệu...</em></p>
+}
+
+@code {
+    private SecUsers CurrentUser { get; set; }
+    private ChangePwdModel ChangePwdModel { get; set; }
+    private string UserName { get; set; }
+    private string Avatar { get; set; }
+    private UploadFileModel fileBase64 = new UploadFileModel();
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        var authState = await AuthState;
+        var user = authState.User;
+        userService.OnChange += StateHasChanged;
+        UserName = await localStorage.GetItemAsync<string>("UserName");
+        StateHasChanged();
+        await userService.GetUserByUserName(UserName);
+        CurrentUser = userService.user;
+        ChangePwdModel = new ChangePwdModel();
+        ChangePwdModel.UserName = UserName;
+        Avatar = CurrentUser.Avatar;
+    }
+    private async Task ChangeInfo()
+    {
+        var user = await userService.EditUserById(CurrentUser.Id, CurrentUser);
+        ShowNotification(new Radzen.NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Cập nhật thông tin", Detail = "Thành công!" });
+    }
+    private async Task ChangePassword()
+    {
+        var response = await authService.ChangePassword(ChangePwdModel);
+        if (response)
+        {
+            ShowNotification(new Radzen.NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Cập nhật mật khẩu", Detail = "Thành công!" });
+        }
+        else
+        {
+            ShowNotification(new Radzen.NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Cập nhật mật khẩu", Detail = "Thất bại!" });
+        }
+    }
+    private async Task OnChange(InputFileChangeEventArgs e)
+    {
+        var files = e.GetMultipleFiles();
+        foreach (var file in files)
+        {
+            var resizeFile = await file.RequestImageFileAsync(file.ContentType, 150, 100);
+            var buff = new byte[resizeFile.Size];
+            using (var stream = resizeFile.OpenReadStream())
+            {
+                await stream.ReadAsync(buff);
+            }
+            fileBase64.base64data = Convert.ToBase64String(buff);
+            fileBase64.contentType = file.ContentType;
+            fileBase64.fileName = file.Name;
+            fileBase64.UserName = CurrentUser.UserName;
+            var rs = await authService.UploadAvatar(fileBase64);
+        }
+        await userService.GetUserByUserName(UserName);
+        CurrentUser = userService.user;
+        Avatar = CurrentUser.Avatar;
+        StateHasChanged();
+    }
+    void ShowNotification(Radzen.NotificationMessage message)
+    {
+        NotificationService.Notify(message);
+    }
+}

@@ -1,0 +1,614 @@
+﻿using DAC.Core;
+using DAC.Core.Security;
+using ExcelDataReader;
+using System;
+using System.ComponentModel;
+using System.Data;
+using System.IO;
+using System.Windows.Forms;
+using COMExcel = Microsoft.Office.Interop.Excel;
+
+namespace PIPT
+{
+    public partial class frmDacAgency : Form
+    {
+        #region Instance of the form
+        /// <summary>
+        /// Instance to store instance of this form
+        /// </summary>
+        private static frmDacAgency _instance = null;
+
+        /// <summary>
+        /// Instance form.
+        /// </summary>
+        /// <returns>Instance of this Form</returns>
+        public static frmDacAgency Instance()
+        {
+            if (_instance == null || _instance.IsDisposed)
+            {
+                _instance = new frmDacAgency();
+            }
+            return _instance;
+        }
+
+        public static frmDacAgency Instance(Form parent)
+        {
+            _instance = Instance();
+            _instance.MdiParent = parent;
+            return _instance;
+        }
+
+        public static frmDacAgency Instance(Form parent, bool isActivate)
+        {
+            _instance = Instance(parent);
+            if (isActivate)
+            {
+                _instance.WindowState = FormWindowState.Normal;
+                _instance.Show();
+                _instance.Activate();
+            }
+            return _instance;
+        }
+        #endregion
+        #region Variables
+        DacAgency dacAgency = new DacAgency();
+        public DacAgency selectedDacAgency = new DacAgency();
+        DacAgencyCollection dacAgencyCollection = new DacAgencyCollection();
+        DacAgencyCS dacAgencyBS = new DacAgencyCS();
+        BindingList<DacAgency> bdlDacAgency;
+        bool bIsDataBinding = false;
+        bool bIsPastedData = false;
+        #endregion
+        #region Form's Events
+        public frmDacAgency()
+        {
+            InitializeComponent();
+        }
+        private void frmDacAgency_Load(object sender, EventArgs e)
+        {
+            // TODO: This line of code loads data into the 'dsRegion.DacRegion' table. You can move, or remove it, as needed.
+            DAC.DAL.DacDbAccess dacDb = new DAC.DAL.DacDbAccess();
+            dacDb.CreateNewSqlCommand();
+            DataTable dataTable = dacDb.ExecuteDataTable("spProvince_SelectAll");
+            dataTable.TableName = "Province";
+            gridLookUpEditProvince.Properties.DataSource = dataTable;
+
+            dataTable = dacDb.ExecuteDataTable("spDacRegion_SelectAll");
+            dataTable.TableName = "Region";
+            gridLookUpEditRegion.Properties.DataSource = dataTable;
+            // Get data from database
+            dacAgencyCollection = dacAgencyBS.GetListAgency();
+            // Get BindingList DataSource
+            AddObjectIntoBindingList(dacAgencyCollection);
+
+            if (bIsDataBinding)
+            {
+                // Có ít nhất 1 row.
+                //gridLookUpEditRegion.EditValue = 
+            }
+        }
+        #endregion
+        #region Functions on Form
+        private void AddObjectIntoBindingList(DacAgencyCollection AgencyCollection)
+        {
+            bdlDacAgency = new BindingList<DacAgency>();
+            foreach (DacAgency agency in AgencyCollection)
+            {
+                bdlDacAgency.Add(agency);
+            }
+            SetDataSource();
+        }
+        private void SetDataSource()
+        {
+            CommonCore.ClearDataBinding(panelAgency);
+            // Binding data to Controls
+            bIsDataBinding = true;
+            textBoxCode.DataBindings.Add("Text", bdlDacAgency, "Code");
+            textBoxName.DataBindings.Add("Text", bdlDacAgency, "Name");
+            textBoxAddress.DataBindings.Add("Text", bdlDacAgency, "Address");
+            gridLookUpEditProvince.DataBindings.Clear();
+            gridLookUpEditProvince.DataBindings.Add("EditValue", bdlDacAgency, "ProvinceCode");
+            textBoxOwnerName.DataBindings.Add("Text", bdlDacAgency, "OwnerName");
+            textBoxPhoneNum.DataBindings.Add("Text", bdlDacAgency, "PhoneNum");
+            textBoxMobileNum.DataBindings.Add("Text", bdlDacAgency, "MobileNum");
+            textBoxEmail.DataBindings.Add("Text", bdlDacAgency, "Email");
+            richTextBoxDescription.DataBindings.Add("Text", bdlDacAgency, "Description");
+            dateTimePickerCreatedDate.DataBindings.Clear();
+            dateTimePickerCreatedDate.DataBindings.Add("Value", bdlDacAgency, "CreatedDate");
+            dateTimePickerModifiedDate.DataBindings.Clear();
+            dateTimePickerModifiedDate.DataBindings.Add("Value", bdlDacAgency, "ModifiedDate");
+            checkBoxActive.DataBindings.Clear();
+            checkBoxActive.DataBindings.Add("Checked", bdlDacAgency, "Active");
+            textBoxTaxCode.DataBindings.Add("Text", bdlDacAgency, "TaxCode");
+            textBoxJoinContact.DataBindings.Add("Text", bdlDacAgency, "JoinContact");
+            gridLookUpEditRegion.DataBindings.Clear();
+            gridLookUpEditRegion.DataBindings.Add("EditValue", bdlDacAgency, "Region");
+            textBoxDependCode.DataBindings.Add("Text", bdlDacAgency, "DependCode");
+
+            gridControlAgency.DataSource = bdlDacAgency;
+            bIsDataBinding = false;
+            EnableControls(false);
+        }
+        private DacAgency GetSelectedAgency(string sCode)
+        {
+            foreach (DacAgency store in dacAgencyCollection)
+            {
+                if (store.Code == sCode)
+                    return store;
+            }
+            return null;
+        }
+        private bool IsStoreCodeExists(string sCode)
+        {
+            foreach (DacAgency store in dacAgencyCollection)
+            {
+                if (store.Code == sCode.Trim().ToUpper())
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        private void EnableControls(bool bIsEnabled)
+        {
+            foreach (Control ctrl in panelAgency.Controls)
+            {
+                ctrl.Enabled = bIsEnabled;
+            }
+            if (ucDataButtonAgency.DataMode == DataState.Edit)
+            {
+                textBoxCode.Enabled = false;
+                dateTimePickerCreatedDate.Enabled = false;
+            }
+        }
+        private bool IsChangedData()
+        {
+            if (ucDataButtonAgency.DataMode == DataState.Insert)
+            {
+                if (textBoxCode.Text.Trim().Length > 0 || textBoxName.Text.Trim().Length > 0)
+                    return true;
+                else
+                    return false;
+            }
+            else if (ucDataButtonAgency.DataMode == DataState.Edit)
+            {
+                if (selectedDacAgency.Code != textBoxCode.Text.Trim()
+                || selectedDacAgency.Name != textBoxName.Text.Trim()
+                || selectedDacAgency.Address != textBoxAddress.Text.Trim()
+                || selectedDacAgency.ProvinceCode != gridLookUpEditProvince.EditValue.ToString()
+                || selectedDacAgency.OwnerName != textBoxOwnerName.Text.Trim()
+                || selectedDacAgency.PhoneNum != textBoxPhoneNum.Text.Trim()
+                || selectedDacAgency.MobileNum != textBoxMobileNum.Text.Trim()
+                || selectedDacAgency.Email != textBoxEmail.Text.Trim()
+                || selectedDacAgency.Description != richTextBoxDescription.Text.Trim()
+                || selectedDacAgency.Active != checkBoxActive.Checked)
+                    return true;
+                else
+                    return false;
+            }
+            return false;
+        }
+        private bool IsDataOK()
+        {
+            if (textBoxCode.Text.Trim().Length == 0)
+            {
+                MessageBox.Show("Bạn chưa nhập mã đại lý.", "Thông báo" + Common.formSoftName);
+                textBoxCode.Focus();
+                return false;
+            }
+            if (ucDataButtonAgency.DataMode == DataState.Insert && IsStoreCodeExists(textBoxCode.Text))
+            {
+                MessageBox.Show("Mã đại lý này đã tồn tại.", "Thông báo" + Common.formSoftName);
+                textBoxCode.Focus();
+                textBoxCode.SelectAll();
+                return false;
+            }
+            if (textBoxName.Text.Trim().Length == 0)
+            {
+                MessageBox.Show("Bạn chưa nhập tên đại lý.", "Thông báo" + Common.formSoftName);
+                textBoxName.Focus();
+                return false;
+            }
+            return true;
+        }
+        private void SaveCopiedData()
+        {
+            DacAgency agency = new DacAgency();
+            agency.Code = textBoxCode.Text.Trim().ToUpper();
+            agency.Name = textBoxName.Text.Trim();
+            agency.Address = textBoxAddress.Text.Trim();
+            agency.ProvinceCode = gridLookUpEditProvince.EditValue.ToString();
+            agency.Region = gridLookUpEditRegion.EditValue.ToString();
+            agency.OwnerName = textBoxOwnerName.Text.Trim();
+            agency.PhoneNum = textBoxPhoneNum.Text.Trim();
+            agency.MobileNum = textBoxMobileNum.Text.Trim();
+            agency.JoinContact = textBoxJoinContact.Text.Trim();
+            agency.DependCode = textBoxDependCode.Text.Trim();
+            agency.TaxCode = textBoxTaxCode.Text.Trim();
+            agency.Email = textBoxEmail.Text.Trim();
+            agency.Description = richTextBoxDescription.Text.Trim();
+            agency.CreatedDate = dateTimePickerCreatedDate.Value;
+            agency.CreatedUser = CommonBS.CurrentUser.LoginID;
+            agency.ModifiedDate = dateTimePickerModifiedDate.Value;
+            agency.ModifiedUser = string.Empty;
+            agency.Active = checkBoxActive.Checked;
+
+            dacAgencyBS.Insert(agency);
+        }
+        private bool SaveData()
+        {
+            if (IsDataOK() == false) return false;
+
+            bool bResult = true;
+            if (ucDataButtonAgency.DataMode == DataState.Insert)
+            {
+                DacAgency agency = new DacAgency();
+                agency.Code = textBoxCode.Text.Trim().ToUpper();
+                agency.Name = textBoxName.Text.Trim();
+                agency.Address = textBoxAddress.Text.Trim();
+                agency.ProvinceCode = gridLookUpEditProvince.EditValue.ToString();
+                agency.Region = gridLookUpEditRegion.EditValue.ToString();
+                agency.OwnerName = textBoxOwnerName.Text.Trim();
+                agency.PhoneNum = textBoxPhoneNum.Text.Trim();
+                agency.MobileNum = textBoxMobileNum.Text.Trim();
+                agency.JoinContact = textBoxJoinContact.Text.Trim();
+                agency.DependCode = textBoxDependCode.Text.Trim();
+                agency.TaxCode = textBoxTaxCode.Text.Trim();
+                agency.Email = textBoxEmail.Text.Trim();
+                agency.Description = richTextBoxDescription.Text.Trim();
+                agency.CreatedDate = dateTimePickerCreatedDate.Value;
+                agency.CreatedUser = CommonBS.CurrentUser.LoginID;
+                agency.ModifiedDate = dateTimePickerModifiedDate.Value;
+                agency.ModifiedUser = string.Empty;
+                agency.Active = checkBoxActive.Checked;
+
+                bResult = dacAgencyBS.Insert(agency);
+            }
+            else
+            {
+                // Update data in to databaseDacAgency
+                selectedDacAgency.Code = textBoxCode.Text.Trim().ToUpper();
+                selectedDacAgency.Name = textBoxName.Text.Trim();
+                selectedDacAgency.Address = textBoxAddress.Text.Trim();
+                selectedDacAgency.ProvinceCode = gridLookUpEditProvince.EditValue.ToString();
+                selectedDacAgency.Region = gridLookUpEditRegion.EditValue.ToString();
+                selectedDacAgency.OwnerName = textBoxOwnerName.Text.Trim();
+                selectedDacAgency.PhoneNum = textBoxPhoneNum.Text.Trim();
+                selectedDacAgency.MobileNum = textBoxMobileNum.Text.Trim();
+                selectedDacAgency.JoinContact = textBoxJoinContact.Text.Trim();
+                selectedDacAgency.DependCode = textBoxDependCode.Text.Trim();
+                selectedDacAgency.TaxCode = textBoxTaxCode.Text.Trim();
+                selectedDacAgency.Email = textBoxEmail.Text.Trim();
+                selectedDacAgency.Description = richTextBoxDescription.Text.Trim();
+                selectedDacAgency.CreatedDate = dateTimePickerCreatedDate.Value;
+                //selectedDacAgency.CreatedUser = CommonBS.CurrentUser.LoginID;
+                selectedDacAgency.ModifiedDate = DateTime.Now;
+                selectedDacAgency.ModifiedUser = CommonBS.CurrentUser.LoginID;
+                selectedDacAgency.Active = checkBoxActive.Checked;
+
+                bResult = dacAgencyBS.Update(selectedDacAgency);
+            }
+            // Kiem tra luu thanh cong khong de load lai du lieu
+            if (bResult)
+            {
+                // Get data from database
+                dacAgencyCollection = dacAgencyBS.GetListAgency();
+                AddObjectIntoBindingList(dacAgencyCollection);
+                CommonBS.SaveSuccessfully();
+                if (ucDataButtonAgency.DataMode == DataState.Insert)
+                {
+                    int iRowMax = dacAgencyCollection.Count - 1;
+                    gridViewAgency.FocusedRowHandle = iRowMax;
+                    gridViewAgency.SelectRow(iRowMax);
+                }
+                ucDataButtonAgency.DataMode = DataState.View;
+                ucDataButtonAgency.SetInsertFocus();
+                EnableControls(false);
+            }
+            else CommonBS.SaveNotSuccessfully();
+
+            return bResult;
+        }
+        private void SaveStore()
+        {
+            SaveData();
+        }
+        #endregion
+        #region Buttons' Event
+        private void ucDataButtonAgency_InsertHandler()
+        {
+            bdlDacAgency.AddNew();
+            //CommonCore.ClearTextBox(panelAgency);
+            EnableControls(true);
+            textBoxCode.Focus();
+            //Set focus for DataGridView
+            gridViewAgency.FocusedRowHandle = gridViewAgency.GetVisibleRowHandle(gridViewAgency.RowCount - 1);
+        }
+
+        private void ucDataButtonAgency_SaveHandler()
+        {
+            // Neu nut buttonPaste duoc nhan bIsPastedData = true
+            if (bIsPastedData)
+            {
+                int iContent = 0;
+                // Thuc hien luu cac Row vua paste vao
+                int gridViewAgencyRowCount = gridViewAgency.RowCount;
+                for (int i = 0; i < gridViewAgencyRowCount; i++)
+                {
+                    object valueCell = gridViewAgency.GetRowCellValue(i, gridColumnID);
+                    if (valueCell.ToString() == "-1")
+                    {
+                        // Set Focus Row for DataGridView
+                        gridViewAgency.FocusedRowHandle = gridViewAgency.GetVisibleRowHandle(i);
+                        //DacAgency agency = new DacAgency();
+                        //agency = (DacAgency)gridViewAgency.GetRow(i);
+                        //Save Pasted Data();
+                        SaveCopiedData();
+                        gridViewAgency.SetRowCellValue(i, gridColumnID, 0);
+                        iContent += 1;
+                    }
+                }
+                // Lưu nhật ký
+                CommonBO.Instance().TraceLogEvent("Save Agency: " + iContent + " bản ghi từ excel", CommonBS.CurrentUser.LoginID);
+                ucDataButtonAgency.DataMode = DataState.View;
+            }
+            else
+            {
+                // Lưu nhật ký
+                CommonBO.Instance().TraceLogEvent("Save Agency: " + textBoxCode.Text + " - " + textBoxName.Text + " - "
+                    + textBoxAddress.Text + " - " + gridLookUpEditProvince.EditValue, CommonBS.CurrentUser.LoginID);
+                Common objCommon = new Common();
+                objCommon.CurrentForm = this;
+                objCommon.CurrentFormMethodInvoker = SaveStore;
+                objCommon.App_ShowWaitForm(DataState.Insert);
+            }
+            bIsPastedData = false;
+        }
+
+        private void ucDataButtonAgency_EditHandler()
+        {
+            // Lưu nhật ký
+            CommonBO.Instance().TraceLogEvent("Edit Agency: " + textBoxCode.Text + " - " + textBoxName.Text + " - "
+                + textBoxAddress.Text + " - " + gridLookUpEditProvince.EditValue, CommonBS.CurrentUser.LoginID);
+            // Kiem tra xem co du lieu nao khong
+            if (gridViewAgency.RowCount == 0) return;
+            // Lay du lieu de sua
+            selectedDacAgency = GetSelectedAgency(gridViewAgency.GetFocusedRowCellValue(gridColumnCode).ToString());
+            EnableControls(true);
+            textBoxName.Focus();
+        }
+
+        private void ucDataButtonAgency_DeleteHandler()
+        {
+            // Kiem tra xem co du lieu nao khong
+            if (gridViewAgency.RowCount == 0)
+            {
+                return;
+            }
+            string ID = gridViewAgency.GetRowCellValue(gridViewAgency.FocusedRowHandle, gridColumnID).ToString();
+            if (ID == "-1")
+            {
+                DevExpress.XtraGrid.Views.Grid.GridView view = gridControlAgency.FocusedView as DevExpress.XtraGrid.Views.Grid.GridView;
+                view.DeleteRow(view.FocusedRowHandle);
+            }
+            else
+            {
+                // Lay du lieu de xoa
+                selectedDacAgency = GetSelectedAgency(gridViewAgency.GetFocusedRowCellValue(gridColumnCode).ToString());
+                // Kiem tra moi lien quan voi du lieu khac neu co
+                if (dacAgencyBS.Delete(selectedDacAgency.Code))
+                {
+                    // Lưu nhật ký
+                    CommonBO.Instance().TraceLogEvent("Delete Agency: " + selectedDacAgency.Code + " - " + selectedDacAgency.Name + " - "
+                            + selectedDacAgency.Address + " - " + selectedDacAgency.ProvinceCode, CommonBS.CurrentUser.LoginID);
+                    CommonBS.DeleteSuccessfully();
+                    // Get data from database
+                    dacAgencyCollection = dacAgencyBS.GetListAgency();
+                    AddObjectIntoBindingList(dacAgencyCollection);
+                }
+                else
+                    CommonBS.DeleteNotSuccessfully();
+            }
+        }
+
+        private void ucDataButtonAgency_CancelHandler()
+        {
+            EnableControls(false);
+            if (ucDataButtonAgency.DataMode == DataState.Insert)
+            {
+                if (gridViewAgency.RowCount > 1)
+                {
+                    DevExpress.XtraGrid.Views.Grid.GridView view = gridControlAgency.FocusedView as DevExpress.XtraGrid.Views.Grid.GridView;
+                    view.DeleteRow(view.FocusedRowHandle);
+                }
+            }
+            ucDataButtonAgency.DataMode = DataState.View;
+        }
+
+        private void ucDataButtonAgency_CloseHandler()
+        {
+            //if (IsChangedData())
+            //{
+            //    if (CommonBS.ConfirmChangedData() == DialogResult.Yes)
+            //    {
+            //        if (SaveData() == false)
+            //            return;
+            //    }
+            //}
+            this.Close();
+        }
+        private void ucDataButtonAgency_ExcelHandler()
+        {
+            SaveFileDialog fileDialog = new SaveFileDialog();
+            fileDialog.Filter = "Excel 2007-2016(*.xlsx)|*.xlsx";
+
+            if (fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                //gridViewAgency.ExportToXlsx(@"\khachhang.xlsx");
+                gridViewAgency.ExportToXlsx(fileDialog.FileName);
+            }
+        }
+
+        private void buttonSelectAgency_Click(object sender, EventArgs e)
+        {
+            // Lay du lieu de de chuyen sang form xuat
+            selectedDacAgency = new DacAgency();
+            selectedDacAgency = GetSelectedAgency(gridViewAgency.GetFocusedRowCellValue(gridColumnCode).ToString());
+
+            if (selectedDacAgency == null)
+            {
+                MessageBox.Show("Chưa có row nào được chọn");
+                return;
+            }
+        }
+        #endregion
+
+        private void buttonSearch_Click(object sender, EventArgs e)
+        {
+            string[] datas = Common.ClipBoardData.Split('\n');
+            if (datas.Length < 1) return;
+            foreach (string data in datas)
+            {
+                CopyToGridControl(data);
+            }
+            bIsPastedData = true;
+            ucDataButtonAgency.DataMode = DataState.Insert;
+        }
+        private void CopyToGridControl(string data)
+        {
+            if (data == string.Empty) return;
+            string[] rowData = data.Split(new char[] { '\r', '\x09' });
+            try
+            {
+                string sCode = rowData[1].ToString();
+
+                // Kiem tra su ton tai cua ma KH
+                if (Common.CheckExistCode(sCode, gridViewAgency, gridColumnCode))
+                {
+                    MessageBox.Show("Mã " + sCode + " đã tồn tại!", "Thông báo");
+                    return;
+                }
+                DacAgency agency = new DacAgency();
+                agency.ID = -1;
+                agency.Code = sCode;
+                agency.Name = rowData[2];
+                agency.Address = rowData[3];
+                agency.ProvinceCode = rowData[4];
+                agency.JoinContact = rowData[5];
+                agency.OwnerName = rowData[6];
+                agency.TaxCode = rowData[7];
+                agency.PhoneNum = rowData[8];
+                agency.MobileNum = rowData[9];
+                agency.Email = rowData[10];
+                agency.DependCode = rowData[11];
+                agency.Region = rowData[12];
+                agency.CreatedUser = CommonBS.CurrentUser.LoginID;
+                try
+                {
+                    agency.CreatedDate = DateTime.Parse(rowData[14]);
+                }
+                catch
+                {
+                    agency.CreatedDate = DateTime.Now;
+                }
+                agency.ModifiedDate = DateTime.Now;
+                agency.ModifiedUser = string.Empty;
+                agency.Description = rowData[17];
+                agency.Active = true;
+                // Add row in to GridControl
+                bdlDacAgency.Add(agency);
+            }
+            catch (IndexOutOfRangeException)
+            {
+                MessageBox.Show("Dữ liệu đã sao chép không đúng định dạng");
+            }
+        }
+
+        private void buttonImport_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog ofd = new OpenFileDialog() { Filter = "Excel Workbook|*.xlsx|Excel Workbook 97-2003|*.xls", ValidateNames = true })
+            {
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    FileStream stream;
+
+                    try
+                    {
+                        stream = File.Open(ofd.FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+
+                        IExcelDataReader excelReader;
+                        DataSet ds;
+
+                        if (ofd.FilterIndex == 2)
+                        {
+                            excelReader = ExcelReaderFactory.CreateBinaryReader(stream);
+                        }
+                        else
+                        {
+                            excelReader = ExcelReaderFactory.CreateOpenXmlReader(stream);
+                        }
+
+                        ds = excelReader.AsDataSet(new ExcelDataSetConfiguration()
+                        {
+                            ConfigureDataTable = (_) => new ExcelDataTableConfiguration()
+                            {
+                                UseHeaderRow = true
+                            }
+                        });
+                        stream.Close();
+                        if (ds.Tables[0] == null)
+                            return;
+                        DataTable tblResult = ds.Tables[0];
+                        foreach (DataRow row in tblResult.Rows)
+                        {
+                            if (Common.CheckExistCode(row[1].ToString(), gridViewAgency, gridColumnCode))
+                            {
+                                MessageBox.Show("Mã " + row[1].ToString() + " đã tồn tại!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
+                        }
+                        foreach (DataRow row in tblResult.Rows)
+                        {
+                            DacAgency agency = new DacAgency();
+                            agency.ID = -1;
+                            agency.Code = row[1].ToString();
+                            agency.Name = row[2].ToString();
+                            agency.Address = row[3].ToString();
+                            agency.ProvinceCode = row[4].ToString();
+                            if (agency.ProvinceCode.Length == 1)
+                                agency.ProvinceCode = "0" + agency.ProvinceCode;
+                            agency.JoinContact = row[5].ToString();
+                            agency.OwnerName = row[6].ToString();
+                            agency.TaxCode = row[7].ToString();
+                            agency.PhoneNum = row[8].ToString();
+                            agency.MobileNum = row[9].ToString();
+                            agency.Email = row[10].ToString();
+                            agency.DependCode = row[11].ToString();
+                            agency.Region = row[12].ToString();
+                            agency.CreatedUser = CommonBS.CurrentUser.LoginID;
+                            try
+                            {
+                                agency.CreatedDate = DateTime.Parse(row[15].ToString());
+                            }
+                            catch
+                            {
+                                agency.CreatedDate = DateTime.Now;
+                            }
+                            agency.ModifiedDate = DateTime.Now;
+                            agency.ModifiedUser = string.Empty;
+                            agency.Description = row[17].ToString();
+                            agency.Active = true;
+                            // Add row in to GridControl
+                            bdlDacAgency.Add(agency);
+                        }
+
+                    }
+                    catch (Exception)
+                    {
+                        MessageBox.Show("Đã có lỗi xảy ra, không thể hoàn thành thao tác!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+    }
+}

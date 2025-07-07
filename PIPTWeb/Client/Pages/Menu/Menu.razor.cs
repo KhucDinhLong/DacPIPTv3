@@ -1,0 +1,130 @@
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
+using PIPTWeb.Client.Services;
+using PIPTWeb.Components;
+using PIPTWeb.Shared;
+using PIPTWeb.Shared.Models;
+using PIPTWeb.Shared.ViewModels;
+using Radzen;
+
+namespace PIPTWeb.Client.Pages.Menu
+{
+    public partial class Menu
+    {
+        [CascadingParameter] public Task<AuthenticationState> Authentication { get; set; }
+        [Inject] public IAuthorizationService AuthorizationService { get; set; }
+        [Inject] IMenuService menuService { get; set; }
+        [Inject] NotificationService notificationService { get; set; }
+        [Inject] NavigationManager navigation { get; set; }
+
+        private SysMenu _Menu = new SysMenu();
+        private bool IsDeleteDialogOpen = false;
+        private PIPTModal piptModal { get; set; }
+        private SysMenu newMenu { get; set; }
+        private PaginatedInputModel pagination { get; set; } = new PaginatedInputModel();
+
+        public int totalPages { get; set; }
+        private int actualPage = 1;
+        private int pageSize = 50;
+        private string searchText = string.Empty;
+
+        private bool HasView = false;
+        private bool HasCreate = false;
+        private bool HasEdit = false;
+        private bool HasDelete = false;
+
+        private async Task OpenDialog(SysMenu Menu)
+        {
+            _Menu = Menu;
+            await piptModal.Open();
+        }
+
+        private async Task OpenDeleteDialog(SysMenu Menu)
+        {
+            _Menu = Menu;
+            IsDeleteDialogOpen = true;
+            await piptModal.Open();
+        }
+
+        private async Task OnSubmitCallBack()
+        {
+            IsDeleteDialogOpen = false;
+            await piptModal.Close();
+            await menuService.LoadMenus(pagination);
+            totalPages = menuService.totalPages;
+            ShowNotification(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Cập nhật dữ liệu menu", Detail = "Thành công!" });
+            StateHasChanged();
+        }
+
+        private async Task CloseDialog()
+        {
+            IsDeleteDialogOpen = false;
+            await piptModal.Close();
+            StateHasChanged();
+        }
+
+        protected override async Task OnInitializedAsync()
+        {
+            // Get permission
+            var authState = await Authentication.ConfigureAwait(false);
+            if (authState.User.Identity.IsAuthenticated)
+            {
+                HasView = AuthorizationService.AuthorizeAsync(authState.User, Permissions.Menus.View).Result.Succeeded;
+                HasCreate = AuthorizationService.AuthorizeAsync(authState.User, Permissions.Menus.Create).Result.Succeeded;
+                HasEdit = AuthorizationService.AuthorizeAsync(authState.User, Permissions.Menus.Edit).Result.Succeeded;
+                HasDelete = AuthorizationService.AuthorizeAsync(authState.User, Permissions.Menus.Delete).Result.Succeeded;
+            }
+            if (!HasView)
+            {
+                ShowNotification(new Radzen.NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Giới hạn truy cập", Detail = "Bạn không có quyền truy cập vào địa chỉ này!" });
+                navigation.NavigateTo("/page-401");
+            }
+            else
+            {
+                menuService.OnChange += StateHasChanged;
+                pagination.PageNumber = 1;
+                pagination.PageSize = 50;
+
+                await menuService.LoadMenus(pagination);
+                totalPages = menuService.totalPages;
+                newMenu = new SysMenu();
+                newMenu.ID = 0;
+                ShowNotification(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Tải dữ liệu chức vụ", Detail = "Thành công!" });
+            }
+        }
+        public void Dispose()
+        {
+            menuService.OnChange -= StateHasChanged;
+        }
+        private async Task SelectedPage(int page)
+        {
+            actualPage = page;
+            pagination.PageNumber = actualPage;
+            await menuService.LoadMenus(pagination);
+        }
+        void ShowNotification(NotificationMessage message)
+        {
+            notificationService.Notify(message);
+        }
+        private async Task SearchModel(string serchText)
+        {
+            actualPage = 1;
+            pagination.PageNumber = actualPage;
+            pagination.PageSize = pageSize;
+
+            // Thêm bộ lọc tìm kiếm
+            pagination.FilterParams = new List<FilterUtility.FilterParams> {
+            new FilterUtility.FilterParams { ColumnName = "Value", FilterValue = serchText, FilterOption = FilterUtility.FilterOptions.Contains }
+            };
+
+            await menuService.LoadMenus(pagination);
+        }
+        void CancelDialog()
+        {
+            IsDeleteDialogOpen = false;
+        }
+    }
+}

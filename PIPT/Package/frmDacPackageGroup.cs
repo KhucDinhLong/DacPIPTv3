@@ -1,0 +1,1052 @@
+﻿using DAC.Core;
+using DAC.Core.Security;
+using DAC.DAL;
+using DAC.DAL.ViewModels;
+using DevExpress.XtraReports.UI;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Configuration;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
+
+namespace PIPT
+{
+    public partial class frmDacPackageGroup : Form
+    {
+        #region Instance of the form
+        /// <summary>
+        /// Instance to store instance of this form
+        /// </summary>
+        private static frmDacPackageGroup _instance = null;
+
+        /// <summary>
+        /// Instance form.
+        /// </summary>
+        /// <returns>Instance of this Form</returns>
+        public static frmDacPackageGroup Instance()
+        {
+            if (_instance == null || _instance.IsDisposed)
+            {
+                _instance = new frmDacPackageGroup();
+            }
+            return _instance;
+        }
+
+        public static frmDacPackageGroup Instance(Form parent)
+        {
+            _instance = Instance();
+            _instance.MdiParent = parent;
+            return _instance;
+        }
+
+        public static frmDacPackageGroup Instance(Form parent, bool isActivate)
+        {
+            _instance = Instance(parent);
+            if (isActivate)
+            {
+                _instance.WindowState = FormWindowState.Normal;
+                _instance.Show();
+                _instance.Activate();
+            }
+            return _instance;
+        }
+        #endregion
+        #region Variables
+        List<DacPackage> packageCollection = new List<DacPackage>();
+        List<DacPackageDetails> packageDetailsCollection = new List<DacPackageDetails>();
+        List<DacPackageDetails> packageDetailsByPackageID = new List<DacPackageDetails>();
+
+        BindingList<DacPackage> bdlPackage;
+        BindingList<DacPackageDetails> bdlPackageDetails;
+        DacPackageCS packageCS = new DacPackageCS();
+        DacPackageDetailsCS dacPackageDetailsCS = new DacPackageDetailsCS();
+        // DataView for Product table
+        DataView dvProduct;
+        int iCurrentID = 0;
+        // Check Box Select All
+        int TotalCheckBoxes = 0;
+        int TotalCheckedCheckBoxes = 0;
+        CheckBox HeaderCheckBox = null;
+        bool IsHeaderCheckBoxClicked = false;
+        // --------------------
+        #endregion
+        #region Form's Events
+        public frmDacPackageGroup()
+        {
+            InitializeComponent();
+        }
+        private void frmDacPackage_Load(object sender, EventArgs e)
+        {
+            InitData();
+            InitLookUp();
+            // Get Max order number
+            //PackageCode = this.GetMaxPackage();
+            // Get PackageCollection from database
+            // -----------------------------------------
+            // Dinh lai thoi gia de load du lieu tai day
+            // -----------------------------------------
+            string FactoryCode = CommonBS.CurrentUser.FullName;
+            // Kiem tra xem co ap dung phan san pham cho tung xuong khong
+            //-- Ap dung cho Mocha --
+            if (!this.CheckFactory(FactoryCode))
+            {
+                FactoryCode = string.Empty;
+            }
+            // --------------------- het kiem tra xuong
+            //packageCollection = packageCS.GetListPackage(
+            //    DateTime.Parse(CommonBO.GetSecConfig("DateStartGettingData").Value),
+            //    DateTime.Now, string.Empty, string.Empty, FactoryCode);
+            //AddObjectPackageIntoBindingList(packageCollection);
+            //// Get data from database
+            //AddObjectDetailsIntoBindingList(packageDetailsCollection);
+            EnableControls(false);
+
+            // Init Events For Select All CheckBox
+            AddHeaderCheckBox();
+
+            HeaderCheckBox.KeyUp += new KeyEventHandler(HeaderCheckBox_KeyUp);
+            HeaderCheckBox.MouseClick += new MouseEventHandler(HeaderCheckBox_MouseClick);
+            dataGridViewDetails.CellValueChanged += new DataGridViewCellEventHandler(dataGridViewDetails_CellValueChanged);
+            dataGridViewDetails.CurrentCellDirtyStateChanged += new EventHandler(dataGridViewDetails_CurrentCellDirtyStateChanged);
+            dataGridViewDetails.CellPainting += new DataGridViewCellPaintingEventHandler(dataGridViewDetails_CellPainting);
+
+            //SetDistributeDetailsDataSource()
+            // -----------------------------
+        }
+
+        private void frmDacPackage_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (ucDataButtonPackage.DataMode == DataState.Insert)
+            {
+                if (CommonCore.FormClosing("Bạn chưa lưu thùng này. Bạn có muốn lưu lại?"))
+                {
+                    //Luu lai du lieu xong thoat form;
+                    this.SaveData();
+                }
+            }
+        }
+        #endregion
+        #region Function on form
+        private void InitData()
+        {
+            DAC.DAL.DacDbAccess dacDb = new DAC.DAL.DacDbAccess();
+            dacDb.CreateNewSqlCommand();
+            string FactoryCode = CommonBS.CurrentUser.FullName;
+            if (!this.CheckFactory(FactoryCode))
+            {
+                FactoryCode = string.Empty;
+            }
+            dacDb.AddParameter("@FactoryCode", FactoryCode);
+            DataSet ds = new DataSet("Factory_Product");
+            DataTable dataTable = dataTable = dacDb.ExecuteDataTable("spDacProduct_SelectAll");
+            // Add table Product
+            dataTable.TableName = "Products";
+            ds.Tables.Add(dataTable);
+
+            DataViewManager dvm = new DataViewManager(ds);
+            dvProduct = dvm.CreateDataView(ds.Tables["Products"]);
+            dacDb.RemoveParameter("@FactoryCode");
+            DataTable dt = dacDb.ExecuteDataTable("spDacPackage_SelectNewestPackage");
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                string[] arrPackageCode = dt.Rows[0]["PackageCode"].ToString().Split('-');
+                switch (arrPackageCode.Length) 
+                {
+                    case 1:
+                        StringBuilder sbPackageCodeNumber = new StringBuilder();
+                        StringBuilder sbPattern = new StringBuilder();
+                        StringBuilder sbPackageCodeLetter = new StringBuilder();
+                        foreach (char item in arrPackageCode[0])
+                        {
+                            if (Char.IsDigit(item))
+                            {
+                                sbPackageCodeNumber.Append(item);
+                                sbPattern.Append("0");
+                            }
+                            if (char.IsLetter(item))
+                            {
+                                sbPackageCodeLetter.Append(item);
+                            }
+                            
+                        }
+                        int NextPackage = int.Parse(sbPackageCodeNumber.ToString()) + 1;
+                        textBoxPackageCode.Text = sbPackageCodeLetter.ToString() + string.Format("{0:" + sbPattern.ToString() + " }", NextPackage);
+                        break;
+                    case 3:
+                        if (arrPackageCode[2] == "138")
+                        {
+                            string Batch = arrPackageCode[1].Substring(0, 3);
+                            int NextBatch = int.Parse(Batch) + 1;
+                            textBoxPackageCode.Text = arrPackageCode[0] + "-" + $"{NextBatch:000}" + DateTime.Now.Year.ToString().Substring(2, 2) + "-001";
+                        }
+                        else
+                        {
+                            int NextPackageNum = int.Parse(arrPackageCode[2]) + 1;
+                            textBoxPackageCode.Text = arrPackageCode[0] + "-" + arrPackageCode[1] + "-" + $"{NextPackageNum:000}";
+                        }
+                        break;
+                    case 4:
+                        if (arrPackageCode[3] == "138")
+                        {
+                            string Batch = arrPackageCode[2].Substring(0, 3);
+                            int NextBatch = int.Parse(Batch) + 1;
+                            textBoxPackageCode.Text = arrPackageCode[0] + "-" + arrPackageCode[1] + "-" + $"{NextBatch:000}" + DateTime.Now.Year.ToString().Substring(2, 2) + "-001";
+                        }
+                        else
+                        {
+                            int NextPackageNum = int.Parse(arrPackageCode[3]) + 1;
+                            textBoxPackageCode.Text = arrPackageCode[0] + "-" + arrPackageCode[1] + "-" + arrPackageCode[2] + "-" + $"{NextPackageNum:000}";
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
+                gridLookUpEditProduct.EditValue = dt.Rows[0]["ProductCode"];
+            }
+                
+        }
+        private void InitLookUp()
+        {
+            // The data source for the dropdown rows
+            gridLookUpEditProduct.Properties.DataSource = dvProduct;
+        }
+        private void AddObjectPackageIntoBindingList(List<DacPackage> PackageCollection)
+        {
+            bdlPackage = new BindingList<DacPackage>();
+            foreach (DacPackage Package in PackageCollection)
+            {
+                bdlPackage.Add(Package);
+            }
+            SetDataSource();
+        }
+        private void SetDataSource()
+        {
+            CommonCore.ClearDataBinding(panelPackage);
+            // Binding data to Controls
+            textBoxQuantity.DataBindings.Add("Text", bdlPackage, "Quantity");
+            textBoxPackageCode.DataBindings.Add("Text", bdlPackage, "PackageCode");
+            gridLookUpEditProduct.DataBindings.Clear();
+            gridLookUpEditProduct.DataBindings.Add("EditValue", bdlPackage, "ProductCode");
+            richTextBoxDescription.DataBindings.Add("Text", bdlPackage, "Description");
+            dateTimePickerCreatedDate.DataBindings.Clear();
+            dateTimePickerCreatedDate.DataBindings.Add("Value", bdlPackage, "CreatedDate");
+            checkBoxActive.DataBindings.Clear();
+            checkBoxActive.DataBindings.Add("Checked", bdlPackage, "Active");
+            txtBatch.DataBindings.Add("Text", bdlPackage, "Batch");
+            txtFactoryCode.DataBindings.Add("Text", bdlPackage, "FactoryCode");
+            txtPersonPackaged.DataBindings.Add("Text", bdlPackage, "PersonPackaged");
+            // Huy su kien SelectionChanged truoc khi gan DataSource
+            this.gridViewPackage.FocusedRowChanged -= new DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventHandler(this.gridViewPackage_FocusedRowChanged);
+            gridControlPackage.DataSource = bdlPackage;
+            this.gridViewPackage.FocusedRowChanged += new DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventHandler(this.gridViewPackage_FocusedRowChanged);
+            if (bdlPackage.Count > 0)
+            {
+                this.GetDetailData();
+            }
+            EnableControls(false);
+        }
+        private void AddObjectDetailsIntoBindingList(List<DacPackageDetails> distributeDetailsCollection)
+        {
+            bdlPackageDetails = new BindingList<DacPackageDetails>();
+            foreach (DacPackageDetails distributeDetail in distributeDetailsCollection)
+            {
+                bdlPackageDetails.Add(distributeDetail);
+            }
+            SetDistributeDetailsDataSource();
+        }
+        private void SetDistributeDetailsDataSource()
+        {
+            dataGridViewDetails.DataSource = bdlPackageDetails;
+
+            TotalCheckBoxes = dataGridViewDetails.RowCount;
+            TotalCheckedCheckBoxes = 0;
+        }
+        private void EnableControls(bool bIsEnabled)
+        {
+            foreach (Control ctrl in panelPackage.Controls)
+            {
+                if (ctrl.Name != "checkEditKeepProduct" && ctrl.Name != "checkEditPreview")
+                    ctrl.Enabled = bIsEnabled;
+            }
+        }
+        private bool IsChangedData()
+        {
+            if (ucDataButtonPackage.DataMode == DataState.Insert)
+            {
+            }
+            else if (ucDataButtonPackage.DataMode == DataState.Edit)
+            {
+                //if (selectedDacProduct.ProductUnitId != (int)comboBoxAgency.SelectedValue
+                //|| selectedDacProduct.ProductCategoryId != (int)comboBoxProvince.SelectedValue
+                //|| selectedDacProduct.Remark != richTextBoxDescription.Text.Trim()
+                //|| selectedDacProduct.Active != checkBoxActive.Checked)
+                //    return true;
+                //else
+                //    return false;
+            }
+            return false;
+        }
+        private bool IsDataOK()
+        {
+            if (string.IsNullOrWhiteSpace(gridLookUpEditProduct.EditValue.ToString().Trim()))
+            {
+                MessageBox.Show("Bạn chưa chọn mã thùng sản phẩm.", "Thông báo" + Common.formSoftName);
+                gridLookUpEditProduct.Focus();
+                return false;
+            }
+            if (dataGridViewDetails.Rows.Count == 0)
+            {
+                MessageBox.Show("Bạn chưa nhập bất kỳ mã qrcode nào.", "Thông báo" + Common.formSoftName);
+                textBoxDacCode.Focus();
+                return false;
+            }
+            return true;
+        }
+        private bool SaveData()
+        {
+            if (IsDataOK() == false) return false;
+
+            bool bResult = true;
+            if (ucDataButtonPackage.DataMode == DataState.Insert)
+            {
+                foreach (DacPackage package in packageCollection)
+                {
+                    bResult = packageCS.Insert(package, ref iCurrentID);
+                    if (bResult)
+                    {
+                        //gridViewPackage.SetFocusedRowCellValue(gridColumnID, iCurrentID);
+                        packageDetailsByPackageID = new List<DacPackageDetails>();
+                        packageDetailsByPackageID = this.GetPackageDetails(package.Id);
+                        // Doi lai ID da luu trong database
+                        for (int i = 0; i < packageDetailsByPackageID.Count; i++)
+                        {
+                            packageDetailsByPackageID[i].PackageId = iCurrentID;
+                        }
+                        // Convert list to datatable
+                        DataTable dataTable = CommonCore.GetDataTable(packageDetailsByPackageID, typeof(DacPackageDetails));
+                        dataTable.TableName = "DacPackageDetails"; // Ten bang trong CSDL
+                                                                   // Khai bao mang cac cot trong bang du lieu can mapping
+                        string[] sColumnName = new string[] { "PackageId", "DacCode" };
+                        CommonCore.PerformBulkCopy(dataTable, sColumnName);
+                        package.Id = iCurrentID;
+                        bResult = true;
+                    }
+                }
+                AddObjectPackageIntoBindingList(packageCollection);
+            }
+            //else
+            //{
+            //    // Update data in to DacPackage
+            //    DacPackage package = new DacPackage();
+            //    package = (DacPackage)gridViewPackage.GetRow(gridViewPackage.FocusedRowHandle);
+            //    // Update to DataBase
+            //    bResult = packageCS.Update(package);
+            //}
+            // Kiem tra luu thanh cong khong de load lai du lieu
+            if (bResult)
+            {
+                /* if (ucDataButtonPackage.DataMode == DataState.Insert)
+                {
+                    // Get PackageCollection from database
+                    // -----------------------------------------
+                    // Dinh lai thoi gia de load du lieu tai day
+                    // -----------------------------------------
+                    string FactoryCode = CommonBS.CurrentUser.FullName;
+                    // Kiem tra xem co ap dung phan san pham cho tung xuong khong
+                    //-- Ap dung cho Mocha --
+                    if (!this.CheckFactory(FactoryCode))
+                    {
+                        FactoryCode = string.Empty;
+                    }
+                    // --------------------- het kiem tra xuong
+                    packageCollection = packageCS.GetListPackage(
+                        DateTime.Parse(CommonBO.GetSecConfig("DateStartGettingData").Value),
+                        DateTime.Now, string.Empty, string.Empty, FactoryCode);
+                    AddObjectPackageIntoBindingList(packageCollection);
+                    // Get data from database
+                    AddObjectDetailsIntoBindingList(packageDetailsCollection);
+                    // CommonBS.SaveSuccessfully();
+                } */
+                ucDataButtonPackage.DataMode = DataState.View;
+                ucDataButtonPackage.SetInsertFocus();
+                EnableControls(false);
+            }
+            else CommonBS.SaveNotSuccessfully();
+
+            return bResult;
+        }
+        private void SavePackage()
+        {
+            SaveData();
+        }
+        private void AddPackageDetails(DacPackageDetails packageDetails)
+        {
+            // Kiem tra su ton tai cua ma QRCode
+            foreach (DacPackageDetails detail in packageDetailsCollection)
+            {
+                // Neu co roi thi thoat luon khoi ham.
+                if (detail.DacCode == packageDetails.DacCode)
+                {
+                    MessageBox.Show("Mã QRCode này đã tồn tại trong CSDL. \r\nBạn không thể thêm QRCode được nữa!", "Thông báo", MessageBoxButtons.OK);
+                    return;
+                }
+            }
+            // Kiem tra trong database
+            List<DacPackageDetails> detailsCollection = dacPackageDetailsCS.GetPackageDetails(packageDetails.DacCode);
+            if (detailsCollection.Count > 0)
+            {
+                MessageBox.Show("Mã QRCode này đã tồn tại trong CSDL. \r\nBạn không thể thêm QRCode được nữa!", "Thông báo", MessageBoxButtons.OK);
+                return;
+            }
+            // Kiem tra neu khong phai dang Insert thi lay ID cua dong dang focus.
+            if (ucDataButtonPackage.DataMode != DataState.Insert)
+            {
+                int iPackageId = (int)gridViewPackage.GetFocusedRowCellValue(gridColumnID);
+                // Gan lai ID cho DistributeDetails
+                packageDetails.PackageId = iPackageId;
+            }
+            int iQuantity = Convert.ToInt32(textBoxQuantity.Text);
+            int iCurrentQuantity = packageDetailsCollection.Count + 1;
+            if (iCurrentQuantity <= iQuantity)
+            {
+                packageDetailsCollection.Add(packageDetails);
+                labelProductCount.Text = String.Format("Số sản phẩm đã thêm: {0:0,0}", packageDetailsCollection.Count);
+                //textBoxQuantity.Text = packageDetailsCollection.Count.ToString();
+                AddObjectDetailsIntoBindingList(packageDetailsCollection);
+                //Set focus on DataGridView
+                if (dataGridViewDetails.Rows.Count > 0)
+                {
+                    dataGridViewDetails.CurrentCell = dataGridViewDetails.Rows[dataGridViewDetails.Rows.Count - 1].Cells[2];
+                    dataGridViewDetails.Rows[dataGridViewDetails.Rows.Count - 1].Cells[2].Selected = true;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Số lượng sản phẩm vượt quá số lượng trong thùng. \r\nBạn không thể thêm QRCode được nữa!", "Thông báo", MessageBoxButtons.OK);
+            }
+        }
+
+        private void gridViewPackage_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
+        {
+            this.GetDetailData();
+        }
+        private void GetDetailData()
+        {
+            if (gridViewPackage.RowCount == 0)
+            { return; }
+            try
+            {
+                //DacPackageDetailsCS packageDetailsCS = new DacPackageDetailsCS();
+                int iPackageId = (int)gridViewPackage.GetRowCellValue(gridViewPackage.FocusedRowHandle, "ID");
+                packageDetailsByPackageID = this.GetPackageDetails(iPackageId);
+                AddObjectDetailsIntoBindingList(packageDetailsByPackageID);
+                labelProductCount.Text = String.Format("Số sản phẩm đã thêm: {0:0,0}", packageDetailsByPackageID.Count);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "PIPT - Thông báo");
+                return;
+            }
+        }
+
+        private List<DacPackageDetails> GetPackageDetails(int iPackageId)
+        {
+            List<DacPackageDetails> _packageDetailsByPackageID = new List<DacPackageDetails>();
+            var dacPackageDetails = packageDetailsCollection.Where(p => p.PackageId == iPackageId).ToList();
+            foreach(DacPackageDetails details in dacPackageDetails)
+            {
+                _packageDetailsByPackageID.Add(details);
+            }
+            return _packageDetailsByPackageID;
+        }
+
+        // Get Max Package
+        private string GetMaxPackage(String Size)
+        {
+            SecConfig secConfig = CommonBO.GetSecConfig("AutoIncreasePackage");
+            StringBuilder sbPackage = new StringBuilder();
+            foreach (char item in secConfig.Pattern.ToCharArray())
+            {
+                if (char.IsLetter(item))
+                    sbPackage.Append(item);
+            }
+            if (secConfig.Value == "true")
+            {
+                string MaxPackageCode = DacPackageCS.GetMaxPackage(sbPackage.ToString(), Size);
+                if (!string.IsNullOrWhiteSpace(MaxPackageCode))
+                {
+                    return MaxPackageCode;
+                }
+            }
+            return secConfig.Pattern;
+        }
+
+        private void GetRangSerialNumber(string frSerie, string toSerie)
+        {
+            try
+            {
+                string sPreSeriValue = ConfigurationManager.AppSettings["PreSeri"].ToString();
+                string[] sPreSeris = sPreSeriValue.Split(',');
+                string sPreSeri = string.Empty;
+                if (sPreSeriValue.Length > 0)
+                {
+                    foreach (string PreSeri in sPreSeris)
+                    {
+                        if (frSerie.Contains(PreSeri.Trim()))
+                        {
+                            sPreSeri = PreSeri.Trim();
+                            break;
+                        }
+                    }
+                }
+                long iFrSerie = 0;
+                long iToSerie = 0;
+                if (sPreSeri.Length == 0)
+                {
+                    iFrSerie = Convert.ToInt64(frSerie);
+                    iToSerie = Convert.ToInt64(toSerie);
+                }
+                else
+                {
+                    sPreSeri = frSerie.Substring(0, sPreSeri.Length);
+                    iFrSerie = Convert.ToInt64(frSerie.Substring(sPreSeri.Length, frSerie.Length - sPreSeri.Length));
+                    iToSerie = Convert.ToInt64(toSerie.Substring(sPreSeri.Length, toSerie.Length - sPreSeri.Length));
+                }
+                if (iToSerie > iFrSerie)
+                {
+                    int iQuantity = Convert.ToInt32(textBoxQuantity.Text);
+                    int iMaxPackage = Convert.ToInt32(textBoxMaxPackage.Text);
+                    int iCountQuantity = 1, iCountPackage = -1;
+                    string sFirstPackageCode = textBoxPackageCode.Text;
+                    for (long i = iFrSerie; i <= iToSerie; i++)
+                    {
+                        if(iCountQuantity == 1)
+                        {
+                            DacPackage dacPackage = new DacPackage();
+                            dacPackage.Id = iCountPackage;
+                            dacPackage.CreatedDate = DateTime.Now;
+                            dacPackage.PackageCode = sFirstPackageCode;
+                            if(iCountPackage < -1)
+                            {
+                                dacPackage.PackageCode = CreatePackageCode(sFirstPackageCode, iMaxPackage);
+                                sFirstPackageCode = dacPackage.PackageCode;
+                            }
+                            dacPackage.Quantity = iQuantity;
+                            dacPackage.ProductCode = gridLookUpEditProduct.EditValue.ToString();
+                            dacPackage.Batch = txtBatch.Text.Trim();
+                            dacPackage.FactoryCode = txtFactoryCode.Text.Trim();
+                            dacPackage.PersonPackaged = txtPersonPackaged.Text.Trim();
+                            dacPackage.Description = richTextBoxDescription.Text;
+                            dacPackage.Active = true;
+
+                            packageCollection.Add(dacPackage);
+                        }
+                        if(iCountQuantity < iQuantity - 1)
+                        {
+                            var NewDetail = new DacPackageDetails();
+                            NewDetail.PackageId = iCountPackage;
+                            NewDetail.DacCode = String.Format("{0}{1:" + CommonBO.GetSecConfig("SeriLength").Pattern + "}", sPreSeri, i);
+                            packageDetailsCollection.Add(NewDetail);
+                            iCountQuantity += 1;
+                        }
+                        else
+                        {
+                            var NewDetail = new DacPackageDetails();
+                            NewDetail.PackageId = iCountPackage;
+                            NewDetail.DacCode = String.Format("{0}{1:" + CommonBO.GetSecConfig("SeriLength").Pattern + "}", sPreSeri, i);
+                            packageDetailsCollection.Add(NewDetail);
+                            iCountQuantity = 0;
+                        }
+                        if(iCountQuantity == 1)
+                        {
+                            iCountPackage = iCountPackage - 1;
+                        }
+                    }
+                    AddObjectPackageIntoBindingList(packageCollection);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Kiem tra xem co ap dung phan theo xuong khong
+        /// </summary>
+        /// <param name="FactoryCode"></param>
+        /// <returns></returns>
+        private bool CheckFactory(string FactoryCode)
+        {
+            List<DacFactory> FactoryCollection = new List<DacFactory>();
+            DacFactoryCS FactoryCS = new DacFactoryCS();
+            FactoryCollection = FactoryCS.GetListFactory(FactoryCode, string.Empty, string.Empty);
+            if (FactoryCollection.Count > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private string CreatePackageCode(string sPackageCodeTemp, int iMaxPackage)
+        {
+            DataRowView SelectedProduct = gridLookUpEditProduct.GetSelectedDataRow() as DataRowView;
+            string Size = string.Empty;
+            string sPackageCode ;
+            if (SelectedProduct != null)
+            {
+                Size = SelectedProduct["Size"].ToString();
+            }
+            if (!string.IsNullOrWhiteSpace(Size))
+            {
+                sPackageCode = String.Format("PKG-{0}-{1:000}{2}-{3:000}", Size, 1, DateTime.Now.Year.ToString().Substring(2, 2), 1);
+            }
+            else
+            {
+                sPackageCode = String.Format("PKG-{0}{1:000}-{2:000}", 1, DateTime.Now.Year.ToString().Substring(2, 2), 1);
+            }
+            
+            if (sPackageCodeTemp.Contains("-"))
+            {
+                Regex oRegex;
+                if (!string.IsNullOrWhiteSpace(Size))
+                {
+                    oRegex = new Regex(@"^PKG-([0-9a-zA-Z]{3})-([0-9]{3})(" + DateTime.Now.Year.ToString().Substring(2, 2) + ")-([0-9]{3})$");
+                }
+                else
+                {
+                    oRegex = new Regex(@"^PKG-([0-9]{3})(" + DateTime.Now.Year.ToString().Substring(2, 2) + ")-([0-9]{3})$");
+                }
+                
+                if (oRegex.IsMatch(sPackageCodeTemp))
+                {
+                    Match match = oRegex.Match(sPackageCodeTemp);
+                    if (match.Groups.Count > 0)
+                    {
+                        int iBatchNo = 0;
+                        int iPackageNo = 0;
+                        if (!string.IsNullOrWhiteSpace(Size))
+                        {
+                            string sBatchNo = match.Groups[2].Value;
+                            iBatchNo = Convert.ToInt32(sBatchNo);
+
+                            string sPackageNo = match.Groups[4].Value;
+                            iPackageNo = Convert.ToInt32(sPackageNo);
+                        }
+                        else
+                        {
+                            string sBatchNo = match.Groups[1].Value;
+                            iBatchNo = Convert.ToInt32(sBatchNo);
+
+                            string sPackageNo = match.Groups[3].Value;
+                            iPackageNo = Convert.ToInt32(sPackageNo);
+                        }
+                        if (iPackageNo < iMaxPackage)
+                        {
+                            iPackageNo += 1;
+                        }
+                        else
+                        {
+                            iBatchNo += 1;
+                            iPackageNo = 1;
+                        }
+                        if (!string.IsNullOrWhiteSpace(Size))
+                        {
+                            sPackageCode = String.Format("PKG-{0}-{1:000}{2}-{3:000}", Size, iBatchNo, DateTime.Now.Year.ToString().Substring(2, 2), iPackageNo);
+                        }
+                        else
+                        {
+                            sPackageCode = String.Format("PKG-{0:000}{1}-{2:000}", iBatchNo, DateTime.Now.Year.ToString().Substring(2, 2), iPackageNo);
+                        }  
+                    }
+                }
+            }
+            else
+            {
+                sPackageCode = String.Format("PKG{0}{1:00}{2:00}{3:000}", DateTime.Now.Date.Year.ToString().Substring(2, 2), DateTime.Now.Date.Month, DateTime.Now.Date.Day, DateTime.Now.Date.Second);
+                Regex oRegex = new Regex(@"^PKG([0-9]{9})$");
+                if(oRegex.IsMatch(sPackageCodeTemp))
+                {
+                    Match match = oRegex.Match(sPackageCodeTemp);
+                    string sPackageNo = match.Groups[1].Value;
+                    long iPackageNo = Convert.ToInt64(sPackageNo);
+                    sPackageCode = String.Format("PKG{0:000000000}", iPackageNo + 1);
+                }
+            }
+            return sPackageCode;
+        }
+        #endregion
+
+        #region Buttons' Event
+        private void ucDataButtonProduct_InsertHandler()
+        {
+            // Lay gia tri Product va So luong de giu lai
+            string ProductCode = gridLookUpEditProduct.EditValue.ToString();
+            string sSoLuong = textBoxQuantity.Text;
+            //bdlPackage.AddNew();
+            DevExpress.XtraGrid.Views.Grid.GridView view = gridControlPackage.FocusedView as DevExpress.XtraGrid.Views.Grid.GridView;
+            view.AddNewRow();
+            gridControlPackage.RefreshDataSource();
+            EnableControls(true);
+            //Set focus for DataGridView
+            gridViewPackage.FocusedRowHandle = gridViewPackage.GetVisibleRowHandle(gridViewPackage.RowCount - 1);
+            // Kiem tra neu giu lai lenh thi khong tang lenh len nua
+            if (checkEditKeepProduct.Checked)
+            {
+                gridLookUpEditProduct.EditValue = ProductCode;
+                if (!string.IsNullOrEmpty(gridLookUpEditProduct.EditValue.ToString()))
+                {
+                    DataRowView SelectedProduct = gridLookUpEditProduct.GetSelectedDataRow() as DataRowView;
+                    if (SelectedProduct != null)
+                    {
+                        textBoxPackageCode.Text = this.GetMaxPackage(SelectedProduct["Size"].ToString());
+                    }
+                }
+                textBoxQuantity.Text = sSoLuong;
+            }
+            else
+            {
+                // Get Max order number
+                textBoxQuantity.Text = sSoLuong;
+            }
+        }
+
+        private void ucDataButtonProduct_SaveHandler()
+        {
+            // Lưu nhật ký
+            CommonBO.Instance().TraceLogEvent("Save Container: " + textBoxPackageCode.Text + " - " + gridLookUpEditProduct.EditValue + " - "
+                + textBoxQuantity.Text, CommonBS.CurrentUser.LoginID);
+            Common objCommon = new Common();
+            objCommon.CurrentForm = this;
+            objCommon.CurrentFormMethodInvoker = SavePackage;
+            objCommon.App_ShowWaitForm(DataState.Insert);
+        }
+
+        private void ucDataButtonProduct_EditHandler()
+        {
+            // Lưu nhật ký
+            CommonBO.Instance().TraceLogEvent("Edit Container: " + textBoxPackageCode.Text + " - " + gridLookUpEditProduct.EditValue + " - "
+                + textBoxQuantity.Text, CommonBS.CurrentUser.LoginID);
+            // Kiem tra xem co du lieu nao khong
+            if (dataGridViewDetails.Rows.Count == 0) return;
+            // Lay du lieu de sua
+            EnableControls(true);
+        }
+
+        private void ucDataButtonProduct_DeleteHandler()
+        {
+            // Kiem tra xem co du lieu nao khong
+            if (dataGridViewDetails.Rows.Count == 0)
+            {
+                return;
+            }
+            // Lay du lieu de xoa
+            int ID = (int)gridViewPackage.GetFocusedRowCellValue(gridColumnID);
+            if (ID > -1)
+            {
+                if (MessageBox.Show("Bạn có chắc chắn muốn xóa mục này?", "Thong bao", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                {
+                    packageCS.Delete(ID);
+                    // Lưu nhật ký
+                    CommonBO.Instance().TraceLogEvent("Delete Container: ID = " + ID + " - " + textBoxPackageCode.Text + " - " + gridLookUpEditProduct.EditValue + " - "
+                + textBoxQuantity.Text, CommonBS.CurrentUser.LoginID);
+                    try
+                    {
+                        DevExpress.XtraGrid.Views.Grid.GridView view = gridControlPackage.FocusedView as DevExpress.XtraGrid.Views.Grid.GridView;
+                        view.DeleteRow(view.FocusedRowHandle);
+                    }
+                    catch
+                    {
+                        return;
+                    }
+                }
+            }
+            // Kiem tra moi lien quan voi du lieu khac neu co
+        }
+
+        private void ucDataButtonProduct_CancelHandler()
+        {
+            EnableControls(false);
+            if (ucDataButtonPackage.DataMode == DataState.Insert)
+            {
+                DevExpress.XtraGrid.Views.Grid.GridView view = gridControlPackage.FocusedView as DevExpress.XtraGrid.Views.Grid.GridView;
+                view.DeleteRow(view.FocusedRowHandle);
+            }
+            // Gan lai trang thai view
+            ucDataButtonPackage.DataMode = DataState.View;
+            //Set focus for DataGridView
+        }
+
+        private void ucDataButtonProduct_CloseHandler()
+        {
+            if (IsChangedData())
+            {
+                if (CommonBS.ConfirmChangedData() == DialogResult.Yes)
+                {
+                    if (SaveData() == false)
+                        return;
+                }
+            }
+            this.Close();
+        }
+
+        private void buttonEnter_Click(object sender, EventArgs e)
+        {
+            var NewDetail = new DacPackageDetails();
+            NewDetail.DacCode = CommonCore.GetSerialFromScanner(textBoxDacCode.Text.Trim());
+            AddPackageDetails(NewDetail);
+            textBoxDacCode.Text = string.Empty;
+        }
+
+        private void buttonUpdateDetail_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string sContent = string.Empty;
+                foreach (DacPackageDetails details in packageDetailsCollection)
+                {
+                    if (details.Id == 0)
+                    {
+                        dacPackageDetailsCS.Insert(details);
+                        sContent += details.DacCode + ", ";
+                    }
+                }
+                // Lưu nhật ký
+                CommonBO.Instance().TraceLogEvent(sContent, CommonBS.CurrentUser.LoginID);
+                this.GetDetailData();
+                MessageBox.Show("Bạn đã thêm các mã QRCode thành công!", "Thông báo");
+            }
+            catch
+            {
+                MessageBox.Show("Có lỗi đã xảy ra khi thêm các mã QRCode!", "Thông báo");
+            }
+        }
+
+        private void buttonDetailDelete_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Bạn có chắc chắn xóa mã QRCode đã chọn?", "Thong bao - Xoa ma QRCode", MessageBoxButtons.OKCancel) == DialogResult.OK)
+            {
+                string sContent = string.Empty;
+                List<DacPackageDetails> detailsCollection = new List<DacPackageDetails>();
+                foreach (DataGridViewRow Row in dataGridViewDetails.Rows)
+                    if (((DataGridViewCheckBoxCell)Row.Cells["IsSelected"]).Value != null)
+                    {
+                        if ((bool)((DataGridViewCheckBoxCell)Row.Cells["IsSelected"]).Value)
+                        {
+                            DacPackageDetails packageDetails = (DacPackageDetails)Row.DataBoundItem;
+                            detailsCollection.Add(packageDetails);
+                            if (packageDetails.Id > 0)
+                            {
+                                // Xoa tren Database
+                                dacPackageDetailsCS.Delete(packageDetails.Id);
+                                sContent += packageDetails.DacCode + ", ";
+                            }
+                        }
+                    }
+                // Lưu nhật ký
+                CommonBO.Instance().TraceLogEvent("Xóa các mã: " + sContent, CommonBS.CurrentUser.LoginID);
+                foreach (DacPackageDetails packageDetails in detailsCollection)
+                {
+                    bdlPackageDetails.Remove(packageDetails);
+                    packageDetailsCollection.Remove(packageDetails);
+                }
+                bdlPackageDetails.ResetBindings();
+            }
+        }
+
+        private void textBoxDacCode_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == 13)
+            {
+                string DacCode = textBoxDacCode.Text.Trim();
+                if (DacCode.Length >= 7)
+                {
+                    string serial = CommonCore.GetSerialFromScanner(DacCode);
+                    var NewDetail = new DacPackageDetails();
+                    NewDetail.DacCode = serial;
+                    AddPackageDetails(NewDetail);
+                    textBoxDacCode.Text = string.Empty;
+                }
+            }
+        }
+
+        private void ucDataButtonPackage_PrintHandler()
+        {
+            PIPT.Report.PackageQRCode rpt = new PIPT.Report.PackageQRCode();
+            DacPackageVM Package = null;
+            Package.Description = gridLookUpEditProduct.Text;
+            rpt.CreateQRCode(Package);
+            if (checkEditPreview.Checked)
+            {
+                rpt.ShowPreview();
+            }
+            else
+            {
+                rpt.CreateDocument();
+                rpt.Print();
+            }
+        }
+
+        private void addSerialCodeButton_Click(object sender, EventArgs e)
+        {
+            string DacCode = ToSeriTextBox.Text.Trim();
+            if (DacCode.Length >= 7)
+            {
+                string serial = CommonCore.GetSerialFromScanner(DacCode);
+                ToSeriTextBox.Text = serial;
+                GetRangSerialNumber(FrSeriTextBox.Text, ToSeriTextBox.Text);
+                ToSeriTextBox.Text = string.Empty;
+                FrSeriTextBox.Text = string.Empty;
+                FrSeriTextBox.Focus();
+            }
+        }
+
+        private void FrSeriTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == 13)
+            {
+                string DacCode = FrSeriTextBox.Text.Trim();
+                if (DacCode.Length >= 7)
+                {
+                    string serial = CommonCore.GetSerialFromScanner(DacCode);
+                    FrSeriTextBox.Text = serial;
+                    ToSeriTextBox.Focus();
+                }
+            }
+        }
+
+        private void ToSeriTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == 13)
+            {
+                string DacCode = ToSeriTextBox.Text.Trim();
+                if (DacCode.Length >= 7)
+                {
+                    string serial = CommonCore.GetSerialFromScanner(DacCode);
+                    ToSeriTextBox.Text = serial;
+                    GetRangSerialNumber(FrSeriTextBox.Text, ToSeriTextBox.Text);
+                    ToSeriTextBox.Text = string.Empty;
+                    FrSeriTextBox.Text = string.Empty;
+                    FrSeriTextBox.Focus();
+                }
+            }
+        }
+
+        private void textBoxPackageCode_Click(object sender, EventArgs e)
+        {
+            if (textBoxPackageCode.Text.Length > 3)
+            {
+                textBoxPackageCode.SelectionStart = 3;
+                textBoxPackageCode.SelectionLength = textBoxPackageCode.Text.Length;
+            }
+        }
+        #endregion
+        #region Events For Select All CheckBox
+        private void AddHeaderCheckBox()
+        {
+            HeaderCheckBox = new CheckBox();
+
+            HeaderCheckBox.Size = new Size(15, 15);
+
+            //Add the CheckBox into the DataGridView
+            this.dataGridViewDetails.Controls.Add(HeaderCheckBox);
+        }
+
+        private void HeaderCheckBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Space)
+                HeaderCheckBoxClick((CheckBox)sender);
+        }
+        private void HeaderCheckBox_MouseClick(object sender, MouseEventArgs e)
+        {
+            HeaderCheckBoxClick((CheckBox)sender);
+        }
+
+        private void HeaderCheckBoxClick(CheckBox HCheckBox)
+        {
+            IsHeaderCheckBoxClicked = true;
+
+            foreach (DataGridViewRow Row in dataGridViewDetails.Rows)
+                ((DataGridViewCheckBoxCell)Row.Cells["IsSelected"]).Value = HCheckBox.Checked;
+
+            dataGridViewDetails.RefreshEdit();
+
+            TotalCheckedCheckBoxes = HCheckBox.Checked ? TotalCheckBoxes : 0;
+
+            IsHeaderCheckBoxClicked = false;
+        }
+
+        private void dataGridViewDetails_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        {
+            if (e.RowIndex == -1 && e.ColumnIndex == 0)
+                ResetHeaderCheckBoxLocation(e.ColumnIndex, e.RowIndex);
+        }
+
+        private void dataGridViewDetails_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        {
+            if (dataGridViewDetails.CurrentCell is DataGridViewCheckBoxCell)
+                dataGridViewDetails.CommitEdit(DataGridViewDataErrorContexts.Commit);
+        }
+
+        private void dataGridViewDetails_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (!IsHeaderCheckBoxClicked)
+                RowCheckBoxClick((DataGridViewCheckBoxCell)dataGridViewDetails[e.ColumnIndex, e.RowIndex]);
+        }
+
+        private void ResetHeaderCheckBoxLocation(int ColumnIndex, int RowIndex)
+        {
+            //Get the column header cell bounds
+            Rectangle oRectangle = this.dataGridViewDetails.GetCellDisplayRectangle(ColumnIndex, RowIndex, true);
+
+            Point oPoint = new Point();
+
+            oPoint.X = oRectangle.Location.X + (oRectangle.Width - HeaderCheckBox.Width) / 2 + 1;
+            oPoint.Y = oRectangle.Location.Y + (oRectangle.Height - HeaderCheckBox.Height) / 2 + 1;
+
+            //Change the location of the CheckBox to make it stay on the header
+            HeaderCheckBox.Location = oPoint;
+        }
+
+        private void RowCheckBoxClick(DataGridViewCheckBoxCell RCheckBox)
+        {
+            if (RCheckBox != null)
+            {
+                //Modify Counter;
+                if ((bool)RCheckBox.Value && TotalCheckedCheckBoxes < TotalCheckBoxes)
+                    TotalCheckedCheckBoxes++;
+                else if (TotalCheckedCheckBoxes > 0)
+                    TotalCheckedCheckBoxes--;
+
+                //Change state of the header CheckBox;
+                if (TotalCheckedCheckBoxes < TotalCheckBoxes)
+                    HeaderCheckBox.Checked = false;
+                else if (TotalCheckedCheckBoxes == TotalCheckBoxes)
+                    HeaderCheckBox.Checked = true;
+            }
+        }
+
+        #endregion
+
+        private void gridLookUpEditProduct_EditValueChanged(object sender, EventArgs e)
+        {
+            if (ucDataButtonPackage.DataMode != DataState.Insert && ucDataButtonPackage.DataMode != DataState.Edit)
+                return;
+            DataRowView SelectedProduct = (DataRowView)gridLookUpEditProduct.GetSelectedDataRow();
+            if (SelectedProduct != null)
+            {
+                string Size = SelectedProduct["Size"].ToString();
+                textBoxPackageCode.Text = this.GetMaxPackage(Size);
+            }
+        }
+    }
+}

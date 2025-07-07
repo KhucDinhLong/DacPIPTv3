@@ -1,0 +1,55 @@
+@using PIPTWeb.Shared.Models
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+
+@if (LstMenu != null)
+{
+    <SideBarContainer>
+        <BrandLogo Link="http://appprintco.com/" Logo="dist/img/avatar/dac_logo.ico">PIPTWeb</BrandLogo>
+        <SideBar>
+            <!-- Sidebar user panel (optional) -->
+            <SideBarUserPanel ImageEffect="ImageEffect.Circle" Link="/profile" Elevation="Elevation.Three" UserImage="@Avatar">@FullName</SideBarUserPanel>
+            @*<SideBarSearch></SideBarSearch>*@
+            <SideBarMenu>
+                <SideBarMenuItem Link="/" Icon="fas fa-th">
+                    Home
+                </SideBarMenuItem>
+                @foreach (SysMenu menu in LstMenu)
+                {
+                    if (menu.ParentID == 0)
+                    {
+                        <SideBarTreeView Icon="@menu.Icon">
+                            <Title>@menu.Value</Title>
+                            <Items>
+                                @{
+                                    List<SysMenu> lstChild = LstMenu.Where(x => x.ParentID == menu.ID).ToList();
+                                    if (lstChild != null)
+                                    {
+                                        foreach (SysMenu child in lstChild)
+                                        {
+                                            <SideBarMenuItem Icon="far fa-circle" Link="@child.Link">
+                                                @child.Value
+                                            </SideBarMenuItem>
+                                        }
+                                    }
+                                }
+                            </Items>
+                        </SideBarTreeView>
+                    }
+                }
+            </SideBarMenu>
+        </SideBar>
+    </SideBarContainer>
+}
+@code {
+    private List<SysMenu> LstMenu { get; set; }
+    private string Avatar { get; set; }
+    private string FullName { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        LstMenu = await localStorage.GetItemAsync<List<SysMenu>>("lstMenu");
+        Avatar = await localStorage.GetItemAsync<string>("Avatar");
+        FullName = await localStorage.GetItemAsync<string>("FullName");
+        StateHasChanged();
+    }
+}

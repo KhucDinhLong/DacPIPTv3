@@ -1,0 +1,124 @@
+﻿/*  PROGRESS    */
+body {
+    font-family: Roboto;
+    background:#000;
+}
+
+tbody {
+    border: 1px solid black;
+}
+
+#example1 thead tr th, #example1 tr td {
+    border: 1px solid #343a40
+}
+
+#example1 tbody tr:hover {
+    background-color: #e9ecef;
+}
+
+tbody tr:nth-child(1) {
+    font-weight: bold;
+    color: yellow;
+}
+
+tbody tr:nth-child(2), tbody tr:nth-child(3) {
+    color: yellow;
+}
+
+tbody tr {
+    color: #20c997;
+}
+
+.ten_may {
+    font-weight: bold;
+    font-size: 25px;
+}
+
+.text-mobile {
+    font-size: 1rem;
+}
+
+.inner {
+    color: #00ff00;
+    padding: 15px;
+    height: 100%;
+    margin-left: 10px;
+}
+
+.info span {
+    color: yellow;
+    font-weight: bold;
+    padding: 0 20px;
+}
+
+.info {
+    font-size: 12px
+}
+
+.status span {
+    padding: 10px;
+    float: right
+}
+
+.card-title {
+    color: #00ff00;
+    font-weight: bold;
+    float: left
+}
+
+.carousel-indicators {
+    position: absolute;
+    top: -5px;
+}
+
+.table td, .table th {
+    padding: .3rem !important;
+    border: 1px solid #343434 !important;
+}
+
+.table td {
+    font-size: 10px;
+}
+
+.carousel-indicators li {
+    height: 20px;
+    width: auto;
+    padding: 2px;
+    margin: 1px;
+    text-indent: unset;
+}
+
+.nav-tabs {
+    border-bottom: 1px solid #ffc107
+}
+
+    .nav-tabs .nav-link {
+        color: white;
+    }
+
+        .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+            background-color: #ffc107;
+            border: 1px solid #ffc107
+        }
+/*Ipad ngang(1024 x 768)*/
+/*@media screen and (max-width: 1024px) {
+}*/
+/*Ipad dá»c(768 x 1024)*/
+@media screen and (max-width: 768px) {
+    .text-mobile {
+        font-size: 0.8rem;
+    }
+
+    .status {
+        display: none;
+    }
+}
+/*Tablet nhá»(480 x 640)*/
+/*@media screen and (max-width: 480px) {
+}*/
+/*Iphone(480 x 640)*/
+/*@media screen and (max-width: 320px) {
+}*/
+/*Smart phone nhá»*/
+/*@media screen and (max-width: 240px) {
+}*/

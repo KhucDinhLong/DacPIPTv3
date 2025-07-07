@@ -1,0 +1,20 @@
+﻿using System;
+using System.Drawing;
+using System.Collections;
+using System.ComponentModel;
+using DevExpress.XtraReports.UI;
+
+namespace PIPT.Package
+{
+    public partial class XtraReportPackageQR : DevExpress.XtraReports.UI.XtraReport
+    {
+        public XtraReportPackageQR()
+        {
+            InitializeComponent();
+        }
+        public void GetDataToPrint(DAC.Core.DacPackageCollection packageCollection)
+        {
+            objectDataSource1.DataSource = packageCollection;
+        }
+    }
+}

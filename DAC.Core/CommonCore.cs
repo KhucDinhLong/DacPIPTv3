@@ -1,0 +1,1001 @@
+﻿using System;
+using System.Collections;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
+using System.Reflection;
+using System.Security.Cryptography;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
+using System.Runtime.InteropServices;
+//using ComExcel = Microsoft.Office.Interop.Excel;
+using System.Diagnostics;
+using System.Net;
+using System.Linq;
+using DAC.DAL;
+using System.Collections.Generic;
+
+namespace DAC.Core
+{
+    public class CommonCore
+    {
+        public const string DATE_FORMAT = "dd/MM/yyyy";
+        public const string DATE_TIME_FORMAT = "dd/MM/yyyy hh:mm:ss";
+        public const string PASS_PHRASE = "Dac724546prevent";
+        public static string CS_DISPLAY_DATE_FORMAT = "dd/MM/yyyy";
+
+        #region Encrypt & Decrypt
+        public static string EncryptString(string sMessage, string Passphrase)
+        {
+            byte[] Results;
+            System.Text.UTF8Encoding UTF8 = new System.Text.UTF8Encoding();
+
+            // Buoc 1: Bam chuoi su dung MD5 
+            MD5CryptoServiceProvider HashProvider = new MD5CryptoServiceProvider();
+            byte[] TDESKey = HashProvider.ComputeHash(UTF8.GetBytes(Passphrase));
+
+            // Step 2. Tao doi tuong TripleDESCryptoServiceProvider moi
+            TripleDESCryptoServiceProvider TDESAlgorithm = new TripleDESCryptoServiceProvider();
+
+            // Step 3. Cai dat bo ma hoa
+            TDESAlgorithm.Key = TDESKey;
+            TDESAlgorithm.Mode = CipherMode.ECB;
+            TDESAlgorithm.Padding = PaddingMode.PKCS7;
+
+            // Step 4. Convert chuoi (Message) thanh dang byte[]
+            byte[] DataToEncrypt = UTF8.GetBytes(sMessage);
+
+            // Step 5. Ma hoa chuoi
+            try
+            {
+                ICryptoTransform Encryptor = TDESAlgorithm.CreateEncryptor();
+                Results = Encryptor.TransformFinalBlock(DataToEncrypt, 0, DataToEncrypt.Length);
+            }
+            finally
+            {
+                // Xoa moi thong tin ve Triple DES va HashProvider de dam bao an toan
+                TDESAlgorithm.Clear();
+                HashProvider.Clear();
+            }
+
+            // Step 6. Tra ve chuoi da ma hoa bang thuat toan Base64
+            return Convert.ToBase64String(Results);
+        }
+
+        public static string DecryptString(string sMessage, string Passphrase)
+        {
+            byte[] Results;
+            System.Text.UTF8Encoding UTF8 = new System.Text.UTF8Encoding();
+
+            // Step 1. Bam chuoi su dung MD5
+            MD5CryptoServiceProvider HashProvider = new MD5CryptoServiceProvider();
+            byte[] TDESKey = HashProvider.ComputeHash(UTF8.GetBytes(Passphrase));
+
+            // Step 2. Tao doi tuong TripleDESCryptoServiceProvider moi
+            TripleDESCryptoServiceProvider TDESAlgorithm = new TripleDESCryptoServiceProvider();
+
+            // Step 3. Cai dat bo giai ma
+            TDESAlgorithm.Key = TDESKey;
+            TDESAlgorithm.Mode = CipherMode.ECB;
+            TDESAlgorithm.Padding = PaddingMode.PKCS7;
+
+            // Step 4. Convert chuoi (Message) thanh dang byte[]
+            byte[] DataToDecrypt = Convert.FromBase64String(sMessage);
+
+            // Step 5. Bat dau giai ma chuoi
+            try
+            {
+                ICryptoTransform Decryptor = TDESAlgorithm.CreateDecryptor();
+                Results = Decryptor.TransformFinalBlock(DataToDecrypt, 0, DataToDecrypt.Length);
+            }
+            finally
+            {
+                // Xoa moi thong tin ve Triple DES va HashProvider de dam bao an toan
+                TDESAlgorithm.Clear();
+                HashProvider.Clear();
+            }
+
+            // Step 6. Tra ve ket qua bang dinh dang UTF8
+            return UTF8.GetString(Results);
+        }
+        #endregion
+
+        #region Convert string object
+        public static decimal StringToDecimal(object c)
+        {
+            try
+            {
+                return decimal.Parse(c.ToString());
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+        }
+
+        public static int StringToInteger(object c)
+        {
+            try
+            {
+                return int.Parse(c.ToString());
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+        }
+
+        public static double StringToDouble(object c)
+        {
+            try
+            {
+                return double.Parse(c.ToString(), System.Globalization.CultureInfo.InvariantCulture);
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+        }
+
+        public static DateTime StringToDate(object c)
+        {
+            try
+            {
+                return DateTime.Parse(c.ToString());
+            }
+            catch (Exception)
+            {
+                return DateTime.MinValue;
+            }
+        }
+
+        public static string ConvertToString(object c)
+        {
+            try
+            {
+                return Convert.ToString(c);
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
+        }
+        #endregion
+
+        #region Generic List into a Datatable
+        /// <summary>
+        /// Generic List into a Datatable
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static DataTable GetDataTable(IList list, Type type)
+        {
+            DataTable dataTable = new DataTable();
+            // Nhan danh sach tat ca cac thuoc tinh cua doi tuong
+            PropertyInfo[] pis = type.GetProperties();
+            // Lap qua moi thuoc tinh, va them no la mot cot trong datatable
+            foreach (PropertyInfo pi in pis)
+            {
+                // Kieu cua thuoc tinh
+                Type columnType = pi.PropertyType;
+                // Kiem tra xem thuoc tinh co kha nang null hay khong
+                if (pi.PropertyType.IsGenericType && pi.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                {
+                    // Neu no co the null, thi nhan underlying type. Vi du: neu la "Nullable<int>" thi se tra ve "int"
+                    columnType = pi.PropertyType.GetGenericArguments()[0];
+                }
+                // Them dinh nghia cot vao bang datatable
+                dataTable.Columns.Add(new DataColumn(pi.Name, columnType));
+            }
+
+            // Lap moi doi tuong trong list, qua moi vong lap va them du lieu vao bang.
+            foreach (object obj in list)
+            {
+                object[] row = new object[pis.Length];
+                int i = 0;
+
+                foreach (PropertyInfo pi in pis)
+                {
+                    row[i++] = pi.GetValue(obj, null);
+                }
+
+                dataTable.Rows.Add(row);
+            }
+            return dataTable;
+        }
+        #endregion
+
+        #region Class null
+        public class Null
+        {
+            public static short NullShort
+            {
+                get { return short.MinValue; }
+            }
+
+            public static int NullInteger
+            {
+                get { return int.MinValue; }
+            }
+
+            public static long NullLong
+            {
+                get { return long.MinValue; }
+            }
+
+            public static float NullSingle
+            {
+                get { return float.MinValue; }
+            }
+
+            public static double NullDouble
+            {
+                get { return double.MinValue; }
+            }
+
+            public static decimal NullDecimal
+            {
+                get { return decimal.MinValue; }
+            }
+
+            public static DateTime NullDate
+            {
+                get { return DateTime.MinValue; }
+            }
+
+            public static DateTime NULL_DATE
+            {
+                get { return DateTime.MinValue; }
+            }
+
+            public static DateTime MIN_DATE
+            {
+                get { return DateTime.MinValue; }
+            }
+
+            public static DateTime MAX_DATE
+            {
+                get { return DateTime.MaxValue; }
+            }
+
+            public static string NullString
+            {
+                get { return ""; }
+            }
+
+            public static bool NullBoolean
+            {
+                get { return false; }
+            }
+
+            public static Guid NullGuid
+            {
+                get { return Guid.Empty; }
+            }
+            public static object SetNull(object objValue, object objField)
+            {
+                object returnValue = default(object);
+                if (objValue == DBNull.Value)
+                {
+                    if (objField is short)
+                    {
+                        returnValue = NullShort;
+                    }
+                    else if (objField is int)
+                    {
+                        returnValue = NullInteger;
+                    }
+                    else if (objField is long)
+                    {
+                        returnValue = NullLong;
+                    }
+                    else if (objField is Single)
+                    {
+                        returnValue = NullSingle;
+                    }
+                    else if (objField is double)
+                    {
+                        returnValue = NullDouble;
+                    }
+                    else if (objField is decimal)
+                    {
+                        returnValue = NullDecimal;
+                    }
+                    else if (objField is DateTime)
+                    {
+                        returnValue = NullDate;
+                    }
+                    else if (objField is string)
+                    {
+                        returnValue = NullString;
+                    }
+                    else if (objField is bool)
+                    {
+                        returnValue = NullBoolean;
+                    }
+                    else if (objField is Guid)
+                    {
+                        returnValue = NullGuid;
+                    }
+                    else
+                    {
+                        returnValue = null;
+                    }
+                }
+                else
+                {
+                    returnValue = objValue;
+                }
+                return returnValue;
+            }
+
+            public static object SetNullValue(object objField)
+            {
+                if (objField is short)
+                {
+                    return NullShort;
+                }
+                else if (objField is int)
+                {
+                    return NullInteger;
+                }
+                else if (objField is long)
+                {
+                    return NullLong;
+                }
+                else if (objField is Single)
+                {
+                    return NullSingle;
+                }
+                else if (objField is double)
+                {
+                    return NullDouble;
+                }
+                else if (objField is decimal)
+                {
+                    return NullDecimal;
+                }
+                else if (objField is DateTime)
+                {
+                    return NullDate;
+                }
+                else if (objField is string)
+                {
+                    return NullString;
+                }
+                else if (objField is bool)
+                {
+                    return NullBoolean;
+                }
+                else if (objField is Guid)
+                {
+                    return NullGuid;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+
+            public static object SetNull(PropertyInfo objPropertyInfo)
+            {
+                object returnValue = default(object);
+                switch (objPropertyInfo.PropertyType.ToString())
+                {
+                    case "System.Int16":
+                        returnValue = NullShort;
+                        break;
+                    case "System.Int32":
+                        returnValue = NullInteger;
+                        break;
+                    case "System.Int64":
+                        returnValue = NullLong;
+                        break;
+                    case "System.Single":
+                        returnValue = NullSingle;
+                        break;
+                    case "System.Double":
+                        returnValue = NullDouble;
+                        break;
+                    case "System.Decimal":
+                        returnValue = NullDecimal;
+                        break;
+                    case "System.DateTime":
+                        returnValue = NullDate;
+                        break;
+                    case "System.String":
+                    case "System.Char":
+                        returnValue = NullString;
+                        break;
+                    case "System.Boolean":
+                        returnValue = NullBoolean;
+                        break;
+                    case "System.Guid":
+                        returnValue = NullGuid;
+                        break;
+                    default:
+                        Type pType = objPropertyInfo.PropertyType;
+                        if (pType.BaseType.Equals(typeof(Enum)))
+                        {
+                            Array objEnumValues = Enum.GetValues(pType);
+                            Array.Sort(objEnumValues);
+                            returnValue = Enum.ToObject(pType, objEnumValues.GetValue(0));
+                        }
+                        else
+                        {
+                            returnValue = null;
+                        }
+                        break;
+                }
+                return returnValue;
+            }
+
+            public static object GetNull(object objField, object objDBNull)
+            {
+                object returnValue = default(object);
+                returnValue = objField;
+                if (objField == null)
+                {
+                    returnValue = objDBNull;
+                }
+                else if (objField is short)
+                {
+                    if (Convert.ToInt16(objField) == NullShort)
+                    {
+                        returnValue = objDBNull;
+                    }
+                }
+                else if (objField is int)
+                {
+                    if (Convert.ToInt32(objField) == NullInteger)
+                    {
+                        returnValue = objDBNull;
+                    }
+                }
+                else if (objField is long)
+                {
+                    if (Convert.ToInt64(objField) == NullLong)
+                    {
+                        returnValue = objDBNull;
+                    }
+                }
+                else if (objField is Single)
+                {
+                    if (Convert.ToSingle(objField) == NullSingle)
+                    {
+                        returnValue = objDBNull;
+                    }
+                }
+                else if (objField is double)
+                {
+                    if (Convert.ToDouble(objField) == NullDouble)
+                    {
+                        returnValue = objDBNull;
+                    }
+                }
+                else if (objField is decimal)
+                {
+                    if (Convert.ToDecimal(objField) == NullDecimal)
+                    {
+                        returnValue = objDBNull;
+                    }
+                }
+                else if (objField is DateTime)
+                {
+                    if (Convert.ToDateTime(objField).Date == NullDate.Date
+                        || Convert.ToDateTime(objField).Date == MIN_DATE
+                        || Convert.ToDateTime(objField).Date == MAX_DATE)
+                    {
+                        returnValue = objDBNull;
+                    }
+                }
+                else if (objField is string)
+                {
+                    if (objField == null)
+                    {
+                        returnValue = objDBNull;
+                    }
+                    else
+                    {
+                        if (objField.ToString() == NullString)
+                        {
+                            returnValue = objDBNull;
+                        }
+                    }
+                }
+                else if (objField is bool)
+                {
+                    if (Convert.ToBoolean(objField) == NullBoolean)
+                    {
+                        returnValue = objDBNull;
+                    }
+                }
+                else if (objField is Guid)
+                {
+                    if (((Guid)objField).Equals(NullGuid))
+                    {
+                        returnValue = objDBNull;
+                    }
+                }
+                return returnValue;
+            }
+
+            public static bool IsNull(object objField)
+            {
+                bool returnValue = default(bool);
+                if (objField != null)
+                {
+                    if (objField is int)
+                    {
+                        returnValue = objField.Equals(NullInteger);
+                    }
+                    else if (objField is short)
+                    {
+                        returnValue = objField.Equals(NullShort);
+                    }
+                    else if (objField is long)
+                    {
+                        returnValue = objField.Equals(NullLong);
+                    }
+                    else if (objField is Single)
+                    {
+                        returnValue = objField.Equals(NullSingle);
+                    }
+                    else if (objField is double)
+                    {
+                        returnValue = objField.Equals(NullDouble);
+                    }
+                    else if (objField is decimal)
+                    {
+                        returnValue = objField.Equals(NullDecimal);
+                    }
+                    else if (objField is DateTime)
+                    {
+                        DateTime objDate = Convert.ToDateTime(objField);
+                        returnValue = objDate.Date.Equals(NullDate.Date);
+                    }
+                    else if (objField is string)
+                    {
+                        returnValue = objField.Equals(NullString);
+                    }
+                    else if (objField is bool)
+                    {
+                        returnValue = objField.Equals(NullBoolean);
+                    }
+                    else if (objField is Guid)
+                    {
+                        returnValue = objField.Equals(NullGuid);
+                    }
+                    else if (objField is DBNull)
+                    {
+                        returnValue = true;
+                    }
+                    else
+                    {
+                        returnValue = false;
+                    }
+                }
+                else
+                {
+                    returnValue = true;
+                }
+                return returnValue;
+            }
+        }
+
+        public static class Globals
+        {
+            public static object DB_GetNull(object objField)
+            {
+                return Null.GetNull(objField, DBNull.Value);
+            }
+
+            public static object DB_GetValue(object objField, object objDefault)
+            {
+                if (objField == DBNull.Value || objField == null)
+                {
+                    return objDefault;
+                }
+                else
+                {
+                    return objField;
+                }
+            }
+
+            public static bool DB_CheckValue(object objField)
+            {
+                if (objField == DBNull.Value || objField == null)
+                {
+                    return false;
+                }
+                else
+                {
+                    if (objField is string)
+                    {
+                        return !string.IsNullOrEmpty(objField.ToString());
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            public static string DB_GetString(object objField, string strDefault)
+            {
+                if (objField == DBNull.Value)
+                {
+                    return strDefault;
+                }
+                else
+                {
+                    if (objField is DateTime)
+                    {
+                        return ((DateTime)objField).ToString(CS_DISPLAY_DATE_FORMAT);
+                    }
+                    else if (objField != null)
+                    {
+                        return objField.ToString();
+                    }
+                    else
+                    {
+                        return String.Empty;
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region Functions on Form
+        public static void ClearDataBinding(Control control)
+        {
+            if (control.GetType() == typeof(TextBox) | control.GetType() == typeof(RichTextBox) | control.GetType() == typeof(CheckBox))
+                control.DataBindings.Clear();
+            foreach (Control ctrl in control.Controls)
+            {
+                ClearDataBinding(ctrl);
+            }
+        }
+        public static void ClearDataBindingWithComboBox(Control control)
+        {
+            if (control.GetType() == typeof(TextBox) | control.GetType() == typeof(RichTextBox) 
+                | control.GetType() == typeof(CheckBox) | control.GetType() == typeof(ComboBox))
+                control.DataBindings.Clear();
+            foreach (Control ctrl in control.Controls)
+            {
+                ClearDataBindingWithComboBox(ctrl);
+            }
+        }
+        public static void ClearTextBox(Control control)
+        {
+            foreach (Control ctrl in control.Controls)
+            {
+                if (ctrl.GetType() == typeof(TextBox) || ctrl.GetType() == typeof(RichTextBox))
+                {
+                    ctrl.Text = string.Empty;
+                }
+                if (ctrl.GetType() == typeof(CheckBox))
+                {
+                    ((CheckBox)ctrl).Checked = true;
+                }
+            }
+        }
+        // Ham kiem tra mot string co phai la mot so khong
+        public static bool IsNumber(string pText)
+        {
+            Regex regex = new Regex(@"^[-+]?[0-9]*\.?[0-9]+$");
+            return regex.IsMatch(pText);
+        }
+        public static string GetSerialFromScanner(string sender)
+        {
+            // http://temchonggia.com.vn/daccheck?serial=0000123456
+            string pattern = ConfigurationManager.AppSettings["Pattern"].ToString();
+            //string pattern = @"^(http:\/\/temchonggia.com.vn\/daccheck\?serial|http:\/\/check.ancung.net\/\?sn)=[0-9a-zA-Z]{10,15}$";
+            string serial = string.Empty;
+            if(IsNumber(sender))
+            {
+                serial = sender;
+            }
+            else
+            {
+                Regex regex = new Regex(@"^" + pattern + "$");
+                //Regex regex = new Regex(pattern);
+                if (regex.IsMatch(sender))
+                {
+                    string[] splits = sender.Split('=');
+                    serial = splits[1].Trim();
+                    if(serial.Contains("&"))
+                    {
+                        splits = serial.Split('&');
+                        serial = splits[0].Trim();
+                    }
+                }
+                else
+                {
+                    serial = sender;
+                }
+            }
+            return serial;
+        }
+        public static bool FormClosing(string sMessage)
+        {
+            bool bResult = false;
+            DialogResult DResult = MessageBox.Show(sMessage, "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (DResult == DialogResult.Yes)
+                bResult = true;
+            else
+                bResult = false;
+            return bResult;
+        }
+        #endregion
+
+        #region Other function from Database
+        public static int GetMaxQueryRecID()
+        {
+            int MaxQueryRecID = 0;
+            DAL.DacDbAccess dacDb = new DAL.DacDbAccess();
+            dacDb.CreateNewSqlCommand();
+            SqlDataReader reader = dacDb.ExecuteReader("spGetMaxQueryRecID");
+            if (reader.Read())
+            {
+                MaxQueryRecID = (int)reader["QueryRecID"];
+            }
+            reader.Close();
+            return MaxQueryRecID;
+        }
+        public static string GetDacCodeFromScanner(string Serie)
+        {
+            string DacCode = string.Empty;
+            DAL.DacDbAccess dacDb = new DAL.DacDbAccess();
+            dacDb.CreateNewSQL();
+            SqlDataReader reader = dacDb.ExecuteReader("SELECT [DacCode],[Series] FROM [DacProductCode] WHERE [Series] = '"+ Serie + "'");
+            if (reader.Read())
+            {
+                DacCode = reader["DacCode"].ToString();
+            }
+            reader.Close();
+            return DacCode;
+        }
+        public static DataTable DacProductQuery(string FrDate, string ToDate, string DacCode, string PhoneNumber)
+        {
+            DataTable dataTable = new DataTable();
+            DAL.DacDbAccess dacDb = new DAL.DacDbAccess();
+            dacDb.CreateNewSqlCommand();
+            dacDb.AddParameter("@FrDate", FrDate);
+            dacDb.AddParameter("@ToDate", ToDate + " 23:59:59.999");
+            dacDb.AddParameter("@DacCode", DacCode);
+            dacDb.AddParameter("@PhoneNumber", PhoneNumber);
+            dataTable = dacDb.ExecuteDataTable("spDacProductQuery");
+            return dataTable;
+        }
+        public static void PerformBulkCopy(DataTable dataTable, string[] sColumnName)
+        {
+            if (dataTable.Rows.Count > 0)
+            {
+                DAL.DacDbAccess dacDb = new DAL.DacDbAccess();
+                try
+                {
+                    dacDb.PerformBulkCopy(dataTable, sColumnName);
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+        }
+        public static void ExportToExcel(DataTable datatable, string workBookPath, string formatText)
+        {
+            //ComExcel.Application exApp = new ComExcel.Application();
+            ////string workBookPath = Application.StartupPath + @"\WarehouseTotal.xlsx";
+            //ComExcel.Workbook exBook = exApp.Workbooks.Open(workBookPath, false, true, Type.Missing, Type.Missing, Type.Missing, Type.Missing,
+            //     Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+            //ComExcel.Worksheet exSheet = (ComExcel.Worksheet)exBook.Worksheets[1];
+            ///* Truyền giá trị ra file excel tại đây */
+            //// Xuất tiêu đề
+            //int colIndex = 0;
+            //int rowIndex = 0;
+            //foreach (DataColumn dcol in datatable.Columns)
+            //{
+            //    colIndex = colIndex + 1;
+            //    exSheet.Cells[1, colIndex] = dcol.ColumnName;
+            //}
+            //// Xuất nội dung
+            //foreach (DataRow drow in datatable.Rows)
+            //{
+            //    rowIndex = rowIndex + 1;
+            //    colIndex = 0;
+            //    foreach (DataColumn dcol in datatable.Columns)
+            //    {
+            //        colIndex = colIndex + 1;
+            //        if (formatText.Contains(dcol.ColumnName))
+            //        {
+            //            exSheet.Cells[rowIndex + 1, colIndex] = "'" + drow[dcol.ColumnName];
+            //        }
+            //        else
+            //        {
+            //            exSheet.Cells[rowIndex + 1, colIndex] = drow[dcol.ColumnName];
+            //        }
+            //    }
+            //}
+            //exSheet.Columns.AutoFit();
+            ///* --------------Kết thúc------------- */
+            //exApp.Application.WindowState = ComExcel.XlWindowState.xlMaximized;
+            //exApp.Visible = true;
+        }
+        #endregion
+
+    }
+
+    public class CommonBO
+    {
+        #region Contructor
+        private static CommonBO _instance;
+        private static readonly object _synLock = new object();
+
+        protected CommonBO()
+        {
+
+        }
+
+        protected void Dispose()
+        {
+            _instance = null;
+        }
+
+        public static CommonBO Instance()
+        {
+            if(_instance == null)
+            {
+                lock(_synLock)
+                { 
+                    if(_instance == null)
+                    {
+                        _instance = new CommonBO();
+                    }
+                        }
+            }
+            return _instance;
+        }
+        #endregion
+
+        #region Function
+        // Common trace log method for user event
+        public void TraceLogEvent(string sContent, string sUserName)
+        {
+            #region Configuration Log button-event Info.
+            string traceButtonTemplate = "UCDATABUTTONAGENCY,UCDATABUTTONSTORE,UCDATABUTTONPRODUCT,UCDATABUTTONCONTAINER,UCDATABUTTONPACKAGE,BUTTONUPDATEDETAIL,BUTTONDETAILDELETE";
+            #endregion
+
+            string className = string.Empty;
+            string methodName = string.Empty;
+            string actionName = string.Empty;
+            string ctrlName = string.Empty;
+
+            var strackFrames = new StackTrace().GetFrames();
+            if(strackFrames != null && strackFrames.Length > 0)
+            {
+                #region Process for each frame
+                // Process for each layer of trace
+                foreach(StackFrame stackFrame in strackFrames)
+                {
+                    // Get class type name in trace
+                    className = stackFrame.GetMethod().DeclaringType.Name;
+
+                    #region Get control-button name in trace
+                    // Get control-button name in trace
+                    methodName = stackFrame.GetMethod().Name;
+                    if(methodName.Length > 5)
+                    {
+                        // Get button-control name
+                        ctrlName = methodName.Split('_')[0].ToUpper();
+                        if (traceButtonTemplate.Contains(ctrlName))
+                        {
+                            // Check which event to get
+                            if(methodName.Contains("_"))
+                            {
+                                // Get control-event name
+                                actionName = methodName.Split('_')[1].ToUpper();
+                                methodName = methodName.Split('_')[0];
+                            }
+                            else
+                            {
+                                methodName = string.Empty;
+                            }
+                        }
+                        else
+                        {
+                            methodName = string.Empty;
+                        }
+                    }
+                    else
+                    {
+                        methodName = string.Empty;
+                    }
+                    #endregion
+
+                    #region Save log info.
+                    if(className.Length > 0 && methodName.Length > 0)
+                    {
+                        // Clear prefix
+                        className = className.Replace("frm", string.Empty);
+                        
+                        // Write log DB
+                        DAL.DacDbAccess dacDb = new DAL.DacDbAccess();
+                        dacDb.CreateNewSqlCommand();
+                        // Add parameters
+                        dacDb.AddParameter("@ComputerName", Dns.GetHostName());
+                        dacDb.AddParameter("@IPAddress", InternetConnection.GetLocalIP());
+                        dacDb.AddParameter("@WindowsUser", Environment.UserName);
+                        dacDb.AddParameter("@LogAction", actionName);
+                        dacDb.AddParameter("@LogDescription", methodName);
+                        dacDb.AddParameter("@LogContent", sContent);
+                        dacDb.AddParameter("@FormName", className);
+                        dacDb.AddParameter("@UserName", sUserName);
+
+                        try
+                        {
+                            dacDb.ExecuteNonQuery("spDacLogBook_Insert");
+                        }
+                        catch(Exception ex)
+                        {
+                            MessageBox.Show(ex.Message, "Thong bao");
+                        }
+                    }
+                    #endregion
+                }
+                #endregion
+            }
+        }
+        public static List<SecConfig> SecConfigs { get; set; }
+
+        public static SecConfig GetSecConfig(string Code)
+        {
+            var secConfig = SecConfigs.Where(cfg => cfg.Code == Code).FirstOrDefault();
+            return secConfig;
+        }
+
+        public static void RefreshSecConfigs()
+        {
+            SecConfigs = SecConfigCS.GetSecConfigs();
+        }
+        #endregion
+    }
+
+    public class InternetConnection
+    {
+        #region Test Internet Connection
+        [DllImport("wininet.dll")]
+        private extern static bool InternetGetConnectedState(out int Description, int ReservedValue);
+        /// <summary>
+        /// Kiem tra ket noi internet, true co, false khong co
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsInternetConnected()
+        {
+            int des;
+            if (InternetGetConnectedState(out des, 0) == true)
+                return true;
+            return false;
+        }
+        #endregion
+
+        #region Get Local IP
+        public static string GetLocalIP()
+        {
+            IPHostEntry IPList = Dns.GetHostEntry(Dns.GetHostName());
+
+            foreach(IPAddress IP_Address in IPList.AddressList)
+            {
+                // Only return IPv4 routable IPs
+                if(IP_Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                {
+                    return IP_Address.ToString();
+                }
+            }
+
+            return string.Empty;
+        }
+        #endregion
+    }
+}

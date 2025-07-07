@@ -1,0 +1,117 @@
+﻿using DAC.DAL;
+using System;
+using System.Data.SqlClient;
+
+namespace DAC.Core
+{
+    public class DacContainerDetailsCS
+    {
+        //spDacContainerDetails_SelectByContainerId (ContainerID)
+        public DacContainerDetailsCollection GetContainerDetails(int iContainerID)
+        {
+            DacContainerDetailsCollection dacContainerDetailsCollection = new DacContainerDetailsCollection();
+            DacDbAccess dacDb = new DacDbAccess();
+            dacDb.CreateNewSqlCommand();
+            dacDb.AddParameter("@ContainerId", iContainerID);
+            SqlDataReader reader = dacDb.ExecuteReader("spDacContainerDetails_SelectByContainerId");
+            while (reader.Read())
+            {
+                DacContainerDetails dacContainerDetails = new DacContainerDetails();
+
+                dacContainerDetails.ID = (int)reader["ID"];
+                dacContainerDetails.ContainerId = (int)reader["ContainerId"];
+                dacContainerDetails.PackageCode = reader["PackageCode"].ToString();
+
+                dacContainerDetailsCollection.Add(dacContainerDetails);
+            }
+
+            // Call Close when reading done
+            reader.Close();
+
+            return dacContainerDetailsCollection;
+        }
+
+        //spDacContainerDetails_SelectByPackageCode (PackageCode)
+        public DacContainerDetailsCollection GetContainerDetails(string sPackageCode)
+        {
+            DacContainerDetailsCollection dacContainerDetailsCollection = new DacContainerDetailsCollection();
+            DacDbAccess dacDb = new DacDbAccess();
+            dacDb.CreateNewSqlCommand();
+            dacDb.AddParameter("@PackageCode", sPackageCode);
+            SqlDataReader reader = dacDb.ExecuteReader("spDacContainerDetails_SelectByPackageCode");
+            while (reader.Read())
+            {
+                DacContainerDetails dacContainerDetails = new DacContainerDetails();
+
+                dacContainerDetails.ID = (int)reader["ID"];
+                dacContainerDetails.ContainerId = (int)reader["ContainerId"];
+                dacContainerDetails.PackageCode = reader["PackageCode"].ToString();
+
+                dacContainerDetailsCollection.Add(dacContainerDetails);
+            }
+
+            // Call Close when reading done
+            reader.Close();
+
+            return dacContainerDetailsCollection;
+        }
+
+        //spDacContainerDetails_Insert (ContainerId, PackageCode)
+        public bool Insert(DacContainerDetails ContainerDetails)
+        {
+            DacDbAccess dacDb = new DacDbAccess();
+            try
+            {
+                dacDb.CreateNewSqlCommand();
+                // Add parameters
+                dacDb.AddParameter("@ContainerId", ContainerDetails.ContainerId);
+                dacDb.AddParameter("@PackageCode", ContainerDetails.PackageCode);
+
+                dacDb.ExecuteNonQuery("spDacContainerDetails_Insert");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        //spDacContainerDetails_Delete (ID)
+        public bool Delete(long iID)
+        {
+            DacDbAccess dacDb = new DacDbAccess();
+            try
+            {
+                dacDb.CreateNewSqlCommand();
+                // Add parameters
+                dacDb.AddParameter("@ID", iID);
+
+                dacDb.ExecuteNonQuery("spDacContainerDetails_Delete");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        //spDacContainerDetails_DeleteByDacCode (PackageCode)
+        public bool Delete(string sPackageCode)
+        {
+            DacDbAccess dacDb = new DacDbAccess();
+            try
+            {
+                dacDb.CreateNewSqlCommand();
+                // Add parameters
+                dacDb.AddParameter("@PackageCode", sPackageCode);
+
+                dacDb.ExecuteNonQuery("spDacContainerDetails_DeleteByPackageCode");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+    }
+}

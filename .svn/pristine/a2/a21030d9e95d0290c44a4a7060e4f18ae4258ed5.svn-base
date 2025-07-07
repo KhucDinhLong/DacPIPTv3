@@ -1,0 +1,341 @@
+﻿using DAC.Core;
+using DAC.Core.Security;
+using System;
+using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace PIPT
+{
+    public partial class frmStock : Form
+    {
+        #region Instance of the form
+        /// <summary>
+        /// Instance to store instance of this form
+        /// </summary>
+        private static frmStock _instance = null;
+
+        /// <summary>
+        /// Instance form.
+        /// </summary>
+        /// <returns>Instance of this Form</returns>
+        public static frmStock Instance()
+        {
+            if (_instance == null || _instance.IsDisposed)
+            {
+                _instance = new frmStock();
+            }
+            return _instance;
+        }
+
+        public static frmStock Instance(Form parent)
+        {
+            _instance = Instance();
+            _instance.MdiParent = parent;
+            return _instance;
+        }
+
+        public static frmStock Instance(Form parent, bool isActivate)
+        {
+            _instance = Instance(parent);
+            if (isActivate)
+            {
+                _instance.WindowState = FormWindowState.Normal;
+                _instance.Show();
+                _instance.Activate();
+            }
+            return _instance;
+        }
+        #endregion
+        #region Variables
+        DacStock stock = new DacStock();
+        DacStock selectedStock = new DacStock();
+        DacStockCollection stockCollection = new DacStockCollection();
+        DacStockCS stockCS = new DacStockCS();
+        BindingList<DacStock> bdlDacStock;
+        bool bIsDataBinding;
+        #endregion
+        #region Form's Events
+        public frmStock()
+        {
+            InitializeComponent();
+        }
+        private void frmStock_Load(object sender, EventArgs e)
+        {
+            // Get data from database
+            stockCollection = stockCS.GetListStock(string.Empty, string.Empty, string.Empty, string.Empty, CommonBS.CurrentUser.LoginID);
+            // Get BindingList DataSource
+            AddObjectIntoBindingList(stockCollection);
+        }
+        #endregion
+        #region Function on form
+        private void AddObjectIntoBindingList(DacStockCollection bookCollection)
+        {
+            bdlDacStock = new BindingList<DacStock>();
+            foreach (DacStock book in bookCollection)
+            {
+                bdlDacStock.Add(book);
+            }
+            SetDataSource();
+        }
+
+        private void SetDataSource()
+        {
+            CommonCore.ClearDataBinding(panelStock);
+            // Binding data to Controls
+            bIsDataBinding = true;
+            textBoxCode.DataBindings.Add("Text", bdlDacStock, "Code");
+            textBoxName.DataBindings.Add("Text", bdlDacStock, "Name");
+            textBoxContact.DataBindings.Add("Text", bdlDacStock, "Contact");
+            textBoxAddress.DataBindings.Add("Text", bdlDacStock, "Address");
+            textBoxEmail.DataBindings.Add("Text", bdlDacStock, "Email");
+            textBoxTelephone.DataBindings.Add("Text", bdlDacStock, "Telephone");
+            textBoxFax.DataBindings.Add("Text", bdlDacStock, "Fax");
+            textBoxMobi.DataBindings.Add("Text", bdlDacStock, "Mobi");
+            textBoxManager.DataBindings.Add("Text", bdlDacStock, "Manager");
+
+            gridLookUpEditBranchID.DataBindings.Clear();
+            gridLookUpEditBranchID.DataBindings.Add("EditValue", bdlDacStock, "BranchID");
+
+            textBoxDescription.DataBindings.Add("Text", bdlDacStock, "Description");
+            checkBoxActive.DataBindings.Clear();
+            checkBoxActive.DataBindings.Add("Checked", bdlDacStock, "Active");
+
+            gridControlBook.DataSource = bdlDacStock;
+            bIsDataBinding = false;
+            EnableControls(bIsDataBinding);
+        }
+
+        private DacStock GetSelectedStock(string sCode)
+        {
+            foreach (DacStock book in stockCollection)
+            {
+                if (book.Code == sCode)
+                    return book;
+            }
+            return null;
+        }
+
+        private bool IsStockExists(string sCode)
+        {
+            foreach (DacStock book in stockCollection)
+            {
+                if (book.Code == sCode.Trim().ToUpper())
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private void EnableControls(bool bIsEnabled)
+        {
+            foreach (Control ctrl in panelStock.Controls)
+            {
+                ctrl.Enabled = bIsEnabled;
+            }
+            if (ucDataButtonStock.DataMode == DataState.Edit)
+            {
+                textBoxCode.Enabled = false;
+            }
+        }
+        private bool IsChangedData()
+        {
+            if (ucDataButtonStock.DataMode == DataState.Insert)
+            {
+                if (textBoxCode.Text.Trim().Length > 0 || textBoxName.Text.Trim().Length > 0)
+                    return true;
+                else
+                    return false;
+            }
+            else if (ucDataButtonStock.DataMode == DataState.Edit)
+            {
+                if (selectedStock.Code != textBoxCode.Text.Trim()
+                || selectedStock.Name != textBoxName.Text.Trim()
+                || selectedStock.Active != checkBoxActive.Checked)
+                    return true;
+                else
+                    return false;
+            }
+            return false;
+        }
+        private bool IsDataOK()
+        {
+            if (textBoxCode.Text.Trim().Length == 0)
+            {
+                MessageBox.Show("Bạn chưa nhập mã sản phẩm.", "Thông báo" + Common.formSoftName);
+                textBoxCode.Focus();
+                return false;
+            }
+            if (ucDataButtonStock.DataMode == DataState.Insert && IsStockExists(textBoxCode.Text))
+            {
+                MessageBox.Show("Mã sản phẩm này đã tồn tại.", "Thông báo" + Common.formSoftName);
+                textBoxCode.Focus();
+                textBoxCode.SelectAll();
+                return false;
+            }
+            if (textBoxName.Text.Trim().Length == 0)
+            {
+                MessageBox.Show("Bạn chưa nhập tên sản phẩm.", "Thông báo" + Common.formSoftName);
+                textBoxName.Focus();
+                return false;
+            }
+            return true;
+        }
+
+        private bool SaveData()
+        {
+            if (IsDataOK() == false) return false;
+
+            bool bResult = true;
+            if (ucDataButtonStock.DataMode == DataState.Insert)
+            {
+                DacStock stock = new DacStock();
+                stock.BranchID = string.Empty;
+                stock.Code = textBoxCode.Text.Trim().ToUpper();
+                stock.Name = textBoxName.Text.Trim();
+
+                stock.Contact = textBoxContact.Text;
+                stock.Address = textBoxAddress.Text;
+                stock.Email = textBoxEmail.Text;
+                stock.Telephone = textBoxTelephone.Text;
+                stock.Fax = textBoxFax.Text;
+                stock.Mobi = textBoxMobi.Text;
+                stock.Manager = textBoxManager.Text;
+                stock.BranchID = gridLookUpEditBranchID.EditValue.ToString();
+
+                stock.Description = textBoxDescription.Text;
+                stock.Active = checkBoxActive.Checked;
+
+                bResult = stockCS.Insert(stock);
+                // Insert vao quyen thao tac voi kho nay
+                StockUserBS stockUserBS = new StockUserBS();
+                stockUserBS.Insert(new StockUser { StockID = stock.Code, LoginID = CommonBS.CurrentUser.LoginID });
+            }
+            else
+            {
+                // Update data in to databaseDacProduct
+                selectedStock.Code = textBoxCode.Text.Trim().ToUpper();
+                selectedStock.Name = textBoxName.Text.Trim();
+
+                stock.Contact = textBoxContact.Text;
+                stock.Address = textBoxAddress.Text;
+                stock.Email = textBoxEmail.Text;
+                stock.Telephone = textBoxTelephone.Text;
+                stock.Fax = textBoxFax.Text;
+                stock.Mobi = textBoxMobi.Text;
+                stock.Manager = textBoxManager.Text;
+                stock.BranchID = gridLookUpEditBranchID.EditValue.ToString();
+
+                selectedStock.Description = textBoxDescription.Text;
+                selectedStock.Active = checkBoxActive.Checked;
+
+                bResult = stockCS.Update(selectedStock);
+            }
+            // Kiem tra luu thanh cong khong de load lai du lieu
+            if (bResult)
+            {
+                // Get data from database
+                stockCollection = stockCS.GetListStock(string.Empty, string.Empty, string.Empty, string.Empty, CommonBS.CurrentUser.LoginID);
+                AddObjectIntoBindingList(stockCollection);
+                CommonBS.SaveSuccessfully();
+                ucDataButtonStock.DataMode = DataState.View;
+                ucDataButtonStock.SetInsertFocus();
+                EnableControls(false);
+            }
+            else CommonBS.SaveNotSuccessfully();
+
+            return bResult;
+        }
+        private void SaveStock()
+        {
+            SaveData();
+        }
+        #endregion
+        #region Buttons' Event
+        private void ucDataButtonStock_InsertHandler()
+        {
+            bdlDacStock.AddNew();
+            //CommonCore.ClearTextBox(panelStock);
+            EnableControls(true);
+            textBoxCode.Focus();
+            //Set focus for DataGridView
+            gridViewBook.FocusedRowHandle = gridViewBook.GetVisibleRowHandle(gridViewBook.RowCount - 1);
+        }
+
+        private void ucDataButtonlStock_SaveHandler()
+        {
+            // Lưu nhật ký
+            CommonBO.Instance().TraceLogEvent("Save Stock: " + textBoxCode.Text + " - " + textBoxName.Text + " - "
+                + gridLookUpEditBranchID.EditValue, CommonBS.CurrentUser.LoginID);
+            Common objCommon = new Common();
+            objCommon.CurrentForm = this;
+            objCommon.CurrentFormMethodInvoker = SaveStock;
+            objCommon.App_ShowWaitForm(DataState.Insert);
+        }
+
+        private void ucDataButtonStock_EditHandler()
+        {
+            // Lưu nhật ký
+            CommonBO.Instance().TraceLogEvent("Edit Stock: " + textBoxCode.Text + " - " + textBoxName.Text + " - "
+                + gridLookUpEditBranchID.EditValue, CommonBS.CurrentUser.LoginID);
+            // Kiem tra xem co du lieu nao khong
+            if (gridViewBook.RowCount == 0) return;
+            // Lay du lieu de sua
+            selectedStock = GetSelectedStock(gridViewBook.GetFocusedRowCellValue(gridColumnCode).ToString());
+            EnableControls(true);
+            textBoxName.Focus();
+        }
+
+        private void ucDataButtonStock_DeleteHandler()
+        {
+            // Kiem tra xem co du lieu nao khong
+            if (gridViewBook.RowCount == 0)
+            {
+                return;
+            }
+            // Lay du lieu de xoa
+            selectedStock = GetSelectedStock(gridViewBook.GetFocusedRowCellValue(gridColumnCode).ToString());
+            // Kiem tra moi lien quan voi du lieu khac neu co
+            if (stockCS.Delete(selectedStock.ID))
+            {
+                // Lưu nhật ký
+                CommonBO.Instance().TraceLogEvent("Delete Stock: " + textBoxCode.Text + " - " + textBoxName.Text + " - "
+                    + gridLookUpEditBranchID.EditValue, CommonBS.CurrentUser.LoginID);
+                CommonBS.DeleteSuccessfully();
+                // Get data from database
+                stockCollection = stockCS.GetListStock(string.Empty, string.Empty, string.Empty, string.Empty, CommonBS.CurrentUser.LoginID);
+                AddObjectIntoBindingList(stockCollection);
+            }
+            else
+                CommonBS.DeleteNotSuccessfully();
+        }
+
+        private void ucDataButtonStock_CancelHandler()
+        {
+            EnableControls(false);
+            if(ucDataButtonStock.DataMode == DataState.Insert)
+            {
+                if (gridViewBook.RowCount > 1)
+                {
+                    DevExpress.XtraGrid.Views.Grid.GridView view = gridControlBook.FocusedView as DevExpress.XtraGrid.Views.Grid.GridView;
+                    view.DeleteRow(view.FocusedRowHandle);
+                }
+            }
+            ucDataButtonStock.DataMode = DataState.View;
+        }
+
+        private void ucDataButtonStock_CloseHandler()
+        {
+            if (IsChangedData())
+            {
+                if (CommonBS.ConfirmChangedData() == DialogResult.Yes)
+                {
+                    if (SaveData() == false)
+                        return;
+                }
+            }
+            this.Close();
+        }
+        #endregion
+    }
+}

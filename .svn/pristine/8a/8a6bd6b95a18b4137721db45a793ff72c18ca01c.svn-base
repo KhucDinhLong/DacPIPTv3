@@ -1,0 +1,32 @@
+﻿@if (showAuthError)
+{
+    <div class="alert alert-danger">
+        <p>@Error</p>
+    </div>
+}
+<EditForm Model="login" OnValidSubmit="OnvalidSubmit">
+    <div class="modal-body">
+        <div class="card card-success">
+            <div class="card-body">
+                <div class="row">
+                    <h4 class="card-title">Chức năng này cần xác nhận lại mật khẩu. Xin vui lòng nhập lại mật khẩu của bạn!</h4>
+                </div>
+                <br />
+                <div class="card-text">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                        <div class="row">
+                            <label class="col-form-label col-sm-3">Mật khẩu: </label>
+                            <div class="col-sm-9">
+                                <InputText type="password" placeholder="Mật khẩu" @bind-Value="login.Password" class="form-control" />
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary mr-auto" @onclick="OnClose">Hủy</button>
+        <button type="submit" class="btn btn-success">Xác nhận</button>
+    </div>
+</EditForm>

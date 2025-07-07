@@ -1,0 +1,594 @@
+﻿namespace PIPT
+{
+    partial class frmStock
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmStock));
+            this.groupBoxStock = new System.Windows.Forms.GroupBox();
+            this.gridControlBook = new DevExpress.XtraGrid.GridControl();
+            this.gridViewBook = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.gridColumnID = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnCode = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnName = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnContact = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnAddress = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnEmail = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnTelephone = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnFax = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnMobi = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnManager = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnDescription = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnActive = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.panelStock = new System.Windows.Forms.Panel();
+            this.gridLookUpEditBranchID = new DevExpress.XtraEditors.GridLookUpEdit();
+            this.gridLookUpEditViewCategory = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.gridColumnLookUpCode = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnLookUpName = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.textBoxDescription = new System.Windows.Forms.TextBox();
+            this.textBoxContact = new System.Windows.Forms.TextBox();
+            this.textBoxMobi = new System.Windows.Forms.TextBox();
+            this.textBoxFax = new System.Windows.Forms.TextBox();
+            this.textBoxManager = new System.Windows.Forms.TextBox();
+            this.textBoxEmail = new System.Windows.Forms.TextBox();
+            this.textBoxTelephone = new System.Windows.Forms.TextBox();
+            this.textBoxAddress = new System.Windows.Forms.TextBox();
+            this.textBoxCode = new System.Windows.Forms.TextBox();
+            this.labelManager = new System.Windows.Forms.Label();
+            this.checkBoxActive = new System.Windows.Forms.CheckBox();
+            this.labelEmail = new System.Windows.Forms.Label();
+            this.textBoxName = new System.Windows.Forms.TextBox();
+            this.labelMobi = new System.Windows.Forms.Label();
+            this.labelAddress = new System.Windows.Forms.Label();
+            this.labelFax = new System.Windows.Forms.Label();
+            this.labelTelephone = new System.Windows.Forms.Label();
+            this.labelName = new System.Windows.Forms.Label();
+            this.labelBranchID = new System.Windows.Forms.Label();
+            this.labelContact = new System.Windows.Forms.Label();
+            this.labelDescription = new System.Windows.Forms.Label();
+            this.labelCode = new System.Windows.Forms.Label();
+            this.ucDataButtonStock = new PIPT.ucDataButton();
+            this.groupBoxStock.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridControlBook)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridViewBook)).BeginInit();
+            this.panelStock.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridLookUpEditBranchID.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridLookUpEditViewCategory)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // groupBoxStock
+            // 
+            this.groupBoxStock.Controls.Add(this.gridControlBook);
+            this.groupBoxStock.Controls.Add(this.panelStock);
+            this.groupBoxStock.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBoxStock.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBoxStock.Location = new System.Drawing.Point(0, 0);
+            this.groupBoxStock.Name = "groupBoxStock";
+            this.groupBoxStock.Size = new System.Drawing.Size(857, 426);
+            this.groupBoxStock.TabIndex = 1;
+            this.groupBoxStock.TabStop = false;
+            this.groupBoxStock.Text = "Thông tin kho";
+            // 
+            // gridControlBook
+            // 
+            this.gridControlBook.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.gridControlBook.Location = new System.Drawing.Point(3, 166);
+            this.gridControlBook.MainView = this.gridViewBook;
+            this.gridControlBook.Name = "gridControlBook";
+            this.gridControlBook.Size = new System.Drawing.Size(851, 257);
+            this.gridControlBook.TabIndex = 10;
+            this.gridControlBook.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.gridViewBook});
+            // 
+            // gridViewBook
+            // 
+            this.gridViewBook.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.gridColumnID,
+            this.gridColumnCode,
+            this.gridColumnName,
+            this.gridColumnContact,
+            this.gridColumnAddress,
+            this.gridColumnEmail,
+            this.gridColumnTelephone,
+            this.gridColumnFax,
+            this.gridColumnMobi,
+            this.gridColumnManager,
+            this.gridColumnDescription,
+            this.gridColumnActive});
+            this.gridViewBook.GridControl = this.gridControlBook;
+            this.gridViewBook.Name = "gridViewBook";
+            this.gridViewBook.OptionsView.ShowAutoFilterRow = true;
+            this.gridViewBook.OptionsView.ShowGroupPanel = false;
+            // 
+            // gridColumnID
+            // 
+            this.gridColumnID.Caption = "ID";
+            this.gridColumnID.FieldName = "ID";
+            this.gridColumnID.Name = "gridColumnID";
+            // 
+            // gridColumnCode
+            // 
+            this.gridColumnCode.Caption = "Mã";
+            this.gridColumnCode.FieldName = "Code";
+            this.gridColumnCode.Name = "gridColumnCode";
+            this.gridColumnCode.OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
+            this.gridColumnCode.Visible = true;
+            this.gridColumnCode.VisibleIndex = 0;
+            this.gridColumnCode.Width = 60;
+            // 
+            // gridColumnName
+            // 
+            this.gridColumnName.Caption = "Tên";
+            this.gridColumnName.CustomizationCaption = "Tên của danh mục";
+            this.gridColumnName.FieldName = "Name";
+            this.gridColumnName.Name = "gridColumnName";
+            this.gridColumnName.Visible = true;
+            this.gridColumnName.VisibleIndex = 1;
+            this.gridColumnName.Width = 145;
+            // 
+            // gridColumnContact
+            // 
+            this.gridColumnContact.Caption = "Người liên hệ";
+            this.gridColumnContact.FieldName = "Contact";
+            this.gridColumnContact.Name = "gridColumnContact";
+            this.gridColumnContact.OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
+            this.gridColumnContact.Visible = true;
+            this.gridColumnContact.VisibleIndex = 2;
+            this.gridColumnContact.Width = 54;
+            // 
+            // gridColumnAddress
+            // 
+            this.gridColumnAddress.Caption = "Địa chỉ";
+            this.gridColumnAddress.FieldName = "Address";
+            this.gridColumnAddress.Name = "gridColumnAddress";
+            this.gridColumnAddress.Visible = true;
+            this.gridColumnAddress.VisibleIndex = 3;
+            this.gridColumnAddress.Width = 63;
+            // 
+            // gridColumnEmail
+            // 
+            this.gridColumnEmail.Caption = "Email";
+            this.gridColumnEmail.FieldName = "Email";
+            this.gridColumnEmail.Name = "gridColumnEmail";
+            this.gridColumnEmail.Visible = true;
+            this.gridColumnEmail.VisibleIndex = 4;
+            this.gridColumnEmail.Width = 41;
+            // 
+            // gridColumnTelephone
+            // 
+            this.gridColumnTelephone.Caption = "Điện thoại";
+            this.gridColumnTelephone.FieldName = "Telephone";
+            this.gridColumnTelephone.Name = "gridColumnTelephone";
+            this.gridColumnTelephone.Visible = true;
+            this.gridColumnTelephone.VisibleIndex = 5;
+            this.gridColumnTelephone.Width = 63;
+            // 
+            // gridColumnFax
+            // 
+            this.gridColumnFax.Caption = "Fax";
+            this.gridColumnFax.FieldName = "Fax";
+            this.gridColumnFax.Name = "gridColumnFax";
+            this.gridColumnFax.Visible = true;
+            this.gridColumnFax.VisibleIndex = 6;
+            this.gridColumnFax.Width = 59;
+            // 
+            // gridColumnMobi
+            // 
+            this.gridColumnMobi.Caption = "Di động";
+            this.gridColumnMobi.FieldName = "Mobi";
+            this.gridColumnMobi.Name = "gridColumnMobi";
+            this.gridColumnMobi.Visible = true;
+            this.gridColumnMobi.VisibleIndex = 7;
+            this.gridColumnMobi.Width = 59;
+            // 
+            // gridColumnManager
+            // 
+            this.gridColumnManager.Caption = "Thủ kho";
+            this.gridColumnManager.FieldName = "Manager";
+            this.gridColumnManager.Name = "gridColumnManager";
+            this.gridColumnManager.Visible = true;
+            this.gridColumnManager.VisibleIndex = 8;
+            this.gridColumnManager.Width = 74;
+            // 
+            // gridColumnDescription
+            // 
+            this.gridColumnDescription.Caption = "Miêu tả";
+            this.gridColumnDescription.CustomizationCaption = "Description";
+            this.gridColumnDescription.FieldName = "Description";
+            this.gridColumnDescription.Name = "gridColumnDescription";
+            this.gridColumnDescription.Visible = true;
+            this.gridColumnDescription.VisibleIndex = 9;
+            this.gridColumnDescription.Width = 117;
+            // 
+            // gridColumnActive
+            // 
+            this.gridColumnActive.Caption = "Active";
+            this.gridColumnActive.FieldName = "Active";
+            this.gridColumnActive.Name = "gridColumnActive";
+            this.gridColumnActive.Visible = true;
+            this.gridColumnActive.VisibleIndex = 10;
+            this.gridColumnActive.Width = 48;
+            // 
+            // panelStock
+            // 
+            this.panelStock.Controls.Add(this.gridLookUpEditBranchID);
+            this.panelStock.Controls.Add(this.textBoxDescription);
+            this.panelStock.Controls.Add(this.textBoxContact);
+            this.panelStock.Controls.Add(this.textBoxMobi);
+            this.panelStock.Controls.Add(this.textBoxFax);
+            this.panelStock.Controls.Add(this.textBoxManager);
+            this.panelStock.Controls.Add(this.textBoxEmail);
+            this.panelStock.Controls.Add(this.textBoxTelephone);
+            this.panelStock.Controls.Add(this.textBoxAddress);
+            this.panelStock.Controls.Add(this.textBoxCode);
+            this.panelStock.Controls.Add(this.labelManager);
+            this.panelStock.Controls.Add(this.checkBoxActive);
+            this.panelStock.Controls.Add(this.labelEmail);
+            this.panelStock.Controls.Add(this.textBoxName);
+            this.panelStock.Controls.Add(this.labelMobi);
+            this.panelStock.Controls.Add(this.labelAddress);
+            this.panelStock.Controls.Add(this.labelFax);
+            this.panelStock.Controls.Add(this.labelTelephone);
+            this.panelStock.Controls.Add(this.labelName);
+            this.panelStock.Controls.Add(this.labelBranchID);
+            this.panelStock.Controls.Add(this.labelContact);
+            this.panelStock.Controls.Add(this.labelDescription);
+            this.panelStock.Controls.Add(this.labelCode);
+            this.panelStock.Location = new System.Drawing.Point(32, 20);
+            this.panelStock.Name = "panelStock";
+            this.panelStock.Size = new System.Drawing.Size(774, 140);
+            this.panelStock.TabIndex = 9;
+            // 
+            // gridLookUpEditBranchID
+            // 
+            this.gridLookUpEditBranchID.Location = new System.Drawing.Point(101, 7);
+            this.gridLookUpEditBranchID.Name = "gridLookUpEditBranchID";
+            this.gridLookUpEditBranchID.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.gridLookUpEditBranchID.Properties.DisplayMember = "Name";
+            this.gridLookUpEditBranchID.Properties.ImmediatePopup = true;
+            this.gridLookUpEditBranchID.Properties.NullText = "";
+            this.gridLookUpEditBranchID.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.Standard;
+            this.gridLookUpEditBranchID.Properties.ValueMember = "Code";
+            this.gridLookUpEditBranchID.Properties.View = this.gridLookUpEditViewCategory;
+            this.gridLookUpEditBranchID.Size = new System.Drawing.Size(184, 20);
+            this.gridLookUpEditBranchID.TabIndex = 9;
+            // 
+            // gridLookUpEditViewCategory
+            // 
+            this.gridLookUpEditViewCategory.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.gridColumnLookUpCode,
+            this.gridColumnLookUpName});
+            this.gridLookUpEditViewCategory.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
+            this.gridLookUpEditViewCategory.Name = "gridLookUpEditViewCategory";
+            this.gridLookUpEditViewCategory.OptionsSelection.EnableAppearanceFocusedCell = false;
+            this.gridLookUpEditViewCategory.OptionsView.ShowAutoFilterRow = true;
+            this.gridLookUpEditViewCategory.OptionsView.ShowGroupPanel = false;
+            // 
+            // gridColumnLookUpCode
+            // 
+            this.gridColumnLookUpCode.Caption = "Mã";
+            this.gridColumnLookUpCode.FieldName = "Code";
+            this.gridColumnLookUpCode.Name = "gridColumnLookUpCode";
+            this.gridColumnLookUpCode.OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
+            this.gridColumnLookUpCode.Visible = true;
+            this.gridColumnLookUpCode.VisibleIndex = 0;
+            this.gridColumnLookUpCode.Width = 100;
+            // 
+            // gridColumnLookUpName
+            // 
+            this.gridColumnLookUpName.Caption = "Tên";
+            this.gridColumnLookUpName.FieldName = "Name";
+            this.gridColumnLookUpName.Name = "gridColumnLookUpName";
+            this.gridColumnLookUpName.OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
+            this.gridColumnLookUpName.Visible = true;
+            this.gridColumnLookUpName.VisibleIndex = 1;
+            this.gridColumnLookUpName.Width = 284;
+            // 
+            // textBoxDescription
+            // 
+            this.textBoxDescription.Location = new System.Drawing.Point(372, 87);
+            this.textBoxDescription.Multiline = true;
+            this.textBoxDescription.Name = "textBoxDescription";
+            this.textBoxDescription.Size = new System.Drawing.Size(345, 42);
+            this.textBoxDescription.TabIndex = 0;
+            // 
+            // textBoxContact
+            // 
+            this.textBoxContact.Location = new System.Drawing.Point(90, 87);
+            this.textBoxContact.Name = "textBoxContact";
+            this.textBoxContact.Size = new System.Drawing.Size(195, 21);
+            this.textBoxContact.TabIndex = 0;
+            // 
+            // textBoxMobi
+            // 
+            this.textBoxMobi.Location = new System.Drawing.Point(90, 114);
+            this.textBoxMobi.Name = "textBoxMobi";
+            this.textBoxMobi.Size = new System.Drawing.Size(100, 21);
+            this.textBoxMobi.TabIndex = 0;
+            // 
+            // textBoxFax
+            // 
+            this.textBoxFax.Location = new System.Drawing.Point(617, 33);
+            this.textBoxFax.Name = "textBoxFax";
+            this.textBoxFax.Size = new System.Drawing.Size(100, 21);
+            this.textBoxFax.TabIndex = 0;
+            // 
+            // textBoxManager
+            // 
+            this.textBoxManager.Location = new System.Drawing.Point(372, 60);
+            this.textBoxManager.Name = "textBoxManager";
+            this.textBoxManager.Size = new System.Drawing.Size(177, 21);
+            this.textBoxManager.TabIndex = 0;
+            // 
+            // textBoxEmail
+            // 
+            this.textBoxEmail.Location = new System.Drawing.Point(372, 33);
+            this.textBoxEmail.Name = "textBoxEmail";
+            this.textBoxEmail.Size = new System.Drawing.Size(177, 21);
+            this.textBoxEmail.TabIndex = 0;
+            // 
+            // textBoxTelephone
+            // 
+            this.textBoxTelephone.Location = new System.Drawing.Point(617, 7);
+            this.textBoxTelephone.Name = "textBoxTelephone";
+            this.textBoxTelephone.Size = new System.Drawing.Size(100, 21);
+            this.textBoxTelephone.TabIndex = 0;
+            // 
+            // textBoxAddress
+            // 
+            this.textBoxAddress.Location = new System.Drawing.Point(372, 7);
+            this.textBoxAddress.Name = "textBoxAddress";
+            this.textBoxAddress.Size = new System.Drawing.Size(177, 21);
+            this.textBoxAddress.TabIndex = 0;
+            // 
+            // textBoxCode
+            // 
+            this.textBoxCode.Location = new System.Drawing.Point(90, 33);
+            this.textBoxCode.Name = "textBoxCode";
+            this.textBoxCode.Size = new System.Drawing.Size(100, 21);
+            this.textBoxCode.TabIndex = 0;
+            // 
+            // labelManager
+            // 
+            this.labelManager.AutoSize = true;
+            this.labelManager.Location = new System.Drawing.Point(302, 63);
+            this.labelManager.Name = "labelManager";
+            this.labelManager.Size = new System.Drawing.Size(64, 13);
+            this.labelManager.TabIndex = 4;
+            this.labelManager.Text = "Quản lý kho";
+            // 
+            // checkBoxActive
+            // 
+            this.checkBoxActive.AutoSize = true;
+            this.checkBoxActive.Checked = true;
+            this.checkBoxActive.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxActive.Location = new System.Drawing.Point(196, 36);
+            this.checkBoxActive.Name = "checkBoxActive";
+            this.checkBoxActive.Size = new System.Drawing.Size(97, 17);
+            this.checkBoxActive.TabIndex = 8;
+            this.checkBoxActive.Text = "Còn hoạt động";
+            this.checkBoxActive.UseVisualStyleBackColor = true;
+            // 
+            // labelEmail
+            // 
+            this.labelEmail.AutoSize = true;
+            this.labelEmail.Location = new System.Drawing.Point(335, 36);
+            this.labelEmail.Name = "labelEmail";
+            this.labelEmail.Size = new System.Drawing.Size(31, 13);
+            this.labelEmail.TabIndex = 4;
+            this.labelEmail.Text = "Email";
+            // 
+            // textBoxName
+            // 
+            this.textBoxName.Location = new System.Drawing.Point(90, 60);
+            this.textBoxName.Name = "textBoxName";
+            this.textBoxName.Size = new System.Drawing.Size(195, 21);
+            this.textBoxName.TabIndex = 1;
+            // 
+            // labelMobi
+            // 
+            this.labelMobi.AutoSize = true;
+            this.labelMobi.Location = new System.Drawing.Point(41, 117);
+            this.labelMobi.Name = "labelMobi";
+            this.labelMobi.Size = new System.Drawing.Size(43, 13);
+            this.labelMobi.TabIndex = 4;
+            this.labelMobi.Text = "Di động";
+            // 
+            // labelAddress
+            // 
+            this.labelAddress.AutoSize = true;
+            this.labelAddress.Location = new System.Drawing.Point(327, 10);
+            this.labelAddress.Name = "labelAddress";
+            this.labelAddress.Size = new System.Drawing.Size(39, 13);
+            this.labelAddress.TabIndex = 4;
+            this.labelAddress.Text = "Địa chỉ";
+            // 
+            // labelFax
+            // 
+            this.labelFax.AutoSize = true;
+            this.labelFax.Location = new System.Drawing.Point(586, 37);
+            this.labelFax.Name = "labelFax";
+            this.labelFax.Size = new System.Drawing.Size(25, 13);
+            this.labelFax.TabIndex = 4;
+            this.labelFax.Text = "Fax";
+            // 
+            // labelTelephone
+            // 
+            this.labelTelephone.AutoSize = true;
+            this.labelTelephone.Location = new System.Drawing.Point(555, 10);
+            this.labelTelephone.Name = "labelTelephone";
+            this.labelTelephone.Size = new System.Drawing.Size(56, 13);
+            this.labelTelephone.TabIndex = 4;
+            this.labelTelephone.Text = "Điện thoại";
+            // 
+            // labelName
+            // 
+            this.labelName.AutoSize = true;
+            this.labelName.Location = new System.Drawing.Point(59, 63);
+            this.labelName.Name = "labelName";
+            this.labelName.Size = new System.Drawing.Size(25, 13);
+            this.labelName.TabIndex = 4;
+            this.labelName.Text = "Tên";
+            // 
+            // labelBranchID
+            // 
+            this.labelBranchID.AutoSize = true;
+            this.labelBranchID.Location = new System.Drawing.Point(10, 10);
+            this.labelBranchID.Name = "labelBranchID";
+            this.labelBranchID.Size = new System.Drawing.Size(85, 13);
+            this.labelBranchID.TabIndex = 4;
+            this.labelBranchID.Text = "Thuộc chi nhánh";
+            // 
+            // labelContact
+            // 
+            this.labelContact.AutoSize = true;
+            this.labelContact.Location = new System.Drawing.Point(15, 90);
+            this.labelContact.Name = "labelContact";
+            this.labelContact.Size = new System.Drawing.Size(69, 13);
+            this.labelContact.TabIndex = 4;
+            this.labelContact.Text = "Người liên hệ";
+            // 
+            // labelDescription
+            // 
+            this.labelDescription.AutoSize = true;
+            this.labelDescription.Location = new System.Drawing.Point(324, 90);
+            this.labelDescription.Name = "labelDescription";
+            this.labelDescription.Size = new System.Drawing.Size(42, 13);
+            this.labelDescription.TabIndex = 4;
+            this.labelDescription.Text = "Miêu tả";
+            // 
+            // labelCode
+            // 
+            this.labelCode.AutoSize = true;
+            this.labelCode.Location = new System.Drawing.Point(63, 36);
+            this.labelCode.Name = "labelCode";
+            this.labelCode.Size = new System.Drawing.Size(21, 13);
+            this.labelCode.TabIndex = 4;
+            this.labelCode.Text = "Mã";
+            // 
+            // ucDataButtonBook
+            // 
+            this.ucDataButtonStock.AddNewVisible = true;
+            this.ucDataButtonStock.CancelVisible = true;
+            this.ucDataButtonStock.DataMode = DAC.Core.Security.DataState.View;
+            this.ucDataButtonStock.DeleteVisible = true;
+            this.ucDataButtonStock.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.ucDataButtonStock.EditVisible = true;
+            this.ucDataButtonStock.ExcelVisible = false;
+            this.ucDataButtonStock.IsContitnue = true;
+            this.ucDataButtonStock.LanguageVisible = false;
+            this.ucDataButtonStock.Location = new System.Drawing.Point(0, 426);
+            this.ucDataButtonStock.MaximumSize = new System.Drawing.Size(0, 34);
+            this.ucDataButtonStock.MinimumSize = new System.Drawing.Size(500, 34);
+            this.ucDataButtonStock.MultiLanguageVisible = false;
+            this.ucDataButtonStock.Name = "ucDataButtonBook";
+            this.ucDataButtonStock.PrintVisible = false;
+            this.ucDataButtonStock.ReportVisible = false;
+            this.ucDataButtonStock.SaveVisible = true;
+            this.ucDataButtonStock.Size = new System.Drawing.Size(857, 34);
+            this.ucDataButtonStock.TabIndex = 0;
+            this.ucDataButtonStock.InsertHandler += new PIPT.ucDataButton.DataHandler(this.ucDataButtonStock_InsertHandler);
+            this.ucDataButtonStock.EditHandler += new PIPT.ucDataButton.DataHandler(this.ucDataButtonStock_EditHandler);
+            this.ucDataButtonStock.SaveHandler += new PIPT.ucDataButton.DataHandler(this.ucDataButtonlStock_SaveHandler);
+            this.ucDataButtonStock.DeleteHandler += new PIPT.ucDataButton.DataHandler(this.ucDataButtonStock_DeleteHandler);
+            this.ucDataButtonStock.CancelHandler += new PIPT.ucDataButton.DataHandler(this.ucDataButtonStock_CancelHandler);
+            this.ucDataButtonStock.CloseHandler += new PIPT.ucDataButton.DataHandler(this.ucDataButtonStock_CloseHandler);
+            // 
+            // frmStock
+            // 
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.ClientSize = new System.Drawing.Size(857, 460);
+            this.Controls.Add(this.groupBoxStock);
+            this.Controls.Add(this.ucDataButtonStock);
+            this.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Name = "frmStock";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Định nghĩa các loại kho";
+            this.Load += new System.EventHandler(this.frmStock_Load);
+            this.groupBoxStock.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.gridControlBook)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridViewBook)).EndInit();
+            this.panelStock.ResumeLayout(false);
+            this.panelStock.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridLookUpEditBranchID.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridLookUpEditViewCategory)).EndInit();
+            this.ResumeLayout(false);
+
+        }
+
+        #endregion
+
+        private ucDataButton ucDataButtonStock;
+        private System.Windows.Forms.GroupBox groupBoxStock;
+        private System.Windows.Forms.Panel panelStock;
+        private System.Windows.Forms.TextBox textBoxCode;
+        private System.Windows.Forms.CheckBox checkBoxActive;
+        private System.Windows.Forms.TextBox textBoxName;
+        private System.Windows.Forms.Label labelTelephone;
+        private System.Windows.Forms.Label labelName;
+        private System.Windows.Forms.Label labelCode;
+        private System.Windows.Forms.Label labelBranchID;
+        private DevExpress.XtraGrid.GridControl gridControlBook;
+        private DevExpress.XtraGrid.Views.Grid.GridView gridViewBook;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnID;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnCode;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnContact;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnName;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnEmail;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnAddress;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnDescription;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnActive;
+        private DevExpress.XtraEditors.GridLookUpEdit gridLookUpEditBranchID;
+        private DevExpress.XtraGrid.Views.Grid.GridView gridLookUpEditViewCategory;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnLookUpCode;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnLookUpName;
+        private System.Windows.Forms.Label labelFax;
+        private System.Windows.Forms.Label labelDescription;
+        private System.Windows.Forms.TextBox textBoxContact;
+        private System.Windows.Forms.Label labelContact;
+        private System.Windows.Forms.Label labelEmail;
+        private System.Windows.Forms.Label labelAddress;
+        private System.Windows.Forms.TextBox textBoxDescription;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnTelephone;
+        private System.Windows.Forms.TextBox textBoxMobi;
+        private System.Windows.Forms.TextBox textBoxFax;
+        private System.Windows.Forms.TextBox textBoxManager;
+        private System.Windows.Forms.TextBox textBoxEmail;
+        private System.Windows.Forms.TextBox textBoxTelephone;
+        private System.Windows.Forms.TextBox textBoxAddress;
+        private System.Windows.Forms.Label labelManager;
+        private System.Windows.Forms.Label labelMobi;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnFax;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnMobi;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnManager;
+    }
+}

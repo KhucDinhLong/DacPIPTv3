@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RazorLangVersion>3.0</RazorLangVersion>
+    <Authors>KeudellCoding</Authors>
+    <Product>OneApp.Select2</Product>
+    <Copyright>MIT License</Copyright>
+    <Description>Simple wrapper for Select2 with full support of databases and custom web APIs.</Description>
+    <PackageProjectUrl></PackageProjectUrl>
+    <RepositoryUrl></RepositoryUrl>
+    <RepositoryType></RepositoryType>
+    <PackageTags></PackageTags>
+    <Version>1.3</Version>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components" Version="5.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="5.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+
+</Project>

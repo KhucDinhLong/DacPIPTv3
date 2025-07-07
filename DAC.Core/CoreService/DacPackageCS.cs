@@ -1,0 +1,228 @@
+﻿using DAC.DAL;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Text;
+
+namespace DAC.Core
+{
+    public class DacPackageCS
+    {
+        public List<DacPackage> GetListPackage(DateTime FrDate, DateTime ToDate, string PackageCode, string ProductCode, string FactoryCode)
+        {
+            List<DacPackage> dacPackageCollection = new List<DacPackage>();
+            DacDbAccess dacDb = new DacDbAccess();
+            dacDb.CreateNewSqlCommand();
+            dacDb.AddParameter("@FrDate", FrDate);
+            dacDb.AddParameter("@ToDate", ToDate);
+            dacDb.AddParameter("@PackageCode", PackageCode);
+            dacDb.AddParameter("@ProductCode", ProductCode);
+            dacDb.AddParameter("@FactoryCode", FactoryCode);
+            SqlDataReader reader = dacDb.ExecuteReader("spDacPackage_Select");
+            while (reader.Read())
+            {
+                DacPackage dacPackage = new DacPackage();
+
+                dacPackage.Id = (int)reader["Id"];
+                dacPackage.CreatedDate = (DateTime)reader["CreatedDate"];
+                dacPackage.PackageCode = reader["PackageCode"].ToString();
+                dacPackage.ProductCode = reader["ProductCode"].ToString();
+                dacPackage.Quantity = (int)reader["Quantity"];
+                dacPackage.FactoryCode = reader["FactoryCode"].ToString();
+                dacPackage.Batch = reader["Batch"].ToString();
+                dacPackage.PersonPackaged = reader["PersonPackaged"].ToString();
+                dacPackage.Description = reader["Description"].ToString();
+                dacPackage.Active = (bool)reader["Active"];
+
+                dacPackageCollection.Add(dacPackage);
+            }
+
+            // Call Close when reading done
+            reader.Close();
+
+            return dacPackageCollection;
+        }
+
+        public static string GetMaxPackage(string pattern, string Size)
+        {
+            DacDbAccess dacDb = new DacDbAccess();
+            dacDb.CreateNewSqlCommand();
+            dacDb.AddParameter("@Year", DateTime.Now.Year);
+            dacDb.AddParameter("@Size", Size);
+            string sMaxPackageCodeStr = dacDb.ExecuteScalar("spGetMaxPackage").ToString();
+            if (string.IsNullOrEmpty(sMaxPackageCodeStr))
+            {
+                if (string.IsNullOrWhiteSpace(Size))
+                    return sMaxPackageCodeStr;
+                return (pattern + "-" + Size + "-" + "001" + DateTime.Now.Year.ToString().Substring(2, 2) + "-001");
+            } 
+            else
+            {
+                string[] arrsMaxPackageCode = sMaxPackageCodeStr.Split('-');
+                switch (arrsMaxPackageCode.Length) {
+                    case 1:
+                        StringBuilder sbMaxPackageCode = new StringBuilder();
+                        foreach (char item in arrsMaxPackageCode[0])
+                        {
+                            if (char.IsDigit(item))
+                                sbMaxPackageCode.Append(item);
+                        }
+                        long MaxPackageCode = long.Parse(sbMaxPackageCode.ToString().Substring(2)) + 1;
+                        return (pattern + DateTime.Now.Year.ToString().Substring(2, 2) + $"{MaxPackageCode:0000000}"); 
+                    case 3:
+                        int PackageNum = int.Parse(arrsMaxPackageCode[2].ToString().Trim());
+                        if (PackageNum < 138)
+                        {
+                            int NextPackageNum = PackageNum + 1;
+                            return (pattern + "-" + $"{arrsMaxPackageCode[1]:00000}" + "-" + $"{NextPackageNum:000}");
+                        }
+                        else
+                        {
+                            int BatchNum = int.Parse(arrsMaxPackageCode[1].ToString().Trim().Substring(0, 3));
+                            int NextBatchNum = BatchNum + 1;
+                            return (pattern + "-" + $"{NextBatchNum:000}" + DateTime.Now.Year.ToString().Substring(2, 2) + "-" + "001");
+                        }
+                    case 4:
+                        int PackageNumTW3 = int.Parse(arrsMaxPackageCode[3].ToString().Trim());
+                        if (PackageNumTW3 < 138)
+                        {
+                            int NextPackageNum = PackageNumTW3 + 1;
+                            return (pattern + "-" + Size + "-" + $"{arrsMaxPackageCode[2]:00000}" + "-" + $"{NextPackageNum:000}");
+                        }
+                        else
+                        {
+                            int BatchNum = int.Parse(arrsMaxPackageCode[2].ToString().Trim().Substring(0, 3));
+                            int NextBatchNum = BatchNum + 1;
+                            return (pattern + "-" + Size + "-" + $"{NextBatchNum:000}" + DateTime.Now.Year.ToString().Substring(2, 2) + "-" + "001");
+                        }
+                    default:
+                        return string.Empty;
+                }
+            }
+        }
+
+        public bool Insert(DacPackage Package, ref int iNewID)
+        {
+            DacDbAccess dacDb = new DacDbAccess();
+            try
+            {
+                dacDb.CreateNewSqlCommand();
+                // Add parameters
+                dacDb.AddParameter("@CreatedDate", Package.CreatedDate);
+                dacDb.AddParameter("@PackageCode", Package.PackageCode);
+                dacDb.AddParameter("@ProductCode", Package.ProductCode);
+                dacDb.AddParameter("@Quantity", Package.Quantity);
+                dacDb.AddParameter("@FactoryCode", Package.FactoryCode);
+                dacDb.AddParameter("@Batch", Package.Batch);
+                dacDb.AddParameter("@PersonPackaged", Package.PersonPackaged);
+                dacDb.AddParameter("@Description", Package.Description);
+                dacDb.AddParameter("@Active", Package.Active);
+                dacDb.AddParameter("@NewID", SqlDbType.Int);
+                if (dacDb.ExecuteNonQuery("spDacPackage_Insert") > 0)
+                {
+                    iNewID = Convert.ToInt32(dacDb.sqlCommand.Parameters["@NewID"].Value);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public bool Update(DacPackage Package)
+        {
+            DacDbAccess dacDb = new DacDbAccess();
+            try
+            {
+                dacDb.CreateNewSqlCommand();
+                // Add parameters
+                dacDb.AddParameter("@ID", Package.Id);
+                dacDb.AddParameter("@CreatedDate", Package.CreatedDate);
+                dacDb.AddParameter("@PackageCode", Package.PackageCode);
+                dacDb.AddParameter("@ProductCode", Package.ProductCode);
+                dacDb.AddParameter("@Quantity", Package.Quantity);
+                dacDb.AddParameter("@FactoryCode", Package.FactoryCode);
+                dacDb.AddParameter("@Batch", Package.Batch);
+                dacDb.AddParameter("@PersonPackaged", Package.PersonPackaged);
+                dacDb.AddParameter("@Description", Package.Description);
+                dacDb.AddParameter("@Active", Package.Active);
+
+                dacDb.ExecuteNonQuery("spDacPackage_Update");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public bool Update(int PackageID, bool IsActive)
+        {
+            DacDbAccess dacDb = new DacDbAccess();
+            try
+            {
+                dacDb.CreateNewSqlCommand();
+                // Add parameters
+                dacDb.AddParameter("@PackageID", PackageID);
+                dacDb.AddParameter("@IsActive", IsActive);
+
+                dacDb.ExecuteNonQuery("spDacPackage_UpdateStatus");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public bool Delete(int iID)
+        {
+            DacDbAccess dacDb = new DacDbAccess();
+            try
+            {
+                dacDb.CreateNewSqlCommand();
+                // Add parameters
+                dacDb.AddParameter("@ID", iID);
+
+                dacDb.ExecuteNonQuery("spDacPackage_Delete");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public DacPackage GetPackageCodeByDacCode(string DacCode)
+        {
+            List<DacPackage> dacPackageCollection = new List<DacPackage>();
+            DacDbAccess dacDb = new DacDbAccess();
+            dacDb.CreateNewSqlCommand();
+            dacDb.AddParameter("@DacCode", DacCode);
+            DacPackage dacPackage = new DacPackage();
+            try
+            {
+                SqlDataReader reader = dacDb.ExecuteReader("spDacPackage_SelectByDacCode");
+                if (reader.Read())
+                {
+                    dacPackage.Id = (int)reader["Id"];
+                    dacPackage.CreatedDate = (DateTime)reader["CreatedDate"];
+                    dacPackage.PackageCode = reader["PackageCode"].ToString();
+                    dacPackage.ProductCode = reader["ProductCode"].ToString();
+                    dacPackage.Quantity = (int)reader["Quantity"];
+                    dacPackage.FactoryCode = reader["FactoryCode"].ToString();
+                    dacPackage.Batch = reader["Batch"].ToString();
+                    dacPackage.PersonPackaged = reader["PersonPackaged"].ToString();
+                    dacPackage.Description = reader["Description"].ToString();
+                    dacPackage.Active = (bool)reader["Active"];
+                }
+
+                // Call Close when reading done
+                reader.Close();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return dacPackage;
+        }
+    }
+}

@@ -1,0 +1,93 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace PIPT
+{
+    public partial class frmDacInsertSerial : Form
+    {
+        DataTable dataTableDacCode;
+        public frmDacInsertSerial()
+        {
+            InitializeComponent();
+        }
+
+        private void buttonBrowseFile_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Text File (*.txt)|*.txt";
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                LoadDataToDatatable(openFileDialog.FileName);
+            }
+        }
+        private void LoadDataToDatatable(string FilePath)
+        {
+            // Create table
+            dataTableDacCode = CreateDataTable("DacProductCode");
+            var fileStream = new FileStream(FilePath, FileMode.Open, FileAccess.Read);
+            using (StreamReader streamReader = new StreamReader(fileStream, Encoding.UTF8))
+            {
+                string line;
+                int index = 1;
+                while ((line = streamReader.ReadLine()) != null)
+                {
+                    DataRow dataRow = dataTableDacCode.NewRow();
+                    string[] dataInLines = line.Split(',');
+                    if (dataInLines.Length >= 2)
+                    {
+                        dataRow["STT"] = index;
+                        dataRow["DacCode"] = dataInLines[0].Trim();
+                        dataRow["Series"] = dataInLines[1].Trim();
+                    }
+                    else
+                    {
+                        dataRow["STT"] = index;
+                        dataRow["DacCode"] = dataInLines[0].Trim();
+                        dataRow["Series"] = string.Empty;
+                    }
+                    dataTableDacCode.Rows.Add(dataRow);
+                    index += 1;
+                }
+            }
+            labelAmount.Text = "Số lượng: Có " + dataTableDacCode.Rows.Count + " mã an ninh.";
+            dataGridViewLoadDacCode.DataSource = dataTableDacCode;
+        }
+        private DataTable CreateDataTable(string tableName)
+        {
+            DataTable dataTable = new DataTable();
+            dataTable.Columns.Add("STT", typeof(int));
+            dataTable.Columns.Add("DacCode", typeof(string));
+            dataTable.Columns.Add("Series", typeof(string));
+            dataTable.TableName = tableName;
+            return dataTable;
+        }
+
+        private void buttonSave_Click(object sender, EventArgs e)
+        {
+            if(dataTableDacCode.Rows.Count > 0)
+            {
+                string[] arrColumn = { "DacCode", "Series" };
+                DAC.DAL.DacDbAccess dacDbAccess = new DAC.DAL.DacDbAccess();
+                try
+                {
+                    dacDbAccess.PerformBulkCopy(dataTableDacCode, arrColumn);
+                    MessageBox.Show(String.Format("Đã lưu {0:0,0} mã thành công!", dataTableDacCode.Rows.Count), "Thông báo");
+                    dataGridViewDacInsertSerial.DataSource = dataTableDacCode;
+                }
+                catch
+                {
+                    MessageBox.Show("Lưu mã thất bại!", "Thông báo");
+                }
+            }
+        }
+    }
+}

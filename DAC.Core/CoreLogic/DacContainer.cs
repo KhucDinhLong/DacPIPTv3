@@ -1,0 +1,27 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace DAC.Core
+{
+    //public class DacContainer
+    //{
+    //    public virtual int ID { get; set; }
+    //    public virtual DateTime CreatedDate { get; set; }
+    //    public virtual string ContainerCode { get; set; }
+    //    public virtual string ProductCode { get; set; }
+    //    public virtual int Quantity { get; set; }
+    //    public virtual string Description { get; set; }
+    //    public virtual bool Active { get; set; }
+    //    public DacContainer()
+    //    {
+    //        ID = -1;
+    //        ContainerCode = string.Empty;
+    //        CreatedDate = DateTime.Now;
+    //        Quantity = 0;
+    //        Description = string.Empty;
+    //        Active = true;
+    //    }
+    //}
+    //public class DacContainerCollection : List<DacContainer>
+    //{ }
+}

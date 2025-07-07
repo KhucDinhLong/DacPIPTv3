@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html class="loading" lang="en" data-textdirection="ltr">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui" />
+    <base href="/" />
+    <meta property="og:title" content="Trang quản trị nội dung SỐ của Công Ty Cổ Phần Bao Bì Và In Nông Nghiệp" />
+    <meta name="description" content="Cung cấp cho người dùng quản trị thông tin nhân sự, các module nghiệp vụ, upload lịch sản xuất, bảng tiến độ sản xuất, ...">
+    <meta name="keywords" content="Appprint, appprintco, In bao bì, in offset, in flexo, in ống đồng, bao bì nông nghiệp, INN, APPHY, APPHN, sản xuất bao bì, thiết kế bao bì, tem chống giả, DAC, in nông nghiệp, in hà nội, in hưng yên, in chuyên nghiệp">
+    <meta name="robots" content="index, follow" />
+    <meta content="all, index, follow" name="robots" />
+    <meta content="all, index, follow" name="googlebot" />
+    <meta property="og:locale" content="vi_VN" />
+    <meta name="author" content="APPPRINTCO">
+    <meta name="copyright" content="&copy; 2021 APP" />
+    <meta property="og:type" content="article" />
+    <meta property="og:image" content="https://appprintco.com/Upload/images/Slideshow/ROLAND-700.jpg" />
+    <meta property="og:image:alt" content="Quản trị số APP" />
+    <link href="manifest.json" rel="manifest" />
+    <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png" />
+    <link rel="shortcut icon" type="image/png" href="https://appprintco.com/Upload/images/APP_LOGO.png">
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Select 2 -->
+    <link rel="stylesheet" href="dist/css/select2.min.css" />
+
+    <!-- Google Font: Roboto -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="dist/css/adminlte.min.css">
+    <link href="css/app.css" rel="stylesheet" />
+    <link href="OneApp.Client.styles.css" rel="stylesheet" />
+    <!-- Radzen Blazor style -->
+    <link rel="stylesheet" href="_content/Radzen.Blazor/css/default-base.css">
+    <!-- daterange picker -->
+    <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">
+    <!-- overlay scrollbars -->
+    <link type="text/css" href="plugins/overlayScrollbars/css/OverlayScrollbars.min.css" rel="stylesheet" />
+    <!-- Datatables Bootstrap 4 -->
+    <link href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+
+</head>
+
+<body class="hold-transition sidebar-mini sidebar-collapse">
+    <div class="wrapper">
+        <div id="app">
+            <div class="app-load">
+                <div class="rect1"></div>
+                <div class="rect2"></div>
+                <div class="rect3"></div>
+                <div class="rect4"></div>
+                <div class="rect5"></div>
+            </div>
+        </div>
+        <div id="blazor-error-ui">
+            Một lỗi đã xảy ra. Ứng dụng này có thể không phản hồi lại nữa cho đến khi tải lại trang.
+            <a href="" class="reload">Reload</a>
+            <a class="dismiss">🗙</a>
+        </div>
+    </div>
+
+    <!-- Web Assembly -->
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script>navigator.serviceWorker.register('service-worker.js');</script>
+    <!-- Radzen Blazor script -->
+    <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>-->
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF" crossorigin="anonymous"></script>
+    <!--<script src="js/jquery.signalR-2.4.1.min.js"></script>
+    <script src="js/signal.js"></script>-->
+    <!--<script src="plugins/jquery/jquery.min.js"></script>-->
+    <!-- AdminLTE App -->
+    <script src="dist/js/adminlte.min.js"></script>
+    <script src="plugins/moment/moment-with-locales.js"></script>
+    <script src="plugins/daterangepicker/daterangepicker.js"></script>
+    <!-- overlay scrollbars -->
+    <script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+    <script src="js/interop.js"></script>
+    <script src="js/progress.js"></script>
+    <script src="js/pipt-web-main.js"></script>
+    <!-- Select 2 -->
+    <script src="js/select2.full.min.js"></script>
+    <script src="js/Select2JsInterop.js"></script>
+    <script>
+        window.initializeCarousel = () => {
+            $('#carouselExampleIndicators').carousel({ interval: 10000 });
+            //see step 2 to understand these news id's:
+            $('#carouselExampleIndicators-prev').click(
+                () => $('#carouselExampleIndicators').carousel('prev'));
+            $('#carouselExampleIndicators-next').click(
+                () => $('#carouselExampleIndicators').carousel('next'));
+        }
+    </script>
+</body>
+</html>

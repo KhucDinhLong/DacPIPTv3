@@ -1,0 +1,29 @@
+﻿@typeparam T
+@inherits TreeViewBase<T>
+@using PIPTWeb.TreeView.__Internal
+
+@if (Items == null)
+{
+    return;
+}
+
+<style>
+    .default-tree-view-ul {
+        list-style-type: none;
+        padding-inline-start: .7em;
+    }
+</style>
+<CascadingValue Value="this" IsFixed="true">
+    @if (GetParent != null)
+    {
+        var filtered = FilterBy(Items);
+        var root_elements = filtered.Where(i => GetParent(i) == null).ToList();
+        var non_root_elements = filtered.Where(i => GetParent(i) != null).ToList();
+        <OrderedListByGetParent Parental="root_elements" Remaining="non_root_elements" GetParent="GetParent" />
+    }
+    else if (GetChildren != null)
+    {
+        var filtered = FilterBy(Items).ToList();
+        <OrderedListByGetChildren Parental="filtered" GetChildren="GetChildren" />
+    }
+</CascadingValue>

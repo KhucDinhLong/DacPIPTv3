@@ -1,0 +1,479 @@
+﻿namespace PIPT
+{
+    partial class frmDacLockDistributor
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmDacLockDistributor));
+            this.groupBoxDacQueryCode = new System.Windows.Forms.GroupBox();
+            this.checkBoxCheckAll = new System.Windows.Forms.CheckBox();
+            this.labelAmount = new System.Windows.Forms.Label();
+            this.textBoxProductCode = new System.Windows.Forms.TextBox();
+            this.textBoxAgencyCode = new System.Windows.Forms.TextBox();
+            this.buttonSave = new System.Windows.Forms.Button();
+            this.dateTimePickerToDate = new System.Windows.Forms.DateTimePicker();
+            this.dateTimePickerFrDate = new System.Windows.Forms.DateTimePicker();
+            this.labelProductCode = new System.Windows.Forms.Label();
+            this.dataGridViewDistributeToAgency = new System.Windows.Forms.DataGridView();
+            this.labelAgencyCode = new System.Windows.Forms.Label();
+            this.labelToDate = new System.Windows.Forms.Label();
+            this.labelFrDate = new System.Windows.Forms.Label();
+            this.buttonQueryData = new System.Windows.Forms.Button();
+            this.tabCtr = new System.Windows.Forms.TabControl();
+            this.tabDistributeToAgency = new System.Windows.Forms.TabPage();
+            this.tabInsertToWareHouse = new System.Windows.Forms.TabPage();
+            this.dgvInsertToWarehouse = new System.Windows.Forms.DataGridView();
+            this.ColumnID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colOrderNumber = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnCreatedDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnAgencyCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnAgencyName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnProductCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnProductName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnQuantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnActive = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.colID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colInsertNumber = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCreatedDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colStockID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colStockName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewCheckBoxColumn1 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.groupBoxDacQueryCode.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewDistributeToAgency)).BeginInit();
+            this.tabCtr.SuspendLayout();
+            this.tabDistributeToAgency.SuspendLayout();
+            this.tabInsertToWareHouse.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvInsertToWarehouse)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // groupBoxDacQueryCode
+            // 
+            this.groupBoxDacQueryCode.Controls.Add(this.checkBoxCheckAll);
+            this.groupBoxDacQueryCode.Controls.Add(this.labelAmount);
+            this.groupBoxDacQueryCode.Controls.Add(this.textBoxProductCode);
+            this.groupBoxDacQueryCode.Controls.Add(this.textBoxAgencyCode);
+            this.groupBoxDacQueryCode.Controls.Add(this.buttonSave);
+            this.groupBoxDacQueryCode.Controls.Add(this.dateTimePickerToDate);
+            this.groupBoxDacQueryCode.Controls.Add(this.dateTimePickerFrDate);
+            this.groupBoxDacQueryCode.Controls.Add(this.labelProductCode);
+            this.groupBoxDacQueryCode.Controls.Add(this.labelAgencyCode);
+            this.groupBoxDacQueryCode.Controls.Add(this.labelToDate);
+            this.groupBoxDacQueryCode.Controls.Add(this.labelFrDate);
+            this.groupBoxDacQueryCode.Controls.Add(this.buttonQueryData);
+            this.groupBoxDacQueryCode.Location = new System.Drawing.Point(12, 12);
+            this.groupBoxDacQueryCode.Name = "groupBoxDacQueryCode";
+            this.groupBoxDacQueryCode.Size = new System.Drawing.Size(835, 510);
+            this.groupBoxDacQueryCode.TabIndex = 1;
+            this.groupBoxDacQueryCode.TabStop = false;
+            this.groupBoxDacQueryCode.Text = "Truy vấn dữ liệu";
+            // 
+            // checkBoxCheckAll
+            // 
+            this.checkBoxCheckAll.AutoSize = true;
+            this.checkBoxCheckAll.Location = new System.Drawing.Point(725, 23);
+            this.checkBoxCheckAll.Name = "checkBoxCheckAll";
+            this.checkBoxCheckAll.Size = new System.Drawing.Size(75, 19);
+            this.checkBoxCheckAll.TabIndex = 6;
+            this.checkBoxCheckAll.Text = "Chọn hết";
+            this.checkBoxCheckAll.UseVisualStyleBackColor = true;
+            this.checkBoxCheckAll.CheckedChanged += new System.EventHandler(this.checkBoxCheckAll_CheckedChanged);
+            // 
+            // labelAmount
+            // 
+            this.labelAmount.AutoSize = true;
+            this.labelAmount.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelAmount.Location = new System.Drawing.Point(438, 481);
+            this.labelAmount.Name = "labelAmount";
+            this.labelAmount.Size = new System.Drawing.Size(131, 15);
+            this.labelAmount.TabIndex = 5;
+            this.labelAmount.Text = "Số lượng đơn hàng: 00";
+            // 
+            // textBoxProductCode
+            // 
+            this.textBoxProductCode.Location = new System.Drawing.Point(551, 21);
+            this.textBoxProductCode.Name = "textBoxProductCode";
+            this.textBoxProductCode.Size = new System.Drawing.Size(100, 21);
+            this.textBoxProductCode.TabIndex = 4;
+            // 
+            // textBoxAgencyCode
+            // 
+            this.textBoxAgencyCode.Location = new System.Drawing.Point(371, 20);
+            this.textBoxAgencyCode.Name = "textBoxAgencyCode";
+            this.textBoxAgencyCode.Size = new System.Drawing.Size(100, 21);
+            this.textBoxAgencyCode.TabIndex = 4;
+            // 
+            // buttonSave
+            // 
+            this.buttonSave.Enabled = false;
+            this.buttonSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonSave.Location = new System.Drawing.Point(733, 476);
+            this.buttonSave.Name = "buttonSave";
+            this.buttonSave.Size = new System.Drawing.Size(64, 24);
+            this.buttonSave.TabIndex = 0;
+            this.buttonSave.Text = "Lưu";
+            this.buttonSave.UseVisualStyleBackColor = true;
+            this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
+            // 
+            // dateTimePickerToDate
+            // 
+            this.dateTimePickerToDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dateTimePickerToDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dateTimePickerToDate.Location = new System.Drawing.Point(224, 19);
+            this.dateTimePickerToDate.Name = "dateTimePickerToDate";
+            this.dateTimePickerToDate.Size = new System.Drawing.Size(90, 21);
+            this.dateTimePickerToDate.TabIndex = 3;
+            // 
+            // dateTimePickerFrDate
+            // 
+            this.dateTimePickerFrDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dateTimePickerFrDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dateTimePickerFrDate.Location = new System.Drawing.Point(62, 19);
+            this.dateTimePickerFrDate.Name = "dateTimePickerFrDate";
+            this.dateTimePickerFrDate.Size = new System.Drawing.Size(90, 21);
+            this.dateTimePickerFrDate.TabIndex = 3;
+            // 
+            // labelProductCode
+            // 
+            this.labelProductCode.AutoSize = true;
+            this.labelProductCode.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelProductCode.Location = new System.Drawing.Point(481, 22);
+            this.labelProductCode.Name = "labelProductCode";
+            this.labelProductCode.Size = new System.Drawing.Size(64, 15);
+            this.labelProductCode.TabIndex = 1;
+            this.labelProductCode.Text = "Sản phẩm";
+            // 
+            // dataGridViewDistributeToAgency
+            // 
+            this.dataGridViewDistributeToAgency.AllowUserToAddRows = false;
+            this.dataGridViewDistributeToAgency.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewDistributeToAgency.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.ColumnID,
+            this.colOrderNumber,
+            this.ColumnCreatedDate,
+            this.ColumnAgencyCode,
+            this.ColumnAgencyName,
+            this.ColumnProductCode,
+            this.ColumnProductName,
+            this.ColumnQuantity,
+            this.ColumnActive});
+            this.dataGridViewDistributeToAgency.Location = new System.Drawing.Point(6, 6);
+            this.dataGridViewDistributeToAgency.Name = "dataGridViewDistributeToAgency";
+            this.dataGridViewDistributeToAgency.RowHeadersVisible = false;
+            this.dataGridViewDistributeToAgency.Size = new System.Drawing.Size(815, 384);
+            this.dataGridViewDistributeToAgency.TabIndex = 2;
+            // 
+            // labelAgencyCode
+            // 
+            this.labelAgencyCode.AutoSize = true;
+            this.labelAgencyCode.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelAgencyCode.Location = new System.Drawing.Point(320, 23);
+            this.labelAgencyCode.Name = "labelAgencyCode";
+            this.labelAgencyCode.Size = new System.Drawing.Size(45, 15);
+            this.labelAgencyCode.TabIndex = 1;
+            this.labelAgencyCode.Text = "Mã KH";
+            // 
+            // labelToDate
+            // 
+            this.labelToDate.AutoSize = true;
+            this.labelToDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelToDate.Location = new System.Drawing.Point(159, 20);
+            this.labelToDate.Name = "labelToDate";
+            this.labelToDate.Size = new System.Drawing.Size(59, 15);
+            this.labelToDate.TabIndex = 1;
+            this.labelToDate.Text = "Đến ngày";
+            // 
+            // labelFrDate
+            // 
+            this.labelFrDate.AutoSize = true;
+            this.labelFrDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelFrDate.Location = new System.Drawing.Point(6, 20);
+            this.labelFrDate.Name = "labelFrDate";
+            this.labelFrDate.Size = new System.Drawing.Size(50, 15);
+            this.labelFrDate.TabIndex = 1;
+            this.labelFrDate.Text = "Từ ngày";
+            // 
+            // buttonQueryData
+            // 
+            this.buttonQueryData.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonQueryData.Location = new System.Drawing.Point(657, 19);
+            this.buttonQueryData.Name = "buttonQueryData";
+            this.buttonQueryData.Size = new System.Drawing.Size(62, 24);
+            this.buttonQueryData.TabIndex = 0;
+            this.buttonQueryData.Text = "Truy vấn";
+            this.buttonQueryData.UseVisualStyleBackColor = true;
+            this.buttonQueryData.Click += new System.EventHandler(this.buttonQueryData_Click);
+            // 
+            // tabCtr
+            // 
+            this.tabCtr.Controls.Add(this.tabInsertToWareHouse);
+            this.tabCtr.Controls.Add(this.tabDistributeToAgency);
+            this.tabCtr.Location = new System.Drawing.Point(12, 58);
+            this.tabCtr.Name = "tabCtr";
+            this.tabCtr.SelectedIndex = 0;
+            this.tabCtr.Size = new System.Drawing.Size(835, 424);
+            this.tabCtr.TabIndex = 7;
+            this.tabCtr.SelectedIndexChanged += new System.EventHandler(this.tabCtr_SelectedIndexChanged);
+            // 
+            // tabDistributeToAgency
+            // 
+            this.tabDistributeToAgency.Controls.Add(this.dataGridViewDistributeToAgency);
+            this.tabDistributeToAgency.Location = new System.Drawing.Point(4, 24);
+            this.tabDistributeToAgency.Name = "tabDistributeToAgency";
+            this.tabDistributeToAgency.Padding = new System.Windows.Forms.Padding(3);
+            this.tabDistributeToAgency.Size = new System.Drawing.Size(827, 396);
+            this.tabDistributeToAgency.TabIndex = 0;
+            this.tabDistributeToAgency.Text = "Xuất hàng";
+            this.tabDistributeToAgency.UseVisualStyleBackColor = true;
+            // 
+            // tabInsertToWareHouse
+            // 
+            this.tabInsertToWareHouse.Controls.Add(this.dgvInsertToWarehouse);
+            this.tabInsertToWareHouse.Location = new System.Drawing.Point(4, 24);
+            this.tabInsertToWareHouse.Name = "tabInsertToWareHouse";
+            this.tabInsertToWareHouse.Padding = new System.Windows.Forms.Padding(3);
+            this.tabInsertToWareHouse.Size = new System.Drawing.Size(827, 396);
+            this.tabInsertToWareHouse.TabIndex = 1;
+            this.tabInsertToWareHouse.Text = "Nhập hàng";
+            this.tabInsertToWareHouse.UseVisualStyleBackColor = true;
+            // 
+            // dgvInsertToWarehouse
+            // 
+            this.dgvInsertToWarehouse.AllowUserToAddRows = false;
+            this.dgvInsertToWarehouse.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvInsertToWarehouse.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colID,
+            this.colInsertNumber,
+            this.colCreatedDate,
+            this.dataGridViewTextBoxColumn5,
+            this.dataGridViewTextBoxColumn6,
+            this.colStockID,
+            this.colStockName,
+            this.dataGridViewTextBoxColumn7,
+            this.dataGridViewCheckBoxColumn1});
+            this.dgvInsertToWarehouse.Location = new System.Drawing.Point(6, 6);
+            this.dgvInsertToWarehouse.Name = "dgvInsertToWarehouse";
+            this.dgvInsertToWarehouse.RowHeadersVisible = false;
+            this.dgvInsertToWarehouse.Size = new System.Drawing.Size(815, 384);
+            this.dgvInsertToWarehouse.TabIndex = 3;
+            // 
+            // ColumnID
+            // 
+            this.ColumnID.DataPropertyName = "ID";
+            this.ColumnID.HeaderText = "ID";
+            this.ColumnID.Name = "ColumnID";
+            this.ColumnID.Width = 70;
+            // 
+            // colOrderNumber
+            // 
+            this.colOrderNumber.DataPropertyName = "OrderNumber";
+            this.colOrderNumber.HeaderText = "Phiếu xuất";
+            this.colOrderNumber.Name = "colOrderNumber";
+            // 
+            // ColumnCreatedDate
+            // 
+            this.ColumnCreatedDate.DataPropertyName = "CreatedDate";
+            this.ColumnCreatedDate.HeaderText = "Ngày tạo";
+            this.ColumnCreatedDate.Name = "ColumnCreatedDate";
+            this.ColumnCreatedDate.Width = 90;
+            // 
+            // ColumnAgencyCode
+            // 
+            this.ColumnAgencyCode.DataPropertyName = "AgencyCode";
+            this.ColumnAgencyCode.HeaderText = "Mã KH";
+            this.ColumnAgencyCode.Name = "ColumnAgencyCode";
+            this.ColumnAgencyCode.Width = 90;
+            // 
+            // ColumnAgencyName
+            // 
+            this.ColumnAgencyName.DataPropertyName = "AgencyName";
+            this.ColumnAgencyName.HeaderText = "Tên KH";
+            this.ColumnAgencyName.Name = "ColumnAgencyName";
+            this.ColumnAgencyName.Width = 130;
+            // 
+            // ColumnProductCode
+            // 
+            this.ColumnProductCode.DataPropertyName = "ProductCode";
+            this.ColumnProductCode.HeaderText = "Mã SP";
+            this.ColumnProductCode.Name = "ColumnProductCode";
+            this.ColumnProductCode.Width = 80;
+            // 
+            // ColumnProductName
+            // 
+            this.ColumnProductName.DataPropertyName = "ProductName";
+            this.ColumnProductName.HeaderText = "Tên SP";
+            this.ColumnProductName.Name = "ColumnProductName";
+            this.ColumnProductName.Width = 130;
+            // 
+            // ColumnQuantity
+            // 
+            this.ColumnQuantity.DataPropertyName = "Quantity";
+            this.ColumnQuantity.HeaderText = "SL";
+            this.ColumnQuantity.Name = "ColumnQuantity";
+            this.ColumnQuantity.ToolTipText = "Số lượng xuất";
+            this.ColumnQuantity.Width = 50;
+            // 
+            // ColumnActive
+            // 
+            this.ColumnActive.DataPropertyName = "Active";
+            this.ColumnActive.HeaderText = "Mở";
+            this.ColumnActive.Name = "ColumnActive";
+            this.ColumnActive.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.ColumnActive.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.ColumnActive.ToolTipText = "Cho phép sửa nếu tích";
+            this.ColumnActive.Width = 50;
+            // 
+            // colID
+            // 
+            this.colID.DataPropertyName = "ID";
+            this.colID.HeaderText = "ID";
+            this.colID.Name = "colID";
+            this.colID.Width = 70;
+            // 
+            // colInsertNumber
+            // 
+            this.colInsertNumber.DataPropertyName = "Insertnumber";
+            this.colInsertNumber.HeaderText = "Phiếu nhập";
+            this.colInsertNumber.Name = "colInsertNumber";
+            // 
+            // colCreatedDate
+            // 
+            this.colCreatedDate.DataPropertyName = "CreatedDate";
+            this.colCreatedDate.HeaderText = "Ngày tạo";
+            this.colCreatedDate.Name = "colCreatedDate";
+            this.colCreatedDate.Width = 90;
+            // 
+            // dataGridViewTextBoxColumn5
+            // 
+            this.dataGridViewTextBoxColumn5.DataPropertyName = "ProductCode";
+            this.dataGridViewTextBoxColumn5.HeaderText = "Mã SP";
+            this.dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
+            this.dataGridViewTextBoxColumn5.Width = 80;
+            // 
+            // dataGridViewTextBoxColumn6
+            // 
+            this.dataGridViewTextBoxColumn6.DataPropertyName = "ProductName";
+            this.dataGridViewTextBoxColumn6.HeaderText = "Tên SP";
+            this.dataGridViewTextBoxColumn6.Name = "dataGridViewTextBoxColumn6";
+            this.dataGridViewTextBoxColumn6.Width = 130;
+            // 
+            // colStockID
+            // 
+            this.colStockID.DataPropertyName = "StockID";
+            this.colStockID.HeaderText = "Mã kho";
+            this.colStockID.Name = "colStockID";
+            this.colStockID.Width = 90;
+            // 
+            // colStockName
+            // 
+            this.colStockName.DataPropertyName = "StockName";
+            this.colStockName.HeaderText = "Tên kho";
+            this.colStockName.Name = "colStockName";
+            this.colStockName.Width = 130;
+            // 
+            // dataGridViewTextBoxColumn7
+            // 
+            this.dataGridViewTextBoxColumn7.DataPropertyName = "Quantity";
+            this.dataGridViewTextBoxColumn7.HeaderText = "SL";
+            this.dataGridViewTextBoxColumn7.Name = "dataGridViewTextBoxColumn7";
+            this.dataGridViewTextBoxColumn7.ToolTipText = "Số lượng nhập";
+            this.dataGridViewTextBoxColumn7.Width = 50;
+            // 
+            // dataGridViewCheckBoxColumn1
+            // 
+            this.dataGridViewCheckBoxColumn1.DataPropertyName = "Active";
+            this.dataGridViewCheckBoxColumn1.HeaderText = "Mở";
+            this.dataGridViewCheckBoxColumn1.Name = "dataGridViewCheckBoxColumn1";
+            this.dataGridViewCheckBoxColumn1.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewCheckBoxColumn1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.dataGridViewCheckBoxColumn1.ToolTipText = "Cho phép sửa nếu tích";
+            this.dataGridViewCheckBoxColumn1.Width = 50;
+            // 
+            // frmDacLockDistributor
+            // 
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.ClientSize = new System.Drawing.Size(859, 532);
+            this.Controls.Add(this.tabCtr);
+            this.Controls.Add(this.groupBoxDacQueryCode);
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Name = "frmDacLockDistributor";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Khoá lệnh xuất nhập";
+            this.groupBoxDacQueryCode.ResumeLayout(false);
+            this.groupBoxDacQueryCode.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewDistributeToAgency)).EndInit();
+            this.tabCtr.ResumeLayout(false);
+            this.tabDistributeToAgency.ResumeLayout(false);
+            this.tabInsertToWareHouse.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvInsertToWarehouse)).EndInit();
+            this.ResumeLayout(false);
+
+        }
+
+        #endregion
+
+        private System.Windows.Forms.GroupBox groupBoxDacQueryCode;
+        private System.Windows.Forms.DataGridView dataGridViewDistributeToAgency;
+        private System.Windows.Forms.Label labelFrDate;
+        private System.Windows.Forms.Button buttonSave;
+        private System.Windows.Forms.Button buttonQueryData;
+        private System.Windows.Forms.TextBox textBoxAgencyCode;
+        private System.Windows.Forms.DateTimePicker dateTimePickerToDate;
+        private System.Windows.Forms.DateTimePicker dateTimePickerFrDate;
+        private System.Windows.Forms.Label labelAgencyCode;
+        private System.Windows.Forms.Label labelToDate;
+        private System.Windows.Forms.TextBox textBoxProductCode;
+        private System.Windows.Forms.Label labelProductCode;
+        private System.Windows.Forms.Label labelAmount;
+        private System.Windows.Forms.CheckBox checkBoxCheckAll;
+        private System.Windows.Forms.TabControl tabCtr;
+        private System.Windows.Forms.TabPage tabDistributeToAgency;
+        private System.Windows.Forms.TabPage tabInsertToWareHouse;
+        private System.Windows.Forms.DataGridView dgvInsertToWarehouse;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnID;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colOrderNumber;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnCreatedDate;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnAgencyCode;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnAgencyName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnProductCode;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnProductName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnQuantity;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn ColumnActive;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colID;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colInsertNumber;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCreatedDate;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn6;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colStockID;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colStockName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn7;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn dataGridViewCheckBoxColumn1;
+    }
+}

@@ -1,0 +1,302 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using DAC.DAL;
+using System.Data.SqlClient;
+
+namespace DAC.Core
+{
+    public class DacProductCS
+    {
+        public List<DacProduct> GetListProduct()
+        {
+            List<DacProduct> dacProductCollection = new List<DacProduct>();
+            DacDbAccess dacDb = new DacDbAccess();
+            dacDb.CreateNewSqlCommand();
+            dacDb.AddParameter("@FactoryCode", string.Empty);
+            SqlDataReader reader = dacDb.ExecuteReader("spDacProduct_SelectAll");
+
+            while(reader.Read())
+            {
+                DacProduct dacProduct = new DacProduct();
+
+                dacProduct.Id = (int)reader["Id"];
+                dacProduct.CreatedDate = (DateTime)reader["CreatedDate"];
+                dacProduct.Code = reader["Code"].ToString();
+                dacProduct.Name = reader["Name"].ToString();
+                dacProduct.ProductUnitId = (int)reader["ProductUnitId"];
+                dacProduct.Size = reader["Size"].ToString();
+                dacProduct.RegisterNumber = reader["RegisterNumber"].ToString();
+                dacProduct.ProductCategoryId = (int)reader["ProductCategoryId"];
+                dacProduct.Remark = reader["Remark"].ToString();
+                dacProduct.Active = (bool)reader["Active"];
+                dacProduct.Manufacture = reader["Manufacture"].ToString();
+                dacProduct.GeneralFormat = reader["GeneralFormat"].ToString();
+                dacProduct.CreatedUser = reader["CreatedUser"].ToString();
+                dacProduct.ModifiedDate = (DateTime)reader["ModifiedDate"];
+                dacProduct.ModifiedUser = reader["ModifiedUser"].ToString();
+
+                dacProductCollection.Add(dacProduct);
+            }
+
+            //Call Close when reading done.
+            reader.Close();
+
+            return dacProductCollection;
+        }
+        public List<DacProduct> GetListProduct(int Id)
+        {
+            List<DacProduct> dacProductCollection = new List<DacProduct>();
+            DacDbAccess dacDb = new DacDbAccess();
+            dacDb.CreateNewSqlCommand();
+            dacDb.AddParameter("@Id", Id);
+            SqlDataReader reader = dacDb.ExecuteReader("spDacProduct_LargerThanById");
+
+            while (reader.Read())
+            {
+                DacProduct dacProduct = new DacProduct();
+                dacProduct.Id = (int)reader["Id"];
+                dacProduct.CreatedDate = (DateTime)reader["CreatedDate"];
+                dacProduct.Code = reader["Code"].ToString();
+                dacProduct.Name = reader["Name"].ToString();
+                dacProduct.ProductUnitId = (int)reader["ProductUnitId"];
+                dacProduct.Size = reader["Size"].ToString();
+                dacProduct.RegisterNumber = reader["RegisterNumber"].ToString();
+                dacProduct.ProductCategoryId = (int)reader["ProductCategoryId"];
+                dacProduct.Remark = reader["Remark"].ToString();
+                dacProduct.Active = (bool)reader["Active"];
+                dacProduct.Manufacture = reader["Manufacture"].ToString();
+                dacProduct.GeneralFormat = reader["GeneralFormat"].ToString();
+                dacProduct.CreatedUser = reader["CreatedUser"].ToString();
+                dacProduct.ModifiedDate = (DateTime)reader["ModifiedDate"];
+                dacProduct.ModifiedUser = reader["ModifiedUser"].ToString();
+
+                dacProductCollection.Add(dacProduct);
+            }
+
+            //Call Close when reading done.
+            reader.Close();
+
+            return dacProductCollection;
+        }
+        public List<DacProduct> GetListProduct(string sCode, string sName)
+        {
+            List<DacProduct> dacProductCollection = new List<DacProduct>();
+            DacDbAccess dacDb = new DacDbAccess();
+            dacDb.CreateNewSqlCommand();
+            dacDb.AddParameter("@Code", sCode);
+            dacDb.AddParameter("@Name", sName);
+            SqlDataReader reader = dacDb.ExecuteReader("spDacProduct_SelectByCode");
+
+            while (reader.Read())
+            {
+                DacProduct dacProduct = new DacProduct();
+                dacProduct.Id = (int)reader["Id"];
+                dacProduct.CreatedDate = (DateTime)reader["CreatedDate"];
+                dacProduct.Code = reader["Code"].ToString();
+                dacProduct.Name = reader["Name"].ToString();
+                dacProduct.ProductUnitId = (int)reader["ProductUnitId"];
+                dacProduct.Size = reader["Size"].ToString();
+                dacProduct.RegisterNumber = reader["RegisterNumber"].ToString();
+                dacProduct.ProductCategoryId = (int)reader["ProductCategoryId"];
+                dacProduct.Remark = reader["Remark"].ToString();
+                dacProduct.Active = (bool)reader["Active"];
+                dacProduct.Manufacture = reader["Manufacture"].ToString();
+                dacProduct.GeneralFormat = reader["GeneralFormat"].ToString();
+                dacProduct.CreatedUser = reader["CreatedUser"].ToString();
+                dacProduct.ModifiedDate = (DateTime)reader["ModifiedDate"];
+                dacProduct.ModifiedUser = reader["ModifiedUser"].ToString();
+
+                dacProductCollection.Add(dacProduct);
+            }
+
+            //Call Close when reading done.
+            reader.Close();
+
+            return dacProductCollection;
+        }
+        /// <summary>
+        /// Luu o PIPT Server
+        /// </summary>
+        /// <param name="dacProduct"></param>
+        /// <returns></returns>
+        public bool Insert(DacProduct dacProduct)
+        {
+            DacDbAccess dacDb = new DacDbAccess();
+            try
+            {
+                dacDb.CreateNewSqlCommand();
+                // Add parameters
+                dacDb.AddParameter("@CreatedDate", dacProduct.CreatedDate);
+                dacDb.AddParameter("@Code", dacProduct.Code);
+                dacDb.AddParameter("@Name", dacProduct.Name);
+                dacDb.AddParameter("@ProductUnitId", dacProduct.ProductUnitId);
+                dacDb.AddParameter("@Size", dacProduct.Size);
+                dacDb.AddParameter("@RegisterNumber", dacProduct.RegisterNumber);
+                dacDb.AddParameter("@ProductCategoryId", dacProduct.ProductCategoryId);
+                dacDb.AddParameter("@Remark", dacProduct.Remark);
+                dacDb.AddParameter("@Active", dacProduct.Active);
+                dacDb.AddParameter("@Manufacture", dacProduct.Manufacture);
+                dacDb.AddParameter("@GeneralFormat", dacProduct.GeneralFormat);
+                dacDb.AddParameter("@CreatedUser", dacProduct.CreatedUser);
+                dacDb.AddParameter("@ModifiedDate", dacProduct.ModifiedDate);
+                dacDb.AddParameter("@ModifiedUser", dacProduct.ModifiedUser);
+
+                dacDb.ExecuteNonQuery("spDacProduct_Insert");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        /// <summary>
+        /// Luu o PIPT Agency (Dai ly)
+        /// </summary>
+        /// <param name="dacProduct"></param>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        public bool Insert(DacProduct dacProduct, int Id)
+        {
+            DacDbAccess dacDb = new DacDbAccess();
+            try
+            {
+                dacDb.CreateNewSqlCommand();
+                // Add parameters
+                dacDb.AddParameter("@Id", Id);
+                dacDb.AddParameter("@CreatedDate", dacProduct.CreatedDate);
+                dacDb.AddParameter("@Code", dacProduct.Code);
+                dacDb.AddParameter("@Name", dacProduct.Name);
+                dacDb.AddParameter("@ProductUnitId", dacProduct.ProductUnitId);
+                dacDb.AddParameter("@Size", dacProduct.Size);
+                dacDb.AddParameter("@RegisterNumber", dacProduct.RegisterNumber);
+                dacDb.AddParameter("@ProductCategoryId", dacProduct.ProductCategoryId);
+                dacDb.AddParameter("@Remark", dacProduct.Remark);
+                dacDb.AddParameter("@Active", dacProduct.Active);
+                dacDb.AddParameter("@Manufacture", dacProduct.Manufacture);
+                dacDb.AddParameter("@GeneralFormat", dacProduct.GeneralFormat);
+                dacDb.AddParameter("@CreatedUser", dacProduct.CreatedUser);
+                dacDb.AddParameter("@ModifiedDate", dacProduct.ModifiedDate);
+                dacDb.AddParameter("@ModifiedUser", dacProduct.ModifiedUser);
+
+                dacDb.ExecuteNonQuery("spDacProduct_Insert");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public bool Update(DacProduct dacProduct)
+        {
+            DacDbAccess dacDb = new DacDbAccess();
+            try
+            {
+                dacDb.CreateNewSqlCommand();
+                // Add parameters
+                dacDb.AddParameter("@Id", dacProduct.Id);
+                dacDb.AddParameter("@Code", dacProduct.Code);
+                dacDb.AddParameter("@Name", dacProduct.Name);
+                dacDb.AddParameter("@ProductUnitId", dacProduct.ProductUnitId);
+                dacDb.AddParameter("@Size", dacProduct.Size);
+                dacDb.AddParameter("@RegisterNumber", dacProduct.RegisterNumber);
+                dacDb.AddParameter("@ProductCategoryId", dacProduct.ProductCategoryId);
+                dacDb.AddParameter("@Remark", dacProduct.Remark);
+                dacDb.AddParameter("@Active", dacProduct.Active);
+                dacDb.AddParameter("@Manufacture", dacProduct.Manufacture);
+                dacDb.AddParameter("@GeneralFormat", dacProduct.GeneralFormat);
+                dacDb.AddParameter("@CreatedUser", dacProduct.CreatedUser);
+                dacDb.AddParameter("@ModifiedDate", dacProduct.ModifiedDate);
+                dacDb.AddParameter("@ModifiedUser", dacProduct.ModifiedUser);
+
+                dacDb.ExecuteNonQuery("spDacProduct_Update");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public bool Delete(string sCode)
+        {
+            DacDbAccess dacDb = new DacDbAccess();
+            try
+            {
+                dacDb.CreateNewSqlCommand();
+                // Add parameters
+                dacDb.AddParameter("@Code", sCode);
+
+                dacDb.ExecuteNonQuery("spDacProduct_Delete");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public List<DacProduct> GetListProduct(string sCode)
+        {
+            List<DacProduct> dacProductCollection = new List<DacProduct>();
+            DacDbAccess dacDb = new DacDbAccess();
+            dacDb.CreateNewSqlCommand();
+            dacDb.AddParameter("@Code", sCode);
+            SqlDataReader reader = dacDb.ExecuteReader("spDacProduct_SelectInfoByCode");
+
+            while (reader.Read())
+            {
+                DacProduct dacProduct = new DacProduct();
+                dacProduct.Id = (int)reader["Id"];
+                dacProduct.CreatedDate = (DateTime)reader["CreatedDate"];
+                dacProduct.Code = reader["Code"].ToString();
+                dacProduct.Name = reader["Name"].ToString();
+                dacProduct.ProductUnitId = (int)reader["ProductUnitId"];
+                dacProduct.Size = reader["Size"].ToString();
+                dacProduct.RegisterNumber = reader["RegisterNumber"].ToString();
+                dacProduct.ProductCategoryId = (int)reader["ProductCategoryId"];
+                dacProduct.Remark = reader["Remark"].ToString();
+                dacProduct.Active = (bool)reader["Active"];
+                dacProduct.Manufacture = reader["Manufacture"].ToString();
+                dacProduct.GeneralFormat = reader["GeneralFormat"].ToString();
+                dacProduct.CreatedUser = reader["CreatedUser"].ToString();
+                dacProduct.ModifiedDate = (DateTime)reader["ModifiedDate"];
+                dacProduct.ModifiedUser = reader["ModifiedUser"].ToString();
+
+                dacProductCollection.Add(dacProduct);
+            }
+
+            //Call Close when reading done.
+            reader.Close();
+
+            return dacProductCollection;
+        }
+        public bool IsUsed(string ProductCode)
+        {
+            List<DacProduct> dacProductCollection = new List<DacProduct>();
+            DacDbAccess dacDb = new DacDbAccess();
+            dacDb.CreateNewSqlCommand();
+            dacDb.AddParameter("@ProductCode", ProductCode);
+            SqlDataReader readerInward = dacDb.ExecuteReader("spDacInsertToWarehouse_Select_By_ProductCode");
+            bool UseInward = readerInward.Read();
+            readerInward.Close();
+            SqlDataReader readerOutward = dacDb.ExecuteReader("spDacInsertToWarehouse_Select_By_ProductCode");
+            bool UseOutward = readerOutward.Read();
+            readerOutward.Close();
+            SqlDataReader readerInventory = dacDb.ExecuteReader("spDacInventory_Select_By_ProductCode");
+            bool UseInventory = false;
+            while(readerInventory.Read())
+            {
+                if (readerInventory["StockID"] != null && readerInventory["StockID"].ToString() != "" 
+                    || readerInventory["Quantity"] != null && int.Parse(readerInventory["Quantity"].ToString()) != 0)
+                {
+                    UseInventory = true;
+                    break;
+                }
+            }
+            readerInventory.Close();
+            return (UseInward || UseOutward || UseInventory);
+        }
+    }
+}

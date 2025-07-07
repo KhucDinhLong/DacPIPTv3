@@ -1,0 +1,40 @@
+﻿using System.Collections.Generic;
+
+namespace DAC.Core
+{
+    //public class DacStock
+    //{
+    //    public virtual int ID { get; set; }
+    //    public virtual string Code { get; set; }
+    //    public virtual string Name { get; set; }
+    //    public virtual string Contact { get; set; }
+    //    public virtual string Address { get; set; }
+    //    public virtual string Email { get; set; }
+    //    public virtual string Telephone { get; set; }
+    //    public virtual string Fax { get; set; }
+    //    public virtual string Mobi { get; set; }
+    //    public virtual string Manager { get; set; }
+    //    public virtual string BranchID { get; set; }
+    //    public virtual string Description { get; set; }
+    //    public virtual bool Active { get; set; }
+
+    //    public DacStock()
+    //    {
+    //        ID = -1;
+    //        Code = string.Empty;
+    //        Name = string.Empty;
+    //        Contact = string.Empty;
+    //        Address = string.Empty;
+    //        Email = string.Empty;
+    //        Telephone = string.Empty;
+    //        Fax = string.Empty;
+    //        Mobi = string.Empty;
+    //        Manager = string.Empty;
+    //        BranchID = string.Empty;
+    //        Description = string.Empty;
+    //        Active = true;
+    //    }
+    //}
+    //public class DacStockCollection : List<DacStock>
+    //{ }
+}

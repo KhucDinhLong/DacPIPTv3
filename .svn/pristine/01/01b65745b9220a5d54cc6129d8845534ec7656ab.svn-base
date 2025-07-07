@@ -1,0 +1,59 @@
+﻿<div class="modal fade show" id="popupDialog" style="display:block; background-color: rgba(10,10,10,.8)" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">@Title</h4>
+                <button type="button" class="close" @onclick="@PupopCancel">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>@Message</p>
+            </div>
+            <div class="modal-footer">
+                @switch (DialogType)
+                {
+                    case PupopDialogType.Ok:
+                        <button type="button" class="btn btn-primary" @onclick="@PupopOk">Đồng ý</button>
+                        break;
+                    case PupopDialogType.OkCancel:
+                        <button type="button" class="btn btn-secondary mr-auto" @onclick="@PupopCancel">Huỷ</button>
+                        <button type="button" class="btn btn-primary" @onclick="@PupopOk">Đồng ý</button>
+                        break;
+                    case PupopDialogType.DeleteCancel:
+                        <button type="button" class="btn btn-secondary mr-auto" @onclick="@PupopCancel">Huỷ</button>
+                        <button type="button" class="btn btn-danger" @onclick="@PupopOk">Xoá</button>
+                        break;
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Title { get; set; }
+    [Parameter]
+    public string Message { get; set; }
+    [Parameter]
+    public EventCallback<bool> OnClose { get; set; }
+    [Parameter]
+    public PupopDialogType DialogType { get; set; }
+
+    private Task PupopCancel()
+    {
+        return OnClose.InvokeAsync(false);
+    }
+
+    private Task PupopOk()
+    {
+        return OnClose.InvokeAsync(true);
+    }
+
+    public enum PupopDialogType
+    {
+        Ok,
+        OkCancel,
+        DeleteCancel
+    }
+}

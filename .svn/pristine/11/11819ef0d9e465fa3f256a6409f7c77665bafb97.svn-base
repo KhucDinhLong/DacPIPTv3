@@ -1,0 +1,29 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace DAC.Core
+{
+    public class DacDistributeToFactory
+    {
+        public virtual int ID { get; set; }
+        public virtual string OrderNumber { get; set; }
+        public virtual DateTime CreatedDate { get; set; }
+        public virtual string ProvinceCode { get; set; }
+        public virtual string FactoryCode { get; set; }
+        public virtual string ProductCode { get; set; }
+        public virtual double Quantity { get; set; }
+        public virtual string Description { get; set; }
+        public virtual bool Active { get; set; }
+        public DacDistributeToFactory()
+        {
+            ID = -1;
+            OrderNumber = string.Empty;
+            CreatedDate = DateTime.Now;
+            Quantity = 0;
+            Description = string.Empty;
+            Active = true;
+        }
+    }
+    public class DacDistributeToFactoryCollection : List<DacDistributeToFactory>
+    { }
+}

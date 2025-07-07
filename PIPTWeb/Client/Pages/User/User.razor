@@ -1,0 +1,307 @@
+﻿@page "/users"
+@using PIPTWeb.Client.Services
+@using Blazored.LocalStorage
+@using Microsoft.AspNetCore.Identity;
+@inject ISecUsersService userService
+@inject IRoleService roleService
+@inject IUserRoleService userRoleService
+@inject ILocalStorageService localStorage
+@inject NotificationService NotificationService
+
+<ContentHeader>
+    <Header>
+        <PageTitle Title="Quản lý tài khoản" />
+    </Header>
+</ContentHeader>
+<ContentMain>
+    <div class="card mb-3">
+        <div class="card-header">
+            <i class="fa fa-table"></i> Quản lý tài khoản
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <div id="datatable_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-8">
+                            <div class="form-group">
+                                <div id="dataTable_filter" class="input-group">
+                                    <div class="input-group-prepend">
+                                        <button type="button" class="btn btn-default">Bộ lọc <i class="fas fa-filter"></i></button>
+                                    </div>
+                                    <input type="search" class="form-control" placeholder="Mã nhân viên" aria-controls="dataTable" @bind-value="UserName" />
+                                    <input type="search" class="form-control" placeholder="Tên nhân viên" aria-controls="dataTable" @bind-value="LastName" />
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btn-default" @onclick="@(() => Search(UserName, LastName))"><i class="fas fa-search"></i> Tìm kiếm</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-2">
+                            <button class="btn btn-success" @onclick="@(() => OpenDialog(""))"> <i class="fa fa-plus"></i> </button>
+                        </div>
+                        <div class="col-sm-12 col-md-2">
+                            <div class="form-group">
+                                <div id="dataTable_length" class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Show:</span>
+                                    </div>
+                                    <select name="dataTable_length" aria-controls="dataTable" class="form-control">
+                                        <option value="10">10</option>
+                                        <option value="25">25</option>
+                                        <option value="50" selected>50</option>
+                                        <option value="100">100</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            @if (LstUser == null)
+                            {
+                                <p><em>Đang tải dữ liệu...</em></p>
+                            }
+                            else
+                            {
+                                <table class="table table-bordered dataTable" id="dataTable" role="grid" aria-describedby="dataTable_info">
+                                    <thead>
+                                        <tr role="row">
+                                            <th>#</th>
+                                            <th>Tài khoản</th>
+                                            <th>Email</th>
+                                            <th>Họ tên</th>
+                                            <th>Avatar</th>
+                                            <th>Quản trị</th>
+                                            <th>Ngày tạo</th>
+                                            <th>Hành động</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{ var i = 1;}
+                                        @foreach (var user in LstUser)
+                                        {
+                                            <tr role="row">
+                                                <td>@i</td>
+                                                <td>@user.UserName</td>
+                                                <td>@user.Email</td>
+                                                <td>@(user.FirstName + " " + user.LastName)</td>
+                                                <td>
+                                                @if(!string.IsNullOrEmpty(user.Avatar))
+                                                    {
+                                                        <img src="@user.Avatar" alt="@user.FirstName @user.LastName" class="round user-image" width="32" height="32" />
+                                                    }
+                                                </td>
+                                                <td>
+                                                    <span class="font-weight-bold">
+                                                        <input type="checkbox" @bind="@user.IsAdmin" />
+                                                    </span>
+                                                </td>
+                                                <td>@(user.CreatedDate.HasValue ? user.CreatedDate.Value.ToString("dd/MM/yyyy") : "")</td>
+                                                <td>
+                                                    <button class="btn btn-primary btn-sm" @onclick="@(()=> OpenDialog(user.Id))"><i class="fa fa-edit"></i></button>
+                                                    <button class="btn btn-danger btn-sm" @onclick="@(()=> OpenDeleteDialog(user.Id))"><i class="fa fa-trash"></i></button>
+                                                    <button class="btn btn-dark btn-sm" @onclick="@(()=> OpenResetPwdDialog(user.Id))"><i class="fa fa-key"></i></button>
+                                                    @if (user.IsAdmin.HasValue && !user.IsAdmin.Value)
+                                                    {
+                                                        <button class="btn btn-success btn-sm" @onclick="@(() => OpenSetRoleDialog(user.Id))"><i class="fa fa-user-shield"></i></button>
+                                                    }
+                                                </td>
+                                            </tr>
+                                            i++;
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-5">
+                            <div id="dataTable_info" class="dataTables_info" role="status" arial-live="polite">
+                                <PaginationInfo ActualPage="actualPage" TotalPages="totalPages" PageType="PaginationInfo.PageInfoType.PagePerTotal">
+                                    <Text>Nếu PaginationInfo.PageInfoType.Text thì thể hiện ở đây</Text>
+                                </PaginationInfo>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-7">
+                            <div id="dataTable_paginate" class="dataTables_paginate paging_simple_numbers">
+                                <Pagination TotalPages="totalPages" ActualPage="actualPage" Radius="3"
+                                            SelectedPage="SelectedPage"></Pagination>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer small text-muted">
+        </div>
+    </div>
+    <!-- Bordered table end -->
+</ContentMain>
+<PIPTModal @ref="piptModal" Size="PIPTModal.ModalSize.Nomal" OnCancelDialog="CancelDialog">
+    <Title>Thông tin tài khoản</Title>
+    <Body>
+        @if (IsDeleteDialogOpen)
+        {
+            <UserDelete User="_User"
+                        OnvalidSubmit="OnSubmitCallBack"
+                        OnClose="CloseDialog" />
+        }
+        else if (IsResetPassword)
+        {
+            <UserResetPwd User="_User" OnvalidSubmit="OnSubmitCallBack" OnClose="CloseDialog" />
+        }
+        else if (IsSetRoleDialogOpen)
+        {
+            <UserRole _User="_User" LstRole="LstRole" LstSelectedRole="LstSelectedRole" OnvalidSubmit="OnSubmitCallBack" OnClose="CloseDialog" />
+        }
+        else if (!string.IsNullOrWhiteSpace(_User.UserName))
+        {
+            <UserEdit User="_User" OnvalidSubmit="OnSubmitCallBack" OnClose="CloseDialog" />
+        }
+        else
+        {
+            <UserCreate User="_User"
+                        OnvalidSubmit="OnSubmitCallBack"
+                        OnClose="CloseDialog">
+            </UserCreate>
+        }
+    </Body>
+</PIPTModal>
+
+@code {
+    private SecUsers _User = new SecUsers();
+    private bool IsDeleteDialogOpen = false;
+    private bool IsSetRoleDialogOpen = false;
+    private bool IsResetPassword = false;
+    private PIPTModal piptModal { get; set; }
+    private PaginatedInputModel pagination { get; set; } = new PaginatedInputModel();
+    private List<SecRoles> LstRole { get; set; } = new List<SecRoles>();
+    private List<string> LstSelectedRole { get; set; } = new List<string>();
+
+    private IEnumerable<SecUsers> LstUser;
+
+    public int totalPages { get; set; }
+    private int actualPage = 1;
+    private string UserName = string.Empty;
+    private string LastName = string.Empty;
+
+    protected async override Task OnInitializedAsync()
+    {
+        userService.OnChange += StateHasChanged;
+        roleService.OnChange += StateHasChanged;
+        userRoleService.OnChange += StateHasChanged;
+        pagination.PageNumber = 1;
+        pagination.PageSize = 50;
+        await userService.LoadUsers(pagination);
+        totalPages = userService.totalPages;
+        LstUser = userService.LstUser;
+        ShowNotification(new Radzen.NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Tải dữ liệu tài khoản", Detail = "Thành công!" });
+    }
+
+    public void Dispose()
+    {
+        userService.OnChange -= StateHasChanged;
+    }
+
+    private async Task OpenDialog(string UserId)
+    {
+        if (string.IsNullOrWhiteSpace(UserId))
+        {
+            _User = new SecUsers();
+        }
+        else
+        {
+            _User = await userService.GetUserById(UserId);
+        }
+
+        await piptModal.Open();
+    }
+
+    private async Task OpenDeleteDialog(string UserId)
+    {
+        _User = await userService.GetUserById(UserId);
+        IsDeleteDialogOpen = true;
+        await piptModal.Open();
+    }
+
+    private async Task OpenSetRoleDialog(string id)
+    {
+        IsSetRoleDialogOpen = true;
+        _User = await userService.GetUserById(id);
+        await roleService.GetAllRoles();
+        LstRole = roleService.LstRole.ToList();
+        var lst = await userRoleService.GetRoleByUser(id);
+        LstSelectedRole = lst.ToList();
+        await piptModal.Open();
+    }
+
+    private async Task OpenResetPwdDialog(string UserId)
+    {
+        _User = await userService.GetUserById(UserId);
+        IsResetPassword = true;
+        await piptModal.Open();
+    }
+
+    private async Task OnSubmitCallBack()
+    {
+        IsDeleteDialogOpen = false;
+        IsSetRoleDialogOpen = false;
+        IsResetPassword = false;
+        await piptModal.Close();
+        await userService.LoadUsers(pagination);
+        totalPages = userService.totalPages;
+        LstUser = userService.LstUser;
+        ShowNotification(new Radzen.NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Cập nhật dữ liệu tài khoản", Detail = "Thành công!" });
+        StateHasChanged();
+    }
+
+    private async Task CloseDialog()
+    {
+        IsDeleteDialogOpen = false;
+        IsSetRoleDialogOpen = false;
+        IsResetPassword = false;
+        await piptModal.Close();
+        pagination.PageNumber = actualPage;
+        await userService.LoadUsers(pagination);
+        LstUser = userService.LstUser;
+        StateHasChanged();
+    }
+
+    private async Task SelectedPage(int page)
+    {
+        actualPage = page;
+        pagination.PageNumber = actualPage;
+        await userService.LoadUsers(pagination);
+        LstUser = userService.LstUser;
+        StateHasChanged();
+    }
+
+    void ShowNotification(Radzen.NotificationMessage message)
+    {
+        NotificationService.Notify(message);
+    }
+
+    private async Task ChangePagedParam()
+    {
+        await userService.LoadUsers(pagination);
+    }
+    private async Task Search(string UserName, string LastName)
+    {
+        actualPage = 1;
+        pagination.PageNumber = actualPage;
+        // Thêm bộ lọc tìm kiếm
+        pagination.FilterParams = new List<FilterUtility.FilterParams> {
+            new FilterUtility.FilterParams { ColumnName = "UserName", FilterValue = UserName, FilterOption = FilterUtility.FilterOptions.Contains },
+            new FilterUtility.FilterParams { ColumnName = "LastName", FilterValue = LastName, FilterOption = FilterUtility.FilterOptions.Contains }
+        };
+        await userService.LoadUsers(pagination);
+        LstUser = userService.LstUser;
+        totalPages = userService.totalPages;
+    }
+    void CancelDialog()
+    {
+        IsDeleteDialogOpen = false;
+        IsSetRoleDialogOpen = false;
+        IsResetPassword = false;
+    }
+}

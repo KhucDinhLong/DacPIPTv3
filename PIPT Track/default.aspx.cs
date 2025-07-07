@@ -1,0 +1,131 @@
+﻿using DAC.DAL;
+using System;
+using System.Data;
+
+namespace PIPT.Track
+{
+    public partial class dactrack : System.Web.UI.Page
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (IsPostBack)
+            {
+                thongBaoLabel.Visible = false;
+            }
+        }
+
+        protected void btnKiemTra_Click(object sender, EventArgs e)
+        {
+            if (Session["username"] != null)
+            {
+                if (dacCode.Text.Trim().Length == 0)
+                {
+                    thongBaoLabel.Visible = true;
+                    thongBaoLabel.Text = @"<div class='alert alert-danger fade in'>
+                      <a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
+                      <strong>Không có dữ liệu!</strong> Bạn vui lòng nhập mã trước khi truy vấn.
+                      </div>";
+                    return;
+                }
+                string sProductCode = "";
+                DAC.DAL.GetDacDbConnection.ConnectionString = (System.Configuration.ConfigurationManager.ConnectionStrings["DacDBConn"].ConnectionString);
+                DacDbAccess dacDb = new DacDbAccess();
+                dacDb.CreateNewSqlCommand();
+                dacDb.AddParameter("@DacCode", dacCode.Text.Trim());
+                // Nhan thong tin ve dai ly
+                DataTable dataTableAgency = dacDb.ExecuteDataTable("dbo.spDacDistributeToAgency_SelectDacCode");
+                if (dataTableAgency.Rows.Count > 0)
+                {
+                    DataRow dataRow = dataTableAgency.Rows[0];
+                    //a.ID, a.AgencyCode, c.Name, c.[Address], c.OwnerName, c.MobileNum, c.Email,
+                    //a.ProductCode, d.Name AS ProvinceName, b.DacCode
+                    string sTable = "<table class='table table-bordered'>";
+                    sTable += "<tr><th>Ngày xuất</th><td>" + dataRow["CreatedDate"] + "</td></tr>" +
+                        "<tr><th>Mã đại lý</th><td>" + dataRow["AgencyCode"] + "</td></tr>" +
+                        "<tr><th>Tên đại lý</th><td>" + dataRow["Name"] + "</td></tr>" +
+                        "<tr><th>Địa chỉ</th><td>" + dataRow["Address"] + "</td></tr>" +
+                        "<tr><th>Chủ đại lý</th><td>" + dataRow["OwnerName"] + "</td></tr>" +
+                        "<tr><th>Phone</th><td>" + dataRow["PhoneNum"] + "</td></tr>" +
+                        "<tr><th>Mobile</th><td>" + dataRow["MobileNum"] + "</td></tr>" +
+                        "<tr><th>Email</th><td>" + dataRow["Email"] + "</td></tr>" +
+                        "<tr><th>Tỉnh/Thành phố</th><td>" + dataRow["ProvinceName"] + "</td></tr>" +
+                        "<tr><th>Mã sản phẩm</th><td>" + dataRow["ProductCode"] + "</td></tr>" +
+                        "<tr><th>Mã đại lý trực thuộc</th><td>" + dataRow["DependCode"] + "</td></tr>" +
+                        "<tr><th>Hợp đồng tham gia</th><td>" + dataRow["JoinContact"] + "</td></tr>" +
+                        "<tr><th>KV / Miền</th><td>" + dataRow["Region"] + "</td></tr>";
+                    sTable += "</table>";
+                    agencyLabel.Text = sTable;
+                    sProductCode = dataRow["ProductCode"].ToString();
+                }
+                else
+                {
+                    agencyLabel.Text = "Không có thông tin về khách hàng đối với mã này";
+                }
+                // Nhan thong tin ve cua hang
+                DataTable dataTableStore = dacDb.ExecuteDataTable("dbo.spDacDistributeToStore_SelectDacCode");
+                if (dataTableStore.Rows.Count > 0)
+                {
+                    DataRow dataRow = dataTableStore.Rows[0];
+                    //a.ID, a.StoreCode, c.Name, c.[Address], c.ShopKeeper AS OwnerName, c.MobileNum,
+                    //c.Email, a.ProductCode, b.DacCode
+                    string sTable = "<table class='table table-bordered'>";
+                    sTable += "<tr><th>Ngày xuất</th><td>" + dataRow["CreatedDate"] + "</td></tr>" + 
+                        "<tr><th>Mã cửa hàng</th><td>" + dataRow["StoreCode"] + "</td></tr>" +
+                        "<tr><th>Tên cửa hàng</th><td>" + dataRow["Name"] + "</td></tr>" +
+                        "<tr><th>Địa chỉ</th><td>" + dataRow["Address"] + "</td></tr>" +
+                        "<tr><th>Chủ cửa hàng</th><td>" + dataRow["OwnerName"] + "</td></tr>" +
+                        "<tr><th>Mobile</th><td>" + dataRow["MobileNum"] + "</td></tr>" +
+                        "<tr><th>Email</th><td>" + dataRow["Email"] + "</td></tr>" +
+                        "<tr><th>Mã sản phẩm</th><td>" + dataRow["ProductCode"] + "</td></tr>";
+                    sTable += "</table>";
+                    storeLabel.Text = sTable;
+                    sProductCode = dataRow["ProductCode"].ToString();
+                }
+                else
+                {
+                    storeLabel.Text = "Không có thông tin về cửa hàng đối với mã này";
+                }
+                // Nhan thong tin ve san pham
+                if (sProductCode.Length != 0)
+                {
+                    dacDb.CreateNewSqlCommand();
+                    dacDb.AddParameter("@Code", sProductCode);
+                    dacDb.AddParameter("@Name", string.Empty);
+                    DataTable dataTableProduct = dacDb.ExecuteDataTable("spDacProduct_SelectByCode");
+                    if (dataTableProduct.Rows.Count > 0)
+                    {
+                        DataRow dataRow = dataTableProduct.Rows[0];
+                        //a.ID, a.StoreCode, c.Name, c.[Address], c.ShopKeeper AS OwnerName, c.MobileNum,
+                        //c.Email, a.ProductCode, b.DacCode
+                        string sTable = "<table class='table table-bordered'>" +
+                            "<tr><th>Mã sản phẩm</th><td>" + dataRow["Code"] + "</td></tr>" +
+                            "<tr><th>Tên sản phẩm</th><td>" + dataRow["Name"] + "</td></tr>" +
+                            "<tr><th>Nhóm sản phẩm</th><td>" + dataRow["ProductCategoryName"] + "</td></tr>" +
+                            "<tr><th>Số đăng ký</th><td>" + dataRow["RegisterNumber"] + "</td></tr>" +
+                            "<tr><th>Nhà sản xuất</th><td>" + dataRow["Manufacture"] + "</td></tr>" +
+                            "<tr><th>Quy cách</th><td>" + dataRow["GeneralFormat"] + "</td></tr>";
+                        sTable += "</table>";
+                        productLabel.Text = sTable;
+                    }
+                    else
+                    {
+                        productLabel.Text = "Không có thông tin về sản phẩm!";
+                    }
+                }
+                else
+                {
+                    productLabel.Text = "Không có thông tin về sản phẩm!";
+                }
+                thongBaoLabel.Visible = false;
+            }
+            else
+            {
+                thongBaoLabel.Visible = true;
+                thongBaoLabel.Text = @"<div class='alert alert-danger fade in'>
+                  <a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
+                  <strong>Chưa đăng nhập!</strong> Bạn vui lòng đăng nhập trước khi truy vấn.
+                  </div>";
+            }
+        }
+    }
+}

@@ -1,0 +1,494 @@
+﻿namespace PIPT
+{
+    partial class frmReportPackage
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmReportPackage));
+            this.panelControl2 = new DevExpress.XtraEditors.PanelControl();
+            this.gridControlReport = new DevExpress.XtraGrid.GridControl();
+            this.gridViewReport = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.gridColumnID = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnCreatedDate = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnPackageCode = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnProductCode = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnProductName = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnQuantity = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnDacCode = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colBatch = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colFactoryCode = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colPersonPackaged = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumnDescription = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.panelControl1 = new DevExpress.XtraEditors.PanelControl();
+            this.labelControl4 = new DevExpress.XtraEditors.LabelControl();
+            this.textEditQuantity = new DevExpress.XtraEditors.TextEdit();
+            this.simpleButtonImport = new DevExpress.XtraEditors.SimpleButton();
+            this.simpleButtonContainer = new DevExpress.XtraEditors.SimpleButton();
+            this.checkEditPackageCode = new DevExpress.XtraEditors.CheckEdit();
+            this.simpleButtonPrint = new DevExpress.XtraEditors.SimpleButton();
+            this.simpleButtonExcel = new DevExpress.XtraEditors.SimpleButton();
+            this.simpleButtonGetData = new DevExpress.XtraEditors.SimpleButton();
+            this.comboBoxEditChooseType = new DevExpress.XtraEditors.ComboBoxEdit();
+            this.labelControlTo = new DevExpress.XtraEditors.LabelControl();
+            this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
+            this.labelControl2 = new DevExpress.XtraEditors.LabelControl();
+            this.labelControl3 = new DevExpress.XtraEditors.LabelControl();
+            this.labelControlFrom = new DevExpress.XtraEditors.LabelControl();
+            this.textEditPackageCode = new DevExpress.XtraEditors.TextEdit();
+            this.textEditSeries = new DevExpress.XtraEditors.TextEdit();
+            this.textEdiProductCode = new DevExpress.XtraEditors.TextEdit();
+            this.dateEditFr = new DevExpress.XtraEditors.DateEdit();
+            this.dateEditTo = new DevExpress.XtraEditors.DateEdit();
+            ((System.ComponentModel.ISupportInitialize)(this.panelControl2)).BeginInit();
+            this.panelControl2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridControlReport)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridViewReport)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).BeginInit();
+            this.panelControl1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.textEditQuantity.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.checkEditPackageCode.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.comboBoxEditChooseType.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.textEditPackageCode.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.textEditSeries.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.textEdiProductCode.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dateEditFr.Properties.CalendarTimeProperties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dateEditFr.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dateEditTo.Properties.CalendarTimeProperties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dateEditTo.Properties)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // panelControl2
+            // 
+            this.panelControl2.Controls.Add(this.gridControlReport);
+            this.panelControl2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelControl2.Location = new System.Drawing.Point(0, 94);
+            this.panelControl2.Name = "panelControl2";
+            this.panelControl2.Size = new System.Drawing.Size(1152, 436);
+            this.panelControl2.TabIndex = 4;
+            // 
+            // gridControlReport
+            // 
+            this.gridControlReport.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gridControlReport.Location = new System.Drawing.Point(2, 2);
+            this.gridControlReport.MainView = this.gridViewReport;
+            this.gridControlReport.Name = "gridControlReport";
+            this.gridControlReport.Size = new System.Drawing.Size(1148, 432);
+            this.gridControlReport.TabIndex = 0;
+            this.gridControlReport.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.gridViewReport});
+            // 
+            // gridViewReport
+            // 
+            this.gridViewReport.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.gridColumnID,
+            this.gridColumnCreatedDate,
+            this.gridColumnPackageCode,
+            this.gridColumnProductCode,
+            this.gridColumnProductName,
+            this.gridColumnQuantity,
+            this.gridColumnDacCode,
+            this.colBatch,
+            this.colFactoryCode,
+            this.colPersonPackaged,
+            this.gridColumnDescription});
+            this.gridViewReport.GridControl = this.gridControlReport;
+            this.gridViewReport.Name = "gridViewReport";
+            this.gridViewReport.OptionsSelection.CheckBoxSelectorColumnWidth = 30;
+            this.gridViewReport.OptionsSelection.MultiSelect = true;
+            this.gridViewReport.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
+            this.gridViewReport.OptionsSelection.ShowCheckBoxSelectorInColumnHeader = DevExpress.Utils.DefaultBoolean.True;
+            this.gridViewReport.OptionsView.ShowAutoFilterRow = true;
+            this.gridViewReport.OptionsView.ShowGroupPanel = false;
+            // 
+            // gridColumnID
+            // 
+            this.gridColumnID.Caption = "ID";
+            this.gridColumnID.FieldName = "ID";
+            this.gridColumnID.Name = "gridColumnID";
+            this.gridColumnID.Visible = true;
+            this.gridColumnID.VisibleIndex = 1;
+            this.gridColumnID.Width = 57;
+            // 
+            // gridColumnCreatedDate
+            // 
+            this.gridColumnCreatedDate.Caption = "Ngày tạo";
+            this.gridColumnCreatedDate.FieldName = "CreatedDate";
+            this.gridColumnCreatedDate.Name = "gridColumnCreatedDate";
+            this.gridColumnCreatedDate.Visible = true;
+            this.gridColumnCreatedDate.VisibleIndex = 2;
+            this.gridColumnCreatedDate.Width = 80;
+            // 
+            // gridColumnPackageCode
+            // 
+            this.gridColumnPackageCode.Caption = "Mã thùng";
+            this.gridColumnPackageCode.FieldName = "PackageCode";
+            this.gridColumnPackageCode.Name = "gridColumnPackageCode";
+            this.gridColumnPackageCode.Visible = true;
+            this.gridColumnPackageCode.VisibleIndex = 3;
+            this.gridColumnPackageCode.Width = 98;
+            // 
+            // gridColumnProductCode
+            // 
+            this.gridColumnProductCode.Caption = "Mã SP";
+            this.gridColumnProductCode.FieldName = "ProductCode";
+            this.gridColumnProductCode.Name = "gridColumnProductCode";
+            this.gridColumnProductCode.OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
+            this.gridColumnProductCode.Visible = true;
+            this.gridColumnProductCode.VisibleIndex = 4;
+            this.gridColumnProductCode.Width = 91;
+            // 
+            // gridColumnProductName
+            // 
+            this.gridColumnProductName.Caption = "Tên SP";
+            this.gridColumnProductName.FieldName = "ProductName";
+            this.gridColumnProductName.Name = "gridColumnProductName";
+            this.gridColumnProductName.OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
+            this.gridColumnProductName.Visible = true;
+            this.gridColumnProductName.VisibleIndex = 5;
+            this.gridColumnProductName.Width = 177;
+            // 
+            // gridColumnQuantity
+            // 
+            this.gridColumnQuantity.Caption = "Số lượng";
+            this.gridColumnQuantity.FieldName = "Quantity";
+            this.gridColumnQuantity.Name = "gridColumnQuantity";
+            this.gridColumnQuantity.Visible = true;
+            this.gridColumnQuantity.VisibleIndex = 6;
+            this.gridColumnQuantity.Width = 50;
+            // 
+            // gridColumnDacCode
+            // 
+            this.gridColumnDacCode.Caption = "Mã QRCode";
+            this.gridColumnDacCode.FieldName = "DacCode";
+            this.gridColumnDacCode.Name = "gridColumnDacCode";
+            this.gridColumnDacCode.Visible = true;
+            this.gridColumnDacCode.VisibleIndex = 11;
+            this.gridColumnDacCode.Width = 89;
+            // 
+            // colBatch
+            // 
+            this.colBatch.Caption = "Số lô";
+            this.colBatch.FieldName = "Batch";
+            this.colBatch.Name = "colBatch";
+            this.colBatch.Visible = true;
+            this.colBatch.VisibleIndex = 7;
+            this.colBatch.Width = 61;
+            // 
+            // colFactoryCode
+            // 
+            this.colFactoryCode.Caption = "Nơi đóng";
+            this.colFactoryCode.FieldName = "FactoryCode";
+            this.colFactoryCode.Name = "colFactoryCode";
+            this.colFactoryCode.Visible = true;
+            this.colFactoryCode.VisibleIndex = 8;
+            this.colFactoryCode.Width = 109;
+            // 
+            // colPersonPackaged
+            // 
+            this.colPersonPackaged.Caption = "Người đóng";
+            this.colPersonPackaged.FieldName = "PersonPackaged";
+            this.colPersonPackaged.Name = "colPersonPackaged";
+            this.colPersonPackaged.Visible = true;
+            this.colPersonPackaged.VisibleIndex = 9;
+            this.colPersonPackaged.Width = 119;
+            // 
+            // gridColumnDescription
+            // 
+            this.gridColumnDescription.Caption = "Ghi chú";
+            this.gridColumnDescription.FieldName = "Description";
+            this.gridColumnDescription.Name = "gridColumnDescription";
+            this.gridColumnDescription.Visible = true;
+            this.gridColumnDescription.VisibleIndex = 10;
+            this.gridColumnDescription.Width = 169;
+            // 
+            // panelControl1
+            // 
+            this.panelControl1.Controls.Add(this.labelControl4);
+            this.panelControl1.Controls.Add(this.textEditQuantity);
+            this.panelControl1.Controls.Add(this.simpleButtonImport);
+            this.panelControl1.Controls.Add(this.simpleButtonContainer);
+            this.panelControl1.Controls.Add(this.checkEditPackageCode);
+            this.panelControl1.Controls.Add(this.simpleButtonPrint);
+            this.panelControl1.Controls.Add(this.simpleButtonExcel);
+            this.panelControl1.Controls.Add(this.simpleButtonGetData);
+            this.panelControl1.Controls.Add(this.comboBoxEditChooseType);
+            this.panelControl1.Controls.Add(this.labelControlTo);
+            this.panelControl1.Controls.Add(this.labelControl1);
+            this.panelControl1.Controls.Add(this.labelControl2);
+            this.panelControl1.Controls.Add(this.labelControl3);
+            this.panelControl1.Controls.Add(this.labelControlFrom);
+            this.panelControl1.Controls.Add(this.textEditPackageCode);
+            this.panelControl1.Controls.Add(this.textEditSeries);
+            this.panelControl1.Controls.Add(this.textEdiProductCode);
+            this.panelControl1.Controls.Add(this.dateEditFr);
+            this.panelControl1.Controls.Add(this.dateEditTo);
+            this.panelControl1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelControl1.Location = new System.Drawing.Point(0, 0);
+            this.panelControl1.Name = "panelControl1";
+            this.panelControl1.Size = new System.Drawing.Size(1152, 94);
+            this.panelControl1.TabIndex = 3;
+            // 
+            // labelControl4
+            // 
+            this.labelControl4.Location = new System.Drawing.Point(206, 69);
+            this.labelControl4.Name = "labelControl4";
+            this.labelControl4.Size = new System.Drawing.Size(42, 13);
+            this.labelControl4.TabIndex = 11;
+            this.labelControl4.Text = "SL thùng";
+            // 
+            // textEditQuantity
+            // 
+            this.textEditQuantity.EditValue = "10";
+            this.textEditQuantity.Location = new System.Drawing.Point(254, 66);
+            this.textEditQuantity.Name = "textEditQuantity";
+            this.textEditQuantity.Size = new System.Drawing.Size(116, 20);
+            this.textEditQuantity.TabIndex = 12;
+            // 
+            // simpleButtonImport
+            // 
+            this.simpleButtonImport.Location = new System.Drawing.Point(462, 62);
+            this.simpleButtonImport.Name = "simpleButtonImport";
+            this.simpleButtonImport.Size = new System.Drawing.Size(116, 27);
+            this.simpleButtonImport.TabIndex = 10;
+            this.simpleButtonImport.Text = "Chuyển nhập kho";
+            this.simpleButtonImport.Click += new System.EventHandler(this.simpleButtonImport_Click);
+            // 
+            // simpleButtonContainer
+            // 
+            this.simpleButtonContainer.Location = new System.Drawing.Point(63, 62);
+            this.simpleButtonContainer.Name = "simpleButtonContainer";
+            this.simpleButtonContainer.Size = new System.Drawing.Size(116, 27);
+            this.simpleButtonContainer.TabIndex = 10;
+            this.simpleButtonContainer.Text = "Chuyển đóng kiện";
+            this.simpleButtonContainer.Click += new System.EventHandler(this.simpleButtonContainer_Click);
+            // 
+            // checkEditPackageCode
+            // 
+            this.checkEditPackageCode.Location = new System.Drawing.Point(607, 42);
+            this.checkEditPackageCode.Name = "checkEditPackageCode";
+            this.checkEditPackageCode.Properties.Caption = "Chỉ mã thùng";
+            this.checkEditPackageCode.Size = new System.Drawing.Size(87, 19);
+            this.checkEditPackageCode.TabIndex = 9;
+            // 
+            // simpleButtonPrint
+            // 
+            this.simpleButtonPrint.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("simpleButtonPrint.ImageOptions.Image")));
+            this.simpleButtonPrint.Location = new System.Drawing.Point(712, 38);
+            this.simpleButtonPrint.Name = "simpleButtonPrint";
+            this.simpleButtonPrint.Size = new System.Drawing.Size(87, 27);
+            this.simpleButtonPrint.TabIndex = 8;
+            this.simpleButtonPrint.Text = "In mã";
+            this.simpleButtonPrint.Click += new System.EventHandler(this.simpleButtonPrint_Click);
+            // 
+            // simpleButtonExcel
+            // 
+            this.simpleButtonExcel.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("simpleButtonExcel.ImageOptions.Image")));
+            this.simpleButtonExcel.Location = new System.Drawing.Point(712, 7);
+            this.simpleButtonExcel.Name = "simpleButtonExcel";
+            this.simpleButtonExcel.Size = new System.Drawing.Size(87, 27);
+            this.simpleButtonExcel.TabIndex = 7;
+            this.simpleButtonExcel.Text = "Xuất Excel";
+            this.simpleButtonExcel.Click += new System.EventHandler(this.simpleButtonExcel_Click);
+            // 
+            // simpleButtonGetData
+            // 
+            this.simpleButtonGetData.Location = new System.Drawing.Point(607, 8);
+            this.simpleButtonGetData.Name = "simpleButtonGetData";
+            this.simpleButtonGetData.Size = new System.Drawing.Size(87, 27);
+            this.simpleButtonGetData.TabIndex = 6;
+            this.simpleButtonGetData.Text = "Nhận dữ liệu";
+            this.simpleButtonGetData.Click += new System.EventHandler(this.simpleButtonGetData_Click);
+            // 
+            // comboBoxEditChooseType
+            // 
+            this.comboBoxEditChooseType.EditValue = "Mã code";
+            this.comboBoxEditChooseType.Location = new System.Drawing.Point(462, 11);
+            this.comboBoxEditChooseType.Name = "comboBoxEditChooseType";
+            this.comboBoxEditChooseType.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.comboBoxEditChooseType.Properties.Items.AddRange(new object[] {
+            "Mã code",
+            "Số lượng"});
+            this.comboBoxEditChooseType.Size = new System.Drawing.Size(130, 20);
+            this.comboBoxEditChooseType.TabIndex = 2;
+            // 
+            // labelControlTo
+            // 
+            this.labelControlTo.Location = new System.Drawing.Point(201, 15);
+            this.labelControlTo.Name = "labelControlTo";
+            this.labelControlTo.Size = new System.Drawing.Size(47, 13);
+            this.labelControlTo.TabIndex = 2;
+            this.labelControlTo.Text = "Đến ngày";
+            // 
+            // labelControl1
+            // 
+            this.labelControl1.Location = new System.Drawing.Point(12, 40);
+            this.labelControl1.Name = "labelControl1";
+            this.labelControl1.Size = new System.Drawing.Size(45, 13);
+            this.labelControl1.TabIndex = 2;
+            this.labelControl1.Text = "Mã thùng";
+            // 
+            // labelControl2
+            // 
+            this.labelControl2.Location = new System.Drawing.Point(381, 40);
+            this.labelControl2.Name = "labelControl2";
+            this.labelControl2.Size = new System.Drawing.Size(75, 13);
+            this.labelControl2.TabIndex = 2;
+            this.labelControl2.Text = "Serial sản phẩm";
+            // 
+            // labelControl3
+            // 
+            this.labelControl3.Location = new System.Drawing.Point(185, 40);
+            this.labelControl3.Name = "labelControl3";
+            this.labelControl3.Size = new System.Drawing.Size(63, 13);
+            this.labelControl3.TabIndex = 2;
+            this.labelControl3.Text = "Mã sản phẩm";
+            // 
+            // labelControlFrom
+            // 
+            this.labelControlFrom.Location = new System.Drawing.Point(17, 14);
+            this.labelControlFrom.Name = "labelControlFrom";
+            this.labelControlFrom.Size = new System.Drawing.Size(40, 13);
+            this.labelControlFrom.TabIndex = 2;
+            this.labelControlFrom.Text = "Từ ngày";
+            // 
+            // textEditPackageCode
+            // 
+            this.textEditPackageCode.Location = new System.Drawing.Point(63, 37);
+            this.textEditPackageCode.Name = "textEditPackageCode";
+            this.textEditPackageCode.Size = new System.Drawing.Size(116, 20);
+            this.textEditPackageCode.TabIndex = 3;
+            // 
+            // textEditSeries
+            // 
+            this.textEditSeries.Location = new System.Drawing.Point(462, 37);
+            this.textEditSeries.Name = "textEditSeries";
+            this.textEditSeries.Size = new System.Drawing.Size(130, 20);
+            this.textEditSeries.TabIndex = 5;
+            // 
+            // textEdiProductCode
+            // 
+            this.textEdiProductCode.Location = new System.Drawing.Point(254, 37);
+            this.textEdiProductCode.Name = "textEdiProductCode";
+            this.textEdiProductCode.Size = new System.Drawing.Size(116, 20);
+            this.textEdiProductCode.TabIndex = 4;
+            // 
+            // dateEditFr
+            // 
+            this.dateEditFr.EditValue = new System.DateTime(2017, 2, 28, 0, 0, 0, 0);
+            this.dateEditFr.Location = new System.Drawing.Point(63, 12);
+            this.dateEditFr.Name = "dateEditFr";
+            this.dateEditFr.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.dateEditFr.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.dateEditFr.Size = new System.Drawing.Size(101, 20);
+            this.dateEditFr.TabIndex = 0;
+            // 
+            // dateEditTo
+            // 
+            this.dateEditTo.Cursor = System.Windows.Forms.Cursors.Default;
+            this.dateEditTo.EditValue = new System.DateTime(2017, 2, 28, 0, 0, 0, 0);
+            this.dateEditTo.Location = new System.Drawing.Point(254, 12);
+            this.dateEditTo.Name = "dateEditTo";
+            this.dateEditTo.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.dateEditTo.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.dateEditTo.Size = new System.Drawing.Size(113, 20);
+            this.dateEditTo.TabIndex = 1;
+            // 
+            // frmReportPackage
+            // 
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.ClientSize = new System.Drawing.Size(1152, 530);
+            this.Controls.Add(this.panelControl2);
+            this.Controls.Add(this.panelControl1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Name = "frmReportPackage";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Danh sách sản phẩm đóng thùng";
+            this.Load += new System.EventHandler(this.frmReportPackage_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.panelControl2)).EndInit();
+            this.panelControl2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.gridControlReport)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridViewReport)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).EndInit();
+            this.panelControl1.ResumeLayout(false);
+            this.panelControl1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.textEditQuantity.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.checkEditPackageCode.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.comboBoxEditChooseType.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.textEditPackageCode.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.textEditSeries.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.textEdiProductCode.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dateEditFr.Properties.CalendarTimeProperties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dateEditFr.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dateEditTo.Properties.CalendarTimeProperties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dateEditTo.Properties)).EndInit();
+            this.ResumeLayout(false);
+
+        }
+
+        #endregion
+
+        private DevExpress.XtraEditors.PanelControl panelControl2;
+        private DevExpress.XtraGrid.GridControl gridControlReport;
+        private DevExpress.XtraGrid.Views.Grid.GridView gridViewReport;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnID;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnCreatedDate;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnProductCode;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnProductName;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnQuantity;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnDacCode;
+        private DevExpress.XtraEditors.PanelControl panelControl1;
+        private DevExpress.XtraEditors.SimpleButton simpleButtonExcel;
+        private DevExpress.XtraEditors.SimpleButton simpleButtonGetData;
+        private DevExpress.XtraEditors.ComboBoxEdit comboBoxEditChooseType;
+        private DevExpress.XtraEditors.LabelControl labelControlTo;
+        private DevExpress.XtraEditors.LabelControl labelControl3;
+        private DevExpress.XtraEditors.LabelControl labelControlFrom;
+        private DevExpress.XtraEditors.TextEdit textEdiProductCode;
+        private DevExpress.XtraEditors.DateEdit dateEditFr;
+        private DevExpress.XtraEditors.DateEdit dateEditTo;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnPackageCode;
+        private DevExpress.XtraEditors.LabelControl labelControl1;
+        private DevExpress.XtraEditors.LabelControl labelControl2;
+        private DevExpress.XtraEditors.TextEdit textEditPackageCode;
+        private DevExpress.XtraEditors.TextEdit textEditSeries;
+        private DevExpress.XtraEditors.SimpleButton simpleButtonPrint;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnDescription;
+        private DevExpress.XtraEditors.CheckEdit checkEditPackageCode;
+        private DevExpress.XtraEditors.SimpleButton simpleButtonImport;
+        private DevExpress.XtraEditors.SimpleButton simpleButtonContainer;
+        private DevExpress.XtraEditors.LabelControl labelControl4;
+        private DevExpress.XtraEditors.TextEdit textEditQuantity;
+        private DevExpress.XtraGrid.Columns.GridColumn colBatch;
+        private DevExpress.XtraGrid.Columns.GridColumn colFactoryCode;
+        private DevExpress.XtraGrid.Columns.GridColumn colPersonPackaged;
+    }
+}

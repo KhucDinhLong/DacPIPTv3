@@ -1,0 +1,808 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{5FCD91FC-398C-400A-B24E-0E975F81DDA4}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PIPT</RootNamespace>
+    <AssemblyName>PIPTV3</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>dac_logo.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AnyClone, Version=1.1.6.0, Culture=neutral, PublicKeyToken=ce8a1a9d68396c39, processorArchitecture=MSIL">
+      <HintPath>..\packages\AnyClone.1.1.6\lib\net45\AnyClone.dll</HintPath>
+    </Reference>
+    <Reference Include="CDiese, Version=1.0.2861.20828, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\CDiese.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Charts.v19.1.Core, Version=19.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Data.v19.1, Version=19.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.DataAccess.v19.1, Version=19.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Office.v19.1.Core, Version=19.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.PivotGrid.v19.1.Core, Version=19.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Pdf.v19.1.Core, Version=19.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.RichEdit.v19.1.Export, Version=19.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Printing.v19.1.Core, Version=19.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.RichEdit.v19.1.Core, Version=19.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Sparkline.v19.1.Core, Version=19.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Utils.v19.1, Version=19.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Utils.v19.1.UI, Version=19.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Xpo.v19.1, Version=19.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraBars.v19.1, Version=19.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraCharts.v19.1, Version=19.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraEditors.v19.1, Version=19.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraGauges.v19.1.Core, Version=19.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraGrid.v19.1, Version=19.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraLayout.v19.1, Version=19.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraPrinting.v19.1, Version=19.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.CodeParser.v19.1, Version=19.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraReports.v19.1, Version=19.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraReports.v19.1.Extensions, Version=19.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="ExcelDataReader, Version=3.6.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelDataReader.3.6.0\lib\net45\ExcelDataReader.dll</HintPath>
+    </Reference>
+    <Reference Include="ExcelDataReader.DataSet, Version=3.6.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelDataReader.DataSet.3.6.0\lib\net35\ExcelDataReader.DataSet.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Office.Interop.Excel.15.0.4795.1000\lib\net20\Microsoft.Office.Interop.Excel.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.6\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard1.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.6\lib\net45\System.Web.Helpers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=5.2.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.6\lib\net45\System.Web.Http.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.6\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.6\lib\net45\System.Web.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.6\lib\net45\System.Web.WebPages.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.6\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.6\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Unity.Abstractions, Version=5.11.7.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.5.11.10\lib\net45\Unity.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Container, Version=5.11.11.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.5.11.10\lib\net45\Unity.Container.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ApiHelper.cs" />
+    <Compile Include="Catalogue\frmDacAgency.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Catalogue\frmDacAgency.Designer.cs">
+      <DependentUpon>frmDacAgency.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Catalogue\frmDacFactory.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Catalogue\frmDacFactory.Designer.cs">
+      <DependentUpon>frmDacFactory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Catalogue\frmDacProduct.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Catalogue\frmDacProduct.designer.cs">
+      <DependentUpon>frmDacProduct.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Catalogue\frmDacSellCount.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Catalogue\frmDacSellCount.designer.cs">
+      <DependentUpon>frmDacSellCount.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Catalogue\frmDacStore.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Catalogue\frmDacStore.Designer.cs">
+      <DependentUpon>frmDacStore.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Catalogue\frmDacCatalogue.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Catalogue\frmDacCatalogue.designer.cs">
+      <DependentUpon>frmDacCatalogue.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Catalogue\frmDacRegion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Catalogue\frmDacRegion.designer.cs">
+      <DependentUpon>frmDacRegion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Catalogue\frmStock.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Catalogue\frmStock.designer.cs">
+      <DependentUpon>frmStock.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Common.cs" />
+    <Compile Include="DependencyInjectionConfig.cs" />
+    <Compile Include="ExcelDataTransformService.cs" />
+    <Compile Include="Package\frmDacContainer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Package\frmDacContainer.designer.cs">
+      <DependentUpon>frmDacContainer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Package\frmDacLockPackage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Package\frmDacLockPackage.Designer.cs">
+      <DependentUpon>frmDacLockPackage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Package\frmDacPackage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Package\frmDacPackage.designer.cs">
+      <DependentUpon>frmDacPackage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Package\frmDacPackageGroup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Package\frmDacPackageGroup.designer.cs">
+      <DependentUpon>frmDacPackageGroup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Package\XtraReportPackage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Package\XtraReportPackage.Designer.cs">
+      <DependentUpon>XtraReportPackage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Package\XtraReportPackageQR.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Package\XtraReportPackageQR.Designer.cs">
+      <DependentUpon>XtraReportPackageQR.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Report\ContainerQRCode.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Report\ContainerQRCode.Designer.cs">
+      <DependentUpon>ContainerQRCode.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Report\frmCompareImportExport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Report\frmCompareImportExport.Designer.cs">
+      <DependentUpon>frmCompareImportExport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Report\frmExportToAgencyDetailReport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Report\frmExportToAgencyDetailReport.Designer.cs">
+      <DependentUpon>frmExportToAgencyDetailReport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Report\frmExportToStoreDetailReport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Report\frmExportToStoreDetailReport.Designer.cs">
+      <DependentUpon>frmExportToStoreDetailReport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Report\frmPackageDetailReport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Report\frmPackageDetailReport.Designer.cs">
+      <DependentUpon>frmPackageDetailReport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Report\frmReportActivateAddingPoint.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Report\frmReportActivateAddingPoint.Designer.cs">
+      <DependentUpon>frmReportActivateAddingPoint.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Report\frmReportExportInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Report\frmReportExportInfo.Designer.cs">
+      <DependentUpon>frmReportExportInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Report\frmReportExportInfoToStore.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Report\frmReportExportInfoToStore.Designer.cs">
+      <DependentUpon>frmReportExportInfoToStore.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Report\frmReportFactory.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Report\frmReportFactory.Designer.cs">
+      <DependentUpon>frmReportFactory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Report\frmReportImExStock.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Report\frmReportImExStock.Designer.cs">
+      <DependentUpon>frmReportImExStock.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Report\frmReportImExStockBaseStock.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Report\frmReportImExStockBaseStock.Designer.cs">
+      <DependentUpon>frmReportImExStockBaseStock.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Report\frmReportImExStockInThisYear.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Report\frmReportImExStockInThisYear.Designer.cs">
+      <DependentUpon>frmReportImExStockInThisYear.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Report\frmReportPackage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Report\frmReportPackage.designer.cs">
+      <DependentUpon>frmReportPackage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Report\frmReportWarehouse.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Report\frmReportWarehouse.designer.cs">
+      <DependentUpon>frmReportWarehouse.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Report\frmWarehouseTatal.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Report\frmWarehouseTatal.Designer.cs">
+      <DependentUpon>frmWarehouseTatal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Report\frmImportDetailReport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Report\frmImportDetailReport.Designer.cs">
+      <DependentUpon>frmImportDetailReport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Report\PackageQRCode.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Report\PackageQRCode.Designer.cs">
+      <DependentUpon>PackageQRCode.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Security\frmAuthorization.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Security\frmAuthorization.Designer.cs">
+      <DependentUpon>frmAuthorization.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Security\frmConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Security\frmConfig.Designer.cs">
+      <DependentUpon>frmConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Security\frmDacBackupRestore.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Security\frmDacBackupRestore.Designer.cs">
+      <DependentUpon>frmDacBackupRestore.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Security\frmGrantStock.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Security\frmGrantStock.Designer.cs">
+      <DependentUpon>frmGrantStock.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\frmDacInventory.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\frmDacInventory.designer.cs">
+      <DependentUpon>frmDacInventory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\frmDacDistributeToAgency.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\frmDacDistributeToAgency.designer.cs">
+      <DependentUpon>frmDacDistributeToAgency.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\frmDacDistributeToFactory.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\frmDacDistributeToFactory.designer.cs">
+      <DependentUpon>frmDacDistributeToFactory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\frmDacDistributeToStore.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\frmDacDistributeToStore.designer.cs">
+      <DependentUpon>frmDacDistributeToStore.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\frmDacGetData.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\frmDacGetData.Designer.cs">
+      <DependentUpon>frmDacGetData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\frmDacGetSerial.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\frmDacGetSerial.Designer.cs">
+      <DependentUpon>frmDacGetSerial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Catalogue\frmDacProductUnit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Catalogue\frmDacProductUnit.Designer.cs">
+      <DependentUpon>frmDacProductUnit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\frmDacChecking.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\frmDacChecking.Designer.cs">
+      <DependentUpon>frmDacChecking.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Security\frmChangePassword.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Security\frmChangePassword.Designer.cs">
+      <DependentUpon>frmChangePassword.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmMain.Designer.cs">
+      <DependentUpon>frmMain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Security\frmLogin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Security\frmLogin.designer.cs">
+      <DependentUpon>frmLogin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Security\frmDacLogBook.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Security\frmDacLogBook.Designer.cs">
+      <DependentUpon>frmDacLogBook.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Security\frmGroup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Security\frmGroup.Designer.cs">
+      <DependentUpon>frmGroup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Security\frmUser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Security\frmUser.Designer.cs">
+      <DependentUpon>frmUser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\frmDacInsertSerial.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\frmDacInsertSerial.Designer.cs">
+      <DependentUpon>frmDacInsertSerial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\frmDacDeleteCode.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\frmDacDeleteCode.designer.cs">
+      <DependentUpon>frmDacDeleteCode.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\frmDacProductWarehouse.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\frmDacProductWarehouse.designer.cs">
+      <DependentUpon>frmDacProductWarehouse.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\frmDacLockDistributor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\frmDacLockDistributor.Designer.cs">
+      <DependentUpon>frmDacLockDistributor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\ucDataButton.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\ucDataButton.designer.cs">
+      <DependentUpon>ucDataButton.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WaitForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WaitForm.designer.cs">
+      <DependentUpon>WaitForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Catalogue\frmDacAgency.resx">
+      <DependentUpon>frmDacAgency.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Catalogue\frmDacFactory.resx">
+      <DependentUpon>frmDacFactory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Catalogue\frmDacProduct.resx">
+      <DependentUpon>frmDacProduct.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Catalogue\frmDacSellCount.resx">
+      <DependentUpon>frmDacSellCount.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Catalogue\frmDacStore.resx">
+      <DependentUpon>frmDacStore.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Catalogue\frmDacCatalogue.resx">
+      <DependentUpon>frmDacCatalogue.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Catalogue\frmDacRegion.resx">
+      <DependentUpon>frmDacRegion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Catalogue\frmStock.resx">
+      <DependentUpon>frmStock.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Package\frmDacContainer.resx">
+      <DependentUpon>frmDacContainer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Package\frmDacLockPackage.resx">
+      <DependentUpon>frmDacLockPackage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Package\frmDacPackage.resx">
+      <DependentUpon>frmDacPackage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Package\frmDacPackageGroup.resx">
+      <DependentUpon>frmDacPackageGroup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Package\XtraReportPackage.resx">
+      <DependentUpon>XtraReportPackage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Package\XtraReportPackageQR.resx">
+      <DependentUpon>XtraReportPackageQR.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\licenses.licx" />
+    <EmbeddedResource Include="Report\ContainerQRCode.resx">
+      <DependentUpon>ContainerQRCode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\frmCompareImportExport.resx">
+      <DependentUpon>frmCompareImportExport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\frmExportToAgencyDetailReport.resx">
+      <DependentUpon>frmExportToAgencyDetailReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\frmExportToStoreDetailReport.resx">
+      <DependentUpon>frmExportToStoreDetailReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\frmPackageDetailReport.resx">
+      <DependentUpon>frmPackageDetailReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\frmReportActivateAddingPoint.resx">
+      <DependentUpon>frmReportActivateAddingPoint.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\frmReportExportInfo.resx">
+      <DependentUpon>frmReportExportInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\frmReportExportInfoToStore.resx">
+      <DependentUpon>frmReportExportInfoToStore.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\frmReportFactory.resx">
+      <DependentUpon>frmReportFactory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\frmReportImExStock.resx">
+      <DependentUpon>frmReportImExStock.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\frmReportImExStockBaseStock.resx">
+      <DependentUpon>frmReportImExStockBaseStock.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\frmReportImExStockInThisYear.resx">
+      <DependentUpon>frmReportImExStockInThisYear.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\frmReportPackage.resx">
+      <DependentUpon>frmReportPackage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\frmReportWarehouse.resx">
+      <DependentUpon>frmReportWarehouse.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\frmWarehouseTatal.resx">
+      <DependentUpon>frmWarehouseTatal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\frmImportDetailReport.resx">
+      <DependentUpon>frmImportDetailReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\PackageQRCode.resx">
+      <DependentUpon>PackageQRCode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Security\frmAuthorization.resx">
+      <DependentUpon>frmAuthorization.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Security\frmConfig.resx">
+      <DependentUpon>frmConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Security\frmDacBackupRestore.resx">
+      <DependentUpon>frmDacBackupRestore.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Security\frmGrantStock.resx">
+      <DependentUpon>frmGrantStock.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\frmDacInventory.resx">
+      <DependentUpon>frmDacInventory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\frmDacDistributeToAgency.resx">
+      <DependentUpon>frmDacDistributeToAgency.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\frmDacDistributeToFactory.resx">
+      <DependentUpon>frmDacDistributeToFactory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\frmDacDistributeToStore.resx">
+      <DependentUpon>frmDacDistributeToStore.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\frmDacGetData.resx">
+      <DependentUpon>frmDacGetData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\frmDacGetSerial.resx">
+      <DependentUpon>frmDacGetSerial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Catalogue\frmDacProductUnit.resx">
+      <DependentUpon>frmDacProductUnit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\frmDacChecking.resx">
+      <DependentUpon>frmDacChecking.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Security\frmChangePassword.resx">
+      <DependentUpon>frmChangePassword.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Security\frmLogin.resx">
+      <DependentUpon>frmLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmMain.resx">
+      <DependentUpon>frmMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="Security\frmDacLogBook.resx">
+      <DependentUpon>frmDacLogBook.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Security\frmGroup.resx">
+      <DependentUpon>frmGroup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Security\frmUser.resx">
+      <DependentUpon>frmUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\frmDacInsertSerial.resx">
+      <DependentUpon>frmDacInsertSerial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\frmDacDeleteCode.resx">
+      <DependentUpon>frmDacDeleteCode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\frmDacProductWarehouse.resx">
+      <DependentUpon>frmDacProductWarehouse.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\frmDacLockDistributor.resx">
+      <DependentUpon>frmDacLockDistributor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\ucDataButton.resx">
+      <DependentUpon>ucDataButton.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WaitForm.resx">
+      <DependentUpon>WaitForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DAC.Core.Security\DAC.Core.Security.csproj">
+      <Project>{7363ac1b-fbf8-41f7-82fc-b024691e5f04}</Project>
+      <Name>DAC.Core.Security</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DAC.Core\DAC.Core.csproj">
+      <Project>{5ac2473f-13c9-4199-9b68-d9fa9ba2dbce}</Project>
+      <Name>DAC.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DAC.DAL\DAC.DAL.csproj">
+      <Project>{1D9A161D-7FC7-4707-9B15-D1BCF9E5ABD9}</Project>
+      <Name>DAC.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PIPT Track\PIPT.Track.csproj">
+      <Project>{e1138cf6-b26e-4df5-b988-edde0bf7c8f3}</Project>
+      <Name>PIPT.Track</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\about.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Add1616.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Back1212.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Cancel1616.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Delete1616.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Excel.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\help.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Image2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Image6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\login.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Module.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Password.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Printer.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ProgramOff.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\refresh16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Save1616.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\search1616.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SelectedModule.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\submit1616.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\update1616.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\users.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="dac_logo.ico" />
+    <None Include="Resources\Button-Play-icon 16x16.png" />
+    <Content Include="Resources\dacicon.ico" />
+    <Content Include="Resources\PleaseWait.gif" />
+    <Content Include="Resources\PleaseWaitGreen.gif" />
+    <None Include="Resources\Up2_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="Microsoft.Office.Core">
+      <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>8</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="Microsoft.Office.Interop.Excel">
+      <Guid>{00020813-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>9</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="VBIDE">
+      <Guid>{0002E157-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>5</VersionMajor>
+      <VersionMinor>3</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,279 @@
+﻿using DAC.Core;
+using DAC.Core.Security;
+using DAC.DAL;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
+
+namespace PIPT
+{
+    public partial class frmGrantStock : Form
+    {
+        #region Instance of the form
+        /// <summary>
+        /// Instance to store instance of this form
+        /// </summary>
+        private static frmGrantStock _instance = null;
+
+        /// <summary>
+        /// Instance form.
+        /// </summary>
+        /// <returns>Instance of this Form</returns>
+        public static frmGrantStock Instance()
+        {
+            if (_instance == null || _instance.IsDisposed)
+            {
+                _instance = new frmGrantStock();
+            }
+            return _instance;
+        }
+
+        public static frmGrantStock Instance(Form parent)
+        {
+            _instance = Instance();
+            _instance.MdiParent = parent;
+            return _instance;
+        }
+
+        public static frmGrantStock Instance(Form parent, bool isActivate)
+        {
+            _instance = Instance(parent);
+            if (isActivate)
+            {
+                _instance.WindowState = FormWindowState.Normal;
+                _instance.Show();
+                _instance.Activate();
+            }
+            return _instance;
+        }
+        #endregion
+        #region Variables
+        private const string sSpace = "      ";//6
+        private bool bIsAutoCheck = false;
+        private bool bIsClickCheckAll = false;
+        private int nCheckedItemsCount = 0;
+
+        TreeNode tnUserSelectedNode = null;
+
+        private bool isProgrammingCheckedListView = true;
+        private bool isProgrammingSelectedTreeNode = true;
+        #endregion
+        public frmGrantStock()
+        {
+            InitializeComponent();
+        }
+
+        private void frmGrantStock_Load(object sender, EventArgs e)
+        {
+            DisplayUsers();
+            DisplayStocks();
+            //Set Authorization
+            ucDataButtonGrantStock.EditVisible = true;
+        }
+        #region TreeView Users
+        /// <summary>
+        /// DisplayUsers
+        /// </summary>
+        private void DisplayUsers()
+        {
+            isProgrammingSelectedTreeNode = true;
+            treeViewUser.Nodes.Clear();
+            treeViewUser.ImageIndex = 0;
+            treeViewUser.SelectedImageIndex = 1;
+            UserCollection stockList = new UserBS().GetListUser();
+            foreach (User objUser in stockList)
+            {
+                TreeNode tnGroup = new TreeNode(objUser.LoginID);
+                tnGroup.Tag = objUser.LoginID;
+                treeViewUser.Nodes.Add(tnGroup);
+            }
+            isProgrammingSelectedTreeNode = false;
+        }
+        private void treeViewUser_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            DisplayGrantedStockUser();
+        }
+        private void DisplayGrantedStockUser()
+        {
+            isProgrammingCheckedListView = true;
+            nCheckedItemsCount = 0;
+
+            if (isProgrammingSelectedTreeNode) return;
+
+            StockUserCollection stockUserCollection = new StockUserCollection();
+            StockUserBS stockUserBS = new StockUserBS();
+            UserBS userBS = new UserBS();
+            if (treeViewUser.SelectedNode != null)
+            {
+                object sLoginID = treeViewUser.SelectedNode.Tag;
+                tnUserSelectedNode = treeViewUser.SelectedNode;
+                if (userBS.IsAdminUser(sLoginID.ToString()))
+                {
+                    checkBoxSelectAll.Checked = true;
+                }
+                else
+                {
+                    checkBoxSelectAll.Checked = false;
+                    stockUserCollection = stockUserBS.GetStockUserCollectionByLoginID(sLoginID.ToString());
+                    for(int i = 0; i < listViewStockUser.Items.Count; i++)
+                    {
+                        listViewStockUser.Items[i].Checked = CheckedStockUser(listViewStockUser.Items[i].Tag.ToString(), stockUserCollection);
+                    }
+                }
+                isProgrammingCheckedListView = false;
+            }
+        }
+        private bool CheckedStockUser(string strockID, StockUserCollection stockUserCollection)
+        {
+            foreach(StockUser stockUser in stockUserCollection)
+            {
+                if(strockID == stockUser.StockID)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        private bool CheckedStockUser(string strockID, List<StockUser> lstStockUserCollection)
+        {
+            foreach (StockUser stockUser in lstStockUserCollection)
+            {
+                if (strockID == stockUser.StockID)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        private void DisplayStocks()
+        {
+            if (treeViewUser == null) return;
+
+            listViewStockUser.Items.Clear();
+
+            DacStockCS dacStockBS = new DacStockCS();
+            List<DacStock> dacStockCollection = dacStockBS.GetListStock(string.Empty, string.Empty, string.Empty, string.Empty, CommonBS.CurrentUser.LoginID);
+            foreach (DacStock stock in dacStockCollection)
+            {
+                ListViewItem item = new ListViewItem();
+                item.Text = stock.Name;
+                item.Tag = stock.Code;
+
+                listViewStockUser.Items.Add(item);
+            }
+        }
+        #endregion
+
+        #region ListView Stock
+        private void checkBoxSelectAll_CheckedChanged(object sender, EventArgs e)
+        {
+            if (bIsAutoCheck) return;
+
+            bIsClickCheckAll = true;
+            if (checkBoxSelectAll.Checked)
+                nCheckedItemsCount = listViewStockUser.Items.Count;
+            else
+                nCheckedItemsCount = 0;
+
+            for (int i = 0; i < listViewStockUser.Items.Count; i++)
+            {
+                listViewStockUser.Items[i].Checked = checkBoxSelectAll.Checked;
+            }
+
+            bIsClickCheckAll = false;
+        }
+        private void listViewStockUser_ItemChecked(object sender, ItemCheckedEventArgs e)
+        {
+            if (isProgrammingCheckedListView) return;
+
+            if (e.Item.Checked)
+            {
+                if (bIsClickCheckAll == false)
+                    nCheckedItemsCount++;
+            }
+            else
+            {
+                if (bIsClickCheckAll == false)
+                    nCheckedItemsCount--;
+            }
+
+            if (bIsClickCheckAll == false)
+            {
+                bIsAutoCheck = true;
+                if (nCheckedItemsCount < listViewStockUser.Items.Count)
+                    checkBoxSelectAll.Checked = false;
+                else
+                    checkBoxSelectAll.Checked = true;
+                bIsAutoCheck = false;
+            }
+        }
+        #endregion
+
+        #region Button's Events
+        private void ucDataButtonStockUser_EditHandler()
+        {
+            listViewStockUser.Enabled = true;
+        }
+
+        private void ucDataButtonStockUser_SaveHandler()
+        {
+            // Lưu nhật ký
+            CommonBO.Instance().TraceLogEvent("Update Stock-User: " + CommonBS.CurrentUser.LoginID, CommonBS.CurrentUser.LoginID);
+            Common objCommon = new Common();
+            objCommon.CurrentForm = this;
+            objCommon.CurrentFormMethodInvoker = SaveStockUser;
+            objCommon.App_ShowWaitForm(DataState.Insert);
+        }
+        private void SaveStockUser()
+        {
+            this.UpdateStockUser();
+            listViewStockUser.Enabled = false;
+            ucDataButtonGrantStock.DataMode = DataState.View;
+        }
+        private bool UpdateStockUser()
+        {
+            List<StockUser> lstTempStockUser = new List<StockUser>();
+            List<StockUser> lstAddedStockUser = new List<StockUser>();
+            List<StockUser> lstDeletedStockUser = new List<StockUser>();
+            // Lay danh sach cac Stock luu trong database
+            StockUserBS stockUserBS = new StockUserBS();
+            StockUserCollection stockUserCollection = stockUserBS.GetStockUserCollectionByLoginID(tnUserSelectedNode.Tag.ToString());
+            // Duyet tren listView nhung Stock duoc checked
+            for (int i = 0; i < listViewStockUser.Items.Count; i++)
+            {
+                if (listViewStockUser.Items[i].Checked)
+                {
+                    StockUser stockUser = new StockUser();
+                    stockUser.LoginID = tnUserSelectedNode.Tag.ToString();
+                    stockUser.StockID = listViewStockUser.Items[i].Tag.ToString();
+                    lstTempStockUser.Add(stockUser);
+                }
+            }
+            // Lay danh sach cac stock bi xoa
+            foreach (StockUser stockUser in stockUserCollection)
+            {
+                if (CheckedStockUser(stockUser.StockID, lstTempStockUser))
+                {
+                    // Neu mot item trong database da ton tai trong listAdded thi loai khoi danh sach
+                    var tempStockUser = lstTempStockUser.SingleOrDefault(s => s.StockID == stockUser.StockID);
+                    lstTempStockUser.Remove(tempStockUser);
+                }
+                else
+                {
+                    // Neu mot item trong database khong ton tai trong listAdded thi se xoa di
+                    lstDeletedStockUser.Add(stockUser);
+                }
+            }
+            lstAddedStockUser = lstTempStockUser;
+            // Luu lai vao co so du lieu
+            DAC.DAL.DacDbAccess dacDb = new DAC.DAL.DacDbAccess();
+            return stockUserBS.UpdateStockUser(dacDb, lstAddedStockUser, lstDeletedStockUser);
+        }
+        private void ucDataButtonStockUser_CancelHandler()
+        {
+            listViewStockUser.Enabled = false;
+        }
+        #endregion
+    }
+}

@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7363AC1B-FBF8-41F7-82FC-B024691E5F04}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DAC.Core.Security</RootNamespace>
+    <AssemblyName>DAC.Core.Security</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BusinessService\AuthorizationBS.cs" />
+    <Compile Include="BusinessLogic\Authorization.cs" />
+    <Compile Include="BusinessLogic\Group.cs" />
+    <Compile Include="BusinessLogic\GroupAuthorization.cs" />
+    <Compile Include="BusinessLogic\GroupUser.cs" />
+    <Compile Include="BusinessLogic\Menu.cs" />
+    <Compile Include="BusinessLogic\MenuGroup.cs" />
+    <Compile Include="BusinessLogic\Module.cs" />
+    <Compile Include="BusinessService\GroupBS.cs" />
+    <Compile Include="BusinessService\StockUserBS.cs" />
+    <Compile Include="Common\CheckedListBoxItem.cs" />
+    <Compile Include="Common\FormName.cs" />
+    <Compile Include="Common\CommonBS.cs" />
+    <Compile Include="Common\AuthorizationAttribute.cs" />
+    <Compile Include="BusinessService\ModuleBS.cs" />
+    <Compile Include="BusinessService\MenuBS.cs" />
+    <Compile Include="BusinessService\MenuGroupBS.cs" />
+    <Compile Include="BusinessService\GroupUserBS.cs" />
+    <Compile Include="Common\MethodBrowsableAttribute.cs" />
+    <Compile Include="Common\MethodDescriptionAttribute.cs" />
+    <Compile Include="Common\ModuleType.cs" />
+    <Compile Include="BusinessService\GroupAuthorizationBS.cs" />
+    <Compile Include="BusinessLogic\GrantStockUser.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="BusinessLogic\User.cs" />
+    <Compile Include="BusinessService\SecurityManager.cs" />
+    <Compile Include="BusinessService\UserBS.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\DAC.Core\DAC.Core.csproj">
+      <Project>{5ac2473f-13c9-4199-9b68-d9fa9ba2dbce}</Project>
+      <Name>DAC.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DAC.DAL\DAC.DAL.csproj">
+      <Project>{727ab376-3a5b-48c2-8d08-895a1f13f7f3}</Project>
+      <Name>DAC.DAL</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

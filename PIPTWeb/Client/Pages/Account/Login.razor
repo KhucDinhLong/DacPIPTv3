@@ -1,0 +1,53 @@
+﻿@page "/login"
+@inject Services.DataStorageService dataStorage
+@layout LoginLayout
+
+<body class="hold-transition login-page">
+    @if (showAuthError)
+    {
+        <div class="alert alert-danger">
+            <p>@Error</p>
+        </div>
+    }
+    <div class="login-box">
+        <!-- /.login-logo -->
+        <div class="card card-outline card-primary">
+            <div class="card-header text-center">
+                <a href="http://appprintco.com/"><img src="dist/img/logo.png" /></a> <span class="text-bold">HỆ THỐNG APP</span>
+            </div>
+            <div class="card-body">
+                <EditForm Model="loginModel" OnValidSubmit="ExecuteLogin">
+                    <DataAnnotationsValidator />
+                    <div class="input-group mb-3">
+                        <InputText id="userName" placeholder="Tài khoản" class="form-control" @bind-Value="loginModel.UserName" />
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-user"></span>
+                            </div>
+                        </div>
+                        <div class="input-group mb-3">
+                            <ValidationMessage For="@(() => loginModel.UserName)" />
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <InputText type="password" id="password" placeholder="Mật khẩu" class="form-control" @bind-Value="loginModel.Password" />
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-lock"></span>
+                            </div>
+                        </div>
+                        <div class="input-group mb-3">
+                            <ValidationMessage For="@(() => loginModel.Password)" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-primary btn-block text-center">Đăng nhập</button>
+                        </div>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</body>
+

@@ -1,0 +1,220 @@
+﻿using DAC.Core;
+using DAC.DAL;
+using DevExpress.XtraReports.UI;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace PIPT
+{
+    public partial class frmReportPackage : Form
+    {
+        #region Instance of the form
+        /// <summary>
+        /// Instance to store instance of this form
+        /// </summary>
+        private static frmReportPackage _instance = null;
+
+        /// <summary>
+        /// Instance form.
+        /// </summary>
+        /// <returns>Instance of this Form</returns>
+        public static frmReportPackage Instance()
+        {
+            if (_instance == null || _instance.IsDisposed)
+            {
+                _instance = new frmReportPackage();
+            }
+            return _instance;
+        }
+
+        public static frmReportPackage Instance(Form parent)
+        {
+            _instance = Instance();
+            _instance.MdiParent = parent;
+            return _instance;
+        }
+
+        public static frmReportPackage Instance(Form parent, bool isActivate)
+        {
+            _instance = Instance(parent);
+            if (isActivate)
+            {
+                _instance.WindowState = FormWindowState.Normal;
+                _instance.Show();
+                _instance.Activate();
+            }
+            return _instance;
+        }
+        #endregion
+        #region Variables
+        DacDbAccess dacDb = new DacDbAccess();
+        #endregion
+        public frmReportPackage()
+        {
+            InitializeComponent();
+        }
+        private void simpleButtonGetData_Click(object sender, EventArgs e)
+        {
+            dacDb.CreateNewSqlCommand();
+            dacDb.AddParameter("@FrDate", dateEditFr.EditValue);
+            dacDb.AddParameter("@ToDate", dateEditTo.EditValue);
+            dacDb.AddParameter("@PackageCode", textEditPackageCode.Text);
+            dacDb.AddParameter("@ProductCode", textEdiProductCode.Text);
+            dacDb.AddParameter("@DacCode", textEditSeries.Text);
+            DataTable dataTablePackage = new DataTable();
+            switch (comboBoxEditChooseType.SelectedIndex)
+            {
+                case 0: // Xuat ra the ma qrcodestring sProductCode = string.Empty;
+                    dataTablePackage = dacDb.ExecuteDataTable("spDacPackage_SelectJoin");
+                    break;
+                case 1: // Xuat ra theo so luong
+                    dataTablePackage = dacDb.ExecuteDataTable("spDacPackage_SelectQuantity");
+                    break;
+            }
+            gridControlReport.DataSource = dataTablePackage;
+        }
+
+        private void simpleButtonExcel_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog fileDialog = new SaveFileDialog();
+            fileDialog.Filter = "Excel 2007-2016(*.xlsx)|*.xlsx";
+
+            if (fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                //gridViewAgency.ExportToXlsx(@"\khachhang.xlsx");
+                gridViewReport.ExportToXlsx(fileDialog.FileName);
+            }
+        }
+
+        private void frmReportPackage_Load(object sender, EventArgs e)
+        {
+            dateEditFr.EditValue = DateTime.Now;
+            dateEditTo.EditValue = DateTime.Now.AddDays(1);
+        }
+
+        private void simpleButtonPrint_Click(object sender, EventArgs e)
+        {
+            if (gridViewReport.SelectedRowsCount > 0)
+            {
+                DacPackageCollection dacPackages = this.GetDacPackages();
+                if (checkEditPackageCode.Checked)
+                {
+                    Package.XtraReportPackageQR reportPackage = new Package.XtraReportPackageQR();
+                    reportPackage.GetDataToPrint(dacPackages);
+                    reportPackage.ShowPreview();
+                }
+                else
+                {
+                    Package.XtraReportPackage reportPackage = new Package.XtraReportPackage();
+                    reportPackage.GetDataToPrint(dacPackages);
+                    reportPackage.ShowPreview();
+                }
+            }
+        }
+
+        private DacPackageCollection GetDacPackages()
+        {
+            DacPackageCollection dacPackages = new DacPackageCollection();
+            if (gridViewReport.SelectedRowsCount > 0)
+            {
+                int[] selectedRows = gridViewReport.GetSelectedRows();
+
+                for (int i = 0; i < selectedRows.Length; i++)
+                {
+                    int rowHandle = selectedRows[i];
+                    if (!gridViewReport.IsGroupRow(rowHandle))
+                    {
+                        DacPackage package = new DacPackage();
+                        package.CreatedDate = (DateTime)gridViewReport.GetRowCellValue(rowHandle, gridColumnCreatedDate);
+                        package.PackageCode = (string)gridViewReport.GetRowCellValue(rowHandle, gridColumnPackageCode);
+                        package.ProductCode = (string)gridViewReport.GetRowCellValue(rowHandle, gridColumnProductCode);
+                        package.Description = (string)gridViewReport.GetRowCellValue(rowHandle, gridColumnProductName);
+                        package.Quantity = (int)gridViewReport.GetRowCellValue(rowHandle, gridColumnQuantity);
+
+                        dacPackages.Add(package);
+                    }
+                }
+            }
+
+            return dacPackages;
+        }
+
+        private void simpleButtonContainer_Click(object sender, EventArgs e)
+        {
+            DacPackageCollection dacPackages = this.GetDacPackages();
+            if (dacPackages.Count > 0)
+            {
+                if(comboBoxEditChooseType.SelectedIndex == 0)
+                {
+                    MessageBox.Show("Bạn chỉ chọn được chọn \"Số lượng\" để đóng kiện!", "PIPT - Thông báo", MessageBoxButtons.OK);
+                    comboBoxEditChooseType.Focus();
+                    return;
+                }
+                IList<string> productCodes = (from packagge in dacPackages
+                                              select packagge.ProductCode).Distinct().ToList();
+                if(productCodes.Count() > 1)
+                {
+                    MessageBox.Show("Bạn chỉ chọn được 1 loại sản phẩm!", "PIPT - Thông báo", MessageBoxButtons.OK);
+                    return;
+                }
+                DacContainerDetailsCollection distributeDetailsCollection = new DacContainerDetailsCollection();
+                foreach(DacPackage package in dacPackages)
+                {
+                    DacContainerDetails containerDetails = new DacContainerDetails();
+                    containerDetails.ID = -1;
+                    containerDetails.ContainerId = -1;
+                    containerDetails.PackageCode = package.PackageCode;
+
+                    distributeDetailsCollection.Add(containerDetails);
+                }
+                frmDacContainer container = new frmDacContainer();
+                container.ProductCode = productCodes[0];
+                container.iQuantity = Convert.ToInt32(textEditQuantity.Text);
+                container.Show();
+                container.CreateContainterFromPackage(distributeDetailsCollection);
+            }
+        }
+
+        private void simpleButtonImport_Click(object sender, EventArgs e)
+        {
+            DacPackageCollection dacPackages = this.GetDacPackages();
+            if (dacPackages.Count > 0)
+            {
+                if (comboBoxEditChooseType.SelectedIndex == 0)
+                {
+                    MessageBox.Show("Bạn chỉ chọn được chọn \"Số lượng\" để nhập kho!", "PIPT - Thông báo", MessageBoxButtons.OK);
+                    comboBoxEditChooseType.Focus();
+                    return;
+                }
+                IList<string> productCodes = (from packagge in dacPackages
+                                              select packagge.ProductCode).Distinct().ToList();
+                if (productCodes.Count() > 1)
+                {
+                    MessageBox.Show("Bạn chỉ chọn được 1 loại sản phẩm!", "PIPT - Thông báo", MessageBoxButtons.OK);
+                    return;
+                }
+                DacContainerDetailsCollection distributeDetailsCollection = new DacContainerDetailsCollection();
+                foreach (DacPackage package in dacPackages)
+                {
+                    DacContainerDetails containerDetails = new DacContainerDetails();
+                    containerDetails.ID = -1;
+                    containerDetails.ContainerId = -1;
+                    containerDetails.PackageCode = package.PackageCode;
+
+                    distributeDetailsCollection.Add(containerDetails);
+                }
+                frmDacProductWarehouse warehouse = new frmDacProductWarehouse();
+                warehouse.ProductCode = productCodes[0];
+                warehouse.Show();
+                warehouse.CreateImportFromPackage(distributeDetailsCollection);
+            }
+        }
+    }
+}

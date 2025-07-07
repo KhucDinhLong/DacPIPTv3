@@ -1,0 +1,197 @@
+﻿namespace PIPT
+{
+    partial class frmDacInsertSerial
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmDacInsertSerial));
+            this.groupBoxDacInsertSerial = new System.Windows.Forms.GroupBox();
+            this.dataGridViewLoadDacCode = new System.Windows.Forms.DataGridView();
+            this.ColLoadSTT = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColLoadDacCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColLoadSeries = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.labelAmount = new System.Windows.Forms.Label();
+            this.buttonSave = new System.Windows.Forms.Button();
+            this.buttonBrowseFile = new System.Windows.Forms.Button();
+            this.dataGridViewDacInsertSerial = new System.Windows.Forms.DataGridView();
+            this.ColID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColDacCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColSeries = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.groupBoxDacInsertSerial.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLoadDacCode)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewDacInsertSerial)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // groupBoxDacInsertSerial
+            // 
+            this.groupBoxDacInsertSerial.Controls.Add(this.dataGridViewLoadDacCode);
+            this.groupBoxDacInsertSerial.Controls.Add(this.labelAmount);
+            this.groupBoxDacInsertSerial.Controls.Add(this.buttonSave);
+            this.groupBoxDacInsertSerial.Controls.Add(this.buttonBrowseFile);
+            this.groupBoxDacInsertSerial.Location = new System.Drawing.Point(12, 12);
+            this.groupBoxDacInsertSerial.Name = "groupBoxDacInsertSerial";
+            this.groupBoxDacInsertSerial.Size = new System.Drawing.Size(465, 266);
+            this.groupBoxDacInsertSerial.TabIndex = 0;
+            this.groupBoxDacInsertSerial.TabStop = false;
+            this.groupBoxDacInsertSerial.Text = "Nạp danh sách";
+            // 
+            // dataGridViewLoadDacCode
+            // 
+            this.dataGridViewLoadDacCode.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewLoadDacCode.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.ColLoadSTT,
+            this.ColLoadDacCode,
+            this.ColLoadSeries});
+            this.dataGridViewLoadDacCode.Location = new System.Drawing.Point(6, 48);
+            this.dataGridViewLoadDacCode.Name = "dataGridViewLoadDacCode";
+            this.dataGridViewLoadDacCode.RowHeadersVisible = false;
+            this.dataGridViewLoadDacCode.Size = new System.Drawing.Size(372, 212);
+            this.dataGridViewLoadDacCode.TabIndex = 2;
+            // 
+            // ColLoadSTT
+            // 
+            this.ColLoadSTT.DataPropertyName = "STT";
+            this.ColLoadSTT.HeaderText = "STT";
+            this.ColLoadSTT.Name = "ColLoadSTT";
+            this.ColLoadSTT.Width = 70;
+            // 
+            // ColLoadDacCode
+            // 
+            this.ColLoadDacCode.DataPropertyName = "DacCode";
+            this.ColLoadDacCode.HeaderText = "DacCode";
+            this.ColLoadDacCode.Name = "ColLoadDacCode";
+            this.ColLoadDacCode.Width = 160;
+            // 
+            // ColLoadSeries
+            // 
+            this.ColLoadSeries.DataPropertyName = "Series";
+            this.ColLoadSeries.HeaderText = "Series";
+            this.ColLoadSeries.Name = "ColLoadSeries";
+            this.ColLoadSeries.Width = 120;
+            // 
+            // labelAmount
+            // 
+            this.labelAmount.AutoSize = true;
+            this.labelAmount.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelAmount.Location = new System.Drawing.Point(87, 22);
+            this.labelAmount.Name = "labelAmount";
+            this.labelAmount.Size = new System.Drawing.Size(56, 15);
+            this.labelAmount.TabIndex = 1;
+            this.labelAmount.Text = "Số lượng";
+            // 
+            // buttonSave
+            // 
+            this.buttonSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonSave.Location = new System.Drawing.Point(384, 236);
+            this.buttonSave.Name = "buttonSave";
+            this.buttonSave.Size = new System.Drawing.Size(75, 24);
+            this.buttonSave.TabIndex = 0;
+            this.buttonSave.Text = "Lưu";
+            this.buttonSave.UseVisualStyleBackColor = true;
+            this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
+            // 
+            // buttonBrowseFile
+            // 
+            this.buttonBrowseFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonBrowseFile.Location = new System.Drawing.Point(6, 18);
+            this.buttonBrowseFile.Name = "buttonBrowseFile";
+            this.buttonBrowseFile.Size = new System.Drawing.Size(75, 24);
+            this.buttonBrowseFile.TabIndex = 0;
+            this.buttonBrowseFile.Text = "Duyệt file";
+            this.buttonBrowseFile.UseVisualStyleBackColor = true;
+            this.buttonBrowseFile.Click += new System.EventHandler(this.buttonBrowseFile_Click);
+            // 
+            // dataGridViewDacInsertSerial
+            // 
+            this.dataGridViewDacInsertSerial.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewDacInsertSerial.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.ColID,
+            this.ColDacCode,
+            this.ColSeries});
+            this.dataGridViewDacInsertSerial.Location = new System.Drawing.Point(18, 284);
+            this.dataGridViewDacInsertSerial.Name = "dataGridViewDacInsertSerial";
+            this.dataGridViewDacInsertSerial.Size = new System.Drawing.Size(453, 270);
+            this.dataGridViewDacInsertSerial.TabIndex = 1;
+            // 
+            // ColID
+            // 
+            this.ColID.DataPropertyName = "ID";
+            this.ColID.HeaderText = "ID";
+            this.ColID.Name = "ColID";
+            this.ColID.Width = 70;
+            // 
+            // ColDacCode
+            // 
+            this.ColDacCode.DataPropertyName = "DacCode";
+            this.ColDacCode.HeaderText = "DacCode";
+            this.ColDacCode.Name = "ColDacCode";
+            this.ColDacCode.Width = 160;
+            // 
+            // ColSeries
+            // 
+            this.ColSeries.DataPropertyName = "Series";
+            this.ColSeries.HeaderText = "Series";
+            this.ColSeries.Name = "ColSeries";
+            this.ColSeries.Width = 120;
+            // 
+            // frmDacInsertSerial
+            // 
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.ClientSize = new System.Drawing.Size(489, 566);
+            this.Controls.Add(this.dataGridViewDacInsertSerial);
+            this.Controls.Add(this.groupBoxDacInsertSerial);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.Name = "frmDacInsertSerial";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Nhập danh sách serial";
+            this.groupBoxDacInsertSerial.ResumeLayout(false);
+            this.groupBoxDacInsertSerial.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLoadDacCode)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewDacInsertSerial)).EndInit();
+            this.ResumeLayout(false);
+
+        }
+
+        #endregion
+
+        private System.Windows.Forms.GroupBox groupBoxDacInsertSerial;
+        private System.Windows.Forms.Label labelAmount;
+        private System.Windows.Forms.Button buttonSave;
+        private System.Windows.Forms.Button buttonBrowseFile;
+        private System.Windows.Forms.DataGridView dataGridViewDacInsertSerial;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColID;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColDacCode;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColSeries;
+        private System.Windows.Forms.DataGridView dataGridViewLoadDacCode;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColLoadSTT;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColLoadDacCode;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColLoadSeries;
+    }
+}

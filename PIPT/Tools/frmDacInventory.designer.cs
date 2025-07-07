@@ -1,0 +1,295 @@
+﻿namespace PIPT
+{
+    partial class frmDacInventory
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmDacInventory));
+            this.groupBoxStore = new System.Windows.Forms.GroupBox();
+            this.panelStore = new System.Windows.Forms.Panel();
+            this.cbbStock = new System.Windows.Forms.ComboBox();
+            this.cbbProduct = new System.Windows.Forms.ComboBox();
+            this.txtQuantity = new System.Windows.Forms.TextBox();
+            this.txtYear = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.labelName = new System.Windows.Forms.Label();
+            this.labelCode = new System.Windows.Forms.Label();
+            this.grvInventory = new System.Windows.Forms.DataGridView();
+            this.colID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colProductName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colStockName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colQuantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colYear = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colProductCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colStockID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ucDataButtonStore = new PIPT.ucDataButton();
+            this.groupBoxStore.SuspendLayout();
+            this.panelStore.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.grvInventory)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // groupBoxStore
+            // 
+            this.groupBoxStore.Controls.Add(this.panelStore);
+            this.groupBoxStore.Controls.Add(this.grvInventory);
+            this.groupBoxStore.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBoxStore.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBoxStore.Location = new System.Drawing.Point(0, 0);
+            this.groupBoxStore.Name = "groupBoxStore";
+            this.groupBoxStore.Size = new System.Drawing.Size(504, 396);
+            this.groupBoxStore.TabIndex = 1;
+            this.groupBoxStore.TabStop = false;
+            this.groupBoxStore.Text = "Thông tin";
+            // 
+            // panelStore
+            // 
+            this.panelStore.Controls.Add(this.cbbStock);
+            this.panelStore.Controls.Add(this.cbbProduct);
+            this.panelStore.Controls.Add(this.txtQuantity);
+            this.panelStore.Controls.Add(this.txtYear);
+            this.panelStore.Controls.Add(this.label2);
+            this.panelStore.Controls.Add(this.label1);
+            this.panelStore.Controls.Add(this.labelName);
+            this.panelStore.Controls.Add(this.labelCode);
+            this.panelStore.Location = new System.Drawing.Point(3, 20);
+            this.panelStore.Name = "panelStore";
+            this.panelStore.Size = new System.Drawing.Size(497, 118);
+            this.panelStore.TabIndex = 9;
+            // 
+            // cbbStock
+            // 
+            this.cbbStock.FormattingEnabled = true;
+            this.cbbStock.Location = new System.Drawing.Point(89, 31);
+            this.cbbStock.Name = "cbbStock";
+            this.cbbStock.Size = new System.Drawing.Size(217, 21);
+            this.cbbStock.TabIndex = 1;
+            // 
+            // cbbProduct
+            // 
+            this.cbbProduct.FormattingEnabled = true;
+            this.cbbProduct.Location = new System.Drawing.Point(89, 4);
+            this.cbbProduct.Name = "cbbProduct";
+            this.cbbProduct.Size = new System.Drawing.Size(217, 21);
+            this.cbbProduct.TabIndex = 0;
+            // 
+            // txtQuantity
+            // 
+            this.txtQuantity.Location = new System.Drawing.Point(89, 58);
+            this.txtQuantity.Name = "txtQuantity";
+            this.txtQuantity.Size = new System.Drawing.Size(100, 21);
+            this.txtQuantity.TabIndex = 2;
+            // 
+            // txtYear
+            // 
+            this.txtYear.Location = new System.Drawing.Point(89, 85);
+            this.txtYear.Name = "txtYear";
+            this.txtYear.Size = new System.Drawing.Size(100, 21);
+            this.txtYear.TabIndex = 3;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(15, 88);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(28, 13);
+            this.label2.TabIndex = 4;
+            this.label2.Text = "Năm";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(16, 61);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(68, 13);
+            this.label1.TabIndex = 4;
+            this.label1.Text = "Số lượng tồn";
+            // 
+            // labelName
+            // 
+            this.labelName.AutoSize = true;
+            this.labelName.Location = new System.Drawing.Point(15, 34);
+            this.labelName.Name = "labelName";
+            this.labelName.Size = new System.Drawing.Size(25, 13);
+            this.labelName.TabIndex = 4;
+            this.labelName.Text = "Kho";
+            // 
+            // labelCode
+            // 
+            this.labelCode.AutoSize = true;
+            this.labelCode.Location = new System.Drawing.Point(16, 7);
+            this.labelCode.Name = "labelCode";
+            this.labelCode.Size = new System.Drawing.Size(54, 13);
+            this.labelCode.TabIndex = 4;
+            this.labelCode.Text = "Sản phẩm";
+            // 
+            // grvInventory
+            // 
+            this.grvInventory.AllowUserToAddRows = false;
+            this.grvInventory.AllowUserToDeleteRows = false;
+            this.grvInventory.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.grvInventory.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colID,
+            this.colProductName,
+            this.colStockName,
+            this.colQuantity,
+            this.colYear,
+            this.colProductCode,
+            this.colStockID});
+            this.grvInventory.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.grvInventory.Location = new System.Drawing.Point(3, 144);
+            this.grvInventory.Name = "grvInventory";
+            this.grvInventory.RowHeadersVisible = false;
+            this.grvInventory.Size = new System.Drawing.Size(498, 249);
+            this.grvInventory.TabIndex = 5;
+            // 
+            // colID
+            // 
+            this.colID.DataPropertyName = "ID";
+            this.colID.HeaderText = "ID";
+            this.colID.Name = "colID";
+            this.colID.ReadOnly = true;
+            this.colID.Visible = false;
+            // 
+            // colProductName
+            // 
+            this.colProductName.DataPropertyName = "ProductName";
+            this.colProductName.HeaderText = "Sản phẩm";
+            this.colProductName.Name = "colProductName";
+            this.colProductName.ReadOnly = true;
+            this.colProductName.Width = 200;
+            // 
+            // colStockName
+            // 
+            this.colStockName.DataPropertyName = "StockName";
+            this.colStockName.HeaderText = "Kho";
+            this.colStockName.Name = "colStockName";
+            this.colStockName.ReadOnly = true;
+            this.colStockName.Width = 120;
+            // 
+            // colQuantity
+            // 
+            this.colQuantity.DataPropertyName = "Quantity";
+            this.colQuantity.HeaderText = "Số lượng tồn";
+            this.colQuantity.Name = "colQuantity";
+            // 
+            // colYear
+            // 
+            this.colYear.DataPropertyName = "Year";
+            this.colYear.HeaderText = "Năm";
+            this.colYear.Name = "colYear";
+            this.colYear.Width = 50;
+            // 
+            // colProductCode
+            // 
+            this.colProductCode.DataPropertyName = "ProductCode";
+            this.colProductCode.HeaderText = "ProductCode";
+            this.colProductCode.Name = "colProductCode";
+            this.colProductCode.ReadOnly = true;
+            this.colProductCode.Visible = false;
+            // 
+            // colStockID
+            // 
+            this.colStockID.DataPropertyName = "StockID";
+            this.colStockID.HeaderText = "StockID";
+            this.colStockID.Name = "colStockID";
+            this.colStockID.ReadOnly = true;
+            this.colStockID.Visible = false;
+            // 
+            // ucDataButtonStore
+            // 
+            this.ucDataButtonStore.AddNewVisible = true;
+            this.ucDataButtonStore.CancelVisible = true;
+            this.ucDataButtonStore.DataMode = DAC.Core.Security.DataState.View;
+            this.ucDataButtonStore.DeleteVisible = true;
+            this.ucDataButtonStore.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.ucDataButtonStore.EditVisible = true;
+            this.ucDataButtonStore.ExcelVisible = false;
+            this.ucDataButtonStore.IsContitnue = true;
+            this.ucDataButtonStore.LanguageVisible = false;
+            this.ucDataButtonStore.Location = new System.Drawing.Point(0, 396);
+            this.ucDataButtonStore.MaximumSize = new System.Drawing.Size(0, 34);
+            this.ucDataButtonStore.MinimumSize = new System.Drawing.Size(500, 34);
+            this.ucDataButtonStore.MultiLanguageVisible = false;
+            this.ucDataButtonStore.Name = "ucDataButtonStore";
+            this.ucDataButtonStore.PrintVisible = false;
+            this.ucDataButtonStore.ReportVisible = false;
+            this.ucDataButtonStore.SaveVisible = true;
+            this.ucDataButtonStore.Size = new System.Drawing.Size(504, 34);
+            this.ucDataButtonStore.TabIndex = 6;
+            this.ucDataButtonStore.InsertHandler += new PIPT.ucDataButton.DataHandler(this.ucDataButtonStore_InsertHandler);
+            this.ucDataButtonStore.EditHandler += new PIPT.ucDataButton.DataHandler(this.ucDataButtonStore_EditHandler);
+            this.ucDataButtonStore.SaveHandler += new PIPT.ucDataButton.DataHandler(this.ucDataButtonStore_SaveHandler);
+            this.ucDataButtonStore.DeleteHandler += new PIPT.ucDataButton.DataHandler(this.ucDataButtonStore_DeleteHandler);
+            this.ucDataButtonStore.CancelHandler += new PIPT.ucDataButton.DataHandler(this.ucDataButtonStore_CancelHandler);
+            this.ucDataButtonStore.CloseHandler += new PIPT.ucDataButton.DataHandler(this.ucDataButtonStore_CloseHandler);
+            // 
+            // frmDacInventory
+            // 
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.ClientSize = new System.Drawing.Size(504, 430);
+            this.Controls.Add(this.groupBoxStore);
+            this.Controls.Add(this.ucDataButtonStore);
+            this.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
+            this.Name = "frmDacInventory";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Tồn kho theo năm";
+            this.Load += new System.EventHandler(this.frmDacInventory_Load);
+            this.groupBoxStore.ResumeLayout(false);
+            this.panelStore.ResumeLayout(false);
+            this.panelStore.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.grvInventory)).EndInit();
+            this.ResumeLayout(false);
+
+        }
+
+        #endregion
+
+        private ucDataButton ucDataButtonStore;
+        private System.Windows.Forms.GroupBox groupBoxStore;
+        private System.Windows.Forms.DataGridView grvInventory;
+        private System.Windows.Forms.Panel panelStore;
+        private System.Windows.Forms.Label labelName;
+        private System.Windows.Forms.Label labelCode;
+        private System.Windows.Forms.TextBox txtQuantity;
+        private System.Windows.Forms.TextBox txtYear;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ComboBox cbbStock;
+        private System.Windows.Forms.ComboBox cbbProduct;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colID;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colProductName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colStockName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colQuantity;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colYear;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colProductCode;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colStockID;
+    }
+}

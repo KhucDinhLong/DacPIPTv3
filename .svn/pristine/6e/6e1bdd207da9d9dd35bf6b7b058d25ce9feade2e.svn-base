@@ -1,0 +1,56 @@
+﻿using System.Collections.Generic;
+
+namespace DAC.Core
+{
+    public class DacProductUnit
+    {
+        private int _Id;
+        private string _Name;
+        private string _Remark;
+
+        public DacProductUnit()
+        {
+            _Id = -1;
+            _Name = string.Empty;
+            _Remark = string.Empty;
+        }
+
+        public virtual int Id
+        {
+            get
+            {
+                return _Id;
+            }
+            set
+            {
+                _Id = value;
+            }
+        }
+        public virtual string Name
+        {
+            get
+            {
+                return _Name;
+            }
+            set
+            {
+                _Name = value;
+            }
+        }
+        public virtual string Remark
+        {
+            get
+            {
+                return _Remark;
+            }
+            set
+            {
+                _Remark = value;
+            }
+        }
+
+    }
+
+    public class DacProductUnitCollection : List<DacProductUnit>
+    { }
+}

@@ -1,0 +1,15 @@
+﻿namespace PIPT.Package
+{
+    public partial class XtraReportPackage : DevExpress.XtraReports.UI.XtraReport
+    {
+        public XtraReportPackage()
+        {
+            InitializeComponent();
+        }
+
+        public void GetDataToPrint(DAC.Core.DacPackageCollection packageCollection)
+        {
+            objectDataSource1.DataSource = packageCollection;
+        }
+    }
+}

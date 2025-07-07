@@ -1,0 +1,40 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace DAC.Core
+{
+    public class DacFactory
+    {
+        public virtual int ID { get; set; }
+        public virtual string Code { get; set; }
+        public virtual string Name { get; set; }
+        public virtual string Address { get; set; }
+        public virtual string OwnerName { get; set; }
+        public virtual string MobileNum { get; set; }
+        public virtual string Email { get; set; }
+        public virtual string Description { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public virtual string CreatedUser { get; set; }
+        public DateTime ModifiedDate { get; set; }
+        public virtual string ModifiedUser { get; set; }
+        public virtual bool Active { get; set; }
+
+        public DacFactory()
+        {
+            ID = -1;
+            Code = string.Empty;
+            Name = string.Empty;
+            Address = string.Empty;
+            OwnerName = string.Empty;
+            MobileNum = string.Empty;
+            Email = string.Empty;
+            Description = string.Empty;
+            CreatedDate = DateTime.Now;
+            CreatedUser = string.Empty;
+            ModifiedDate = DateTime.Now;
+            ModifiedUser = string.Empty;
+            Active = true;
+        }
+    }
+    public class DacFactoryCollection : List<DacFactory> { }
+}

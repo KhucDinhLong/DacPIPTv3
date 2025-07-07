@@ -1,0 +1,1 @@
+﻿<DacAgencyForm agency="agency" UserName="@UserName" IsAdmin="IsAdmin" HeaderText="Sửa thông tin khách hàng" ButtonText="Sửa" OnvalidSubmit="@(() => HandleValidSubmit())" OnClose="Close" />

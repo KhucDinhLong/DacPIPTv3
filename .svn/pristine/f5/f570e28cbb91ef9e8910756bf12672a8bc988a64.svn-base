@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+    <configSections>
+    </configSections>
+    <startup>
+        <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.5.2"/>
+    </startup>
+    <connectionStrings>
+        <add name="DacDBConn" connectionString="Data Source=.; Initial Catalog=DacPIPTDBKho; User Id=sa; Password=app123456;Connection Timeout=30" providerName="System.Data.SqlClient"/>
+        <add name="PIPT.Properties.Settings.DacPIPTDBConnectionString" connectionString="Data Source=.;Initial Catalog=DacPIPTDBKho;User ID=sa;Password=app123456;Connection Timeout=30" providerName="System.Data.SqlClient"/>
+    </connectionStrings>
+    <appSettings>
+        <add key="Username" value="cviadmin"/>
+        <add key="Password" value="cvi@dmin"/>
+        <!-- Phan loai san pham theo xuong -->
+        <add key="ProductByFactory" value="false"/>
+        <!-- So MA ky tu nam truoc so seri -->
+        <add key="PreSeri" value="DAC01"/>
+        <!--<add key="Pattern" value="http:\/\/temchonggia.com.vn\/daccheck\?serial|http:\/\/quatang.baokhikhang.vn\/\?sn"
+        < = &lt;
+        > = &gt;
+        " = &quot;
+        ' = &apos;
+        & = &amp;
+        />-->
+        <add key="Pattern" value="(http:\/\/cskh.fobic.vn|http:\/\/temchonggia.com.vn)/?(\?serial|\?sn)=[0-9a-zA-Z]{7,10}(&amp;uc=[0-9a-zA-Z]{4})?"/>
+        <add key="CompanyName" value="CÔNG TY CỔ PHẦN BAO BÌ VÀ IN NÔNG NGHIỆP"/>
+        <add key="CompanyAddress" value="Số 72 Trường Chinh - Đống Đa - Hà Nội"/>
+    </appSettings>
+  <runtime>
+    <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+      <dependentAssembly>
+        <assemblyIdentity name="Newtonsoft.Json" publicKeyToken="30ad4fe6b2a6aeed" culture="neutral"/>
+        <bindingRedirect oldVersion="0.0.0.0-12.0.0.0" newVersion="12.0.0.0"/>
+      </dependentAssembly>
+    </assemblyBinding>
+  </runtime>
+</configuration>

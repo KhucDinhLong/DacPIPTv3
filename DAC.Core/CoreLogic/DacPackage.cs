@@ -1,0 +1,33 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace DAC.Core
+{
+    //public class DacPackage
+    //{
+    //    public virtual int ID { get; set; }
+    //    public virtual DateTime CreatedDate { get; set; }
+    //    public virtual string PackageCode { get; set; }
+    //    public virtual string ProductCode { get; set; }
+    //    public virtual int Quantity { get; set; }
+    //    public virtual string FactoryCode { get; set; }
+    //    public virtual string Batch { get; set; }
+    //    public virtual string PersonPackaged { get; set; }
+    //    public virtual string Description { get; set; }
+    //    public virtual bool Active { get; set; }
+    //    public DacPackage()
+    //    {
+    //        ID = -1;
+    //        PackageCode = string.Empty;
+    //        CreatedDate = DateTime.Now;
+    //        Quantity = 0;
+    //        FactoryCode = string.Empty;
+    //        Batch = string.Empty;
+    //        PersonPackaged = string.Empty;
+    //        Description = string.Empty;
+    //        Active = true;
+    //    }
+    //}
+    //public class DacPackageCollection : List<DacPackage>
+    //{ }
+}

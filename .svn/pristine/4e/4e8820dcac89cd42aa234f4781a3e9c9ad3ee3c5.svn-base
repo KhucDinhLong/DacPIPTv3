@@ -1,0 +1,27 @@
+﻿using System.Collections.Generic;
+namespace DAC.Core
+{
+    public class DacDistributeToStoreDetails
+    {
+        public virtual long ID { get; set; }
+        public virtual string DistributorID { get; set; }
+        public virtual string DacCode { get; set; }
+        public virtual string ProductCode { get; set; }
+        public DacDistributeToStoreDetails()
+        {
+            ID = -1;
+            DistributorID = string.Empty;
+            DacCode = string.Empty;
+            ProductCode = string.Empty;
+        }
+        public DacDistributeToStoreDetails(int iID, string sDistributorID, string sDacCode, string sProductCode)
+        {
+            ID = iID;
+            DistributorID = sDistributorID;
+            DacCode = sDacCode;
+            ProductCode = sProductCode;
+        }
+    }
+    public class DacDistributeToStoreDetailsCollection : List<DacDistributeToStoreDetails>
+    { }
+}

@@ -1,0 +1,53 @@
+﻿<EditForm Model="Menu" OnValidSubmit="OnvalidSubmit">
+    <div class="modal-body">
+        <div class="card card-success">
+            <div class="card-header">
+                @HeaderText
+            </div>
+            <div class="form-horizontal">
+                <div class="card-body">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-3">Menu: </label>
+                        <div class="col-sm-9">
+                            <InputText type="text" @bind-Value="Menu.Value" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-3">Liên kết: </label>
+                        <div class="col-sm-9">
+                            <InputText type="text" @bind-Value="Menu.Link" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-3">Icon: </label>
+                        <div class="col-sm-9">
+                            <InputText type="text" @bind-Value="Menu.Icon" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-3">Menu cấp trên: </label>
+                        <div class="col-sm-9">
+                            <select @bind="Menu.ParentID" class="form-control">
+                                @foreach (var item in LstMenu)
+                                {
+                                    <option value="@item.ID">@item.Value</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary mr-auto" @onclick="OnClose">Hủy</button>
+        <button type="submit" class="btn btn-success">@ButtonText</button>
+    </div>
+</EditForm>
+

@@ -1,0 +1,17 @@
+﻿@inherits LayoutComponentBase
+@inject IJSRuntime JSRuntime
+
+<HHeader />
+<HNavMenu />
+
+@Body
+
+@code{
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JSRuntime.InvokeVoidAsync("hClassBody");
+        await JSRuntime.InvokeVoidAsync("icon");
+        await JSRuntime.InvokeVoidAsync("datatable");
+        await JSRuntime.InvokeVoidAsync("enable_tooltip");
+    }
+}

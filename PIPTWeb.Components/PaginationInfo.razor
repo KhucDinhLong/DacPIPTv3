@@ -1,0 +1,30 @@
+﻿@switch (PageType)
+{
+    case PageInfoType.Default:
+        <p>Trang @ActualPage trong tổng @TotalPages trang</p>
+        break;
+    case PageInfoType.PagePerTotal:
+        <p>Trang @ActualPage/@TotalPages</p>
+        break;
+    case PageInfoType.OnlyPage:
+        <p>@ActualPage/@TotalPages</p>
+        break;
+    case PageInfoType.Text:
+        @Text
+        break;
+}
+
+@code {
+    [Parameter] public int ActualPage { get; set; }
+    [Parameter] public int TotalPages { get; set; }
+    [Parameter] public RenderFragment Text { get; set; }
+    [Parameter] public PageInfoType PageType { get; set; }
+
+    public enum PageInfoType
+    {
+        Default,
+        PagePerTotal,
+        OnlyPage,
+        Text
+    }
+}
