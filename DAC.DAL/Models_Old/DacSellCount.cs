@@ -2,13 +2,13 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DAC.DAL
+namespace DAC.DAL.Models_Old
 {
     [Table("DacSellCount")]
     public class DacSellCount
     {
         [Key]
-        public int Id { get; set; }
+        public int ID { get; set; }
         public string UnitCode { get; set; }
         public int? SellCount { get; set; }
         public long? StartingNumber { get; set; }
