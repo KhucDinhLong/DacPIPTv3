@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DAC.DAL.Models_Old
+namespace DAC.DAL.OldVersion
 {
     [Table("DacRegion")]
     public class DacRegion

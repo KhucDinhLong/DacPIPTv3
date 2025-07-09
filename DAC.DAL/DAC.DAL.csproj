@@ -112,6 +112,7 @@
     <Compile Include="Models_Old\DacProduct.cs" />
     <Compile Include="Models_Old\DacProductCategory.cs" />
     <Compile Include="Models_Old\DacProductUnit.cs" />
+    <Compile Include="Models_Old\DacRegion.cs" />
     <Compile Include="Models_Old\DacSellCount.cs" />
     <Compile Include="Models_Old\DacStock.cs" />
     <Compile Include="Models_Old\DacStore.cs" />
@@ -127,6 +128,7 @@
     <Compile Include="Models_Old\SecModules.cs" />
     <Compile Include="Models_Old\SecStockUser.cs" />
     <Compile Include="Models_Old\SecUsers.cs" />
+    <Compile Include="PIPTOldVerDbContext.cs" />
     <Compile Include="PIPTDbContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\SecUsersService.cs" />
