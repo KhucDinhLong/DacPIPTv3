@@ -16,14 +16,14 @@ namespace PIPT
     {
         #region "Variables"
         private ISecUsersService _userService;
-        private IDacAgencyService _agencyService;
+        private IDacCustomerService _agencyService;
         private ISecGroupsService _groupService;
-        private List<DacAgencyVM> LstAgency;
+        private List<DacCustomerVM> LstAgency;
         private List<SecUsersVM> LstUser;
         private List<SecGroups> LstGroup;
         #endregion
         #region Form's Events
-        public frmUser(ISecUsersService userService, IDacAgencyService agencyService, ISecGroupsService groupsService)
+        public frmUser(ISecUsersService userService, IDacCustomerService agencyService, ISecGroupsService groupsService)
         {
             InitializeComponent();
             _userService = userService;

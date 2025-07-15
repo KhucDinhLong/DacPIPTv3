@@ -4,8 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DAC.DAL
 {
-    [Table("DacAgency")]
-    public class DacAgency
+    [Table("DacCustomer")]
+    public class DacCustomer
     {
         [Key]
         public int Id { get; set; }

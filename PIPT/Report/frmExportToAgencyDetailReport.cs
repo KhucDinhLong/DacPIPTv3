@@ -7,7 +7,7 @@ namespace PIPT.Report
 {
     public partial class frmExportToAgencyDetailReport : Form
     {
-        public DacDistributeToAgencyVM exportInfo;
+        public DacExportVM exportInfo;
         public frmExportToAgencyDetailReport()
         {
             InitializeComponent();

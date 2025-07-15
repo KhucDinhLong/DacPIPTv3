@@ -83,6 +83,7 @@
             this.tsmiReportContainer = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiReportFactory = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiReportActivateAddingPoint = new System.Windows.Forms.ToolStripMenuItem();
+            this.miRefactor = new System.Windows.Forms.ToolStripMenuItem();
             this.menuMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -111,7 +112,8 @@
             this.tsmiSecurity,
             this.tsmiDatabaseBackupRestore,
             this.frmDacLogBook,
-            this.tsmiClose});
+            this.tsmiClose,
+            this.miRefactor});
             this.tsmiSystem.Name = "tsmiSystem";
             this.tsmiSystem.Size = new System.Drawing.Size(71, 20);
             this.tsmiSystem.Text = "Hệ thống";
@@ -119,7 +121,7 @@
             // tsmiLogOff
             // 
             this.tsmiLogOff.Name = "tsmiLogOff";
-            this.tsmiLogOff.Size = new System.Drawing.Size(157, 22);
+            this.tsmiLogOff.Size = new System.Drawing.Size(187, 22);
             this.tsmiLogOff.Tag = "tsmiLogOff";
             this.tsmiLogOff.Text = "Đăng xuất";
             this.tsmiLogOff.Click += new System.EventHandler(this.MenuItems_Click);
@@ -127,7 +129,7 @@
             // tsmiChangePassword
             // 
             this.tsmiChangePassword.Name = "tsmiChangePassword";
-            this.tsmiChangePassword.Size = new System.Drawing.Size(157, 22);
+            this.tsmiChangePassword.Size = new System.Drawing.Size(187, 22);
             this.tsmiChangePassword.Tag = "frmChangePassword";
             this.tsmiChangePassword.Text = "Đổi mật khẩu";
             this.tsmiChangePassword.Click += new System.EventHandler(this.MenuItems_Click);
@@ -135,7 +137,7 @@
             // tsmiConfig
             // 
             this.tsmiConfig.Name = "tsmiConfig";
-            this.tsmiConfig.Size = new System.Drawing.Size(157, 22);
+            this.tsmiConfig.Size = new System.Drawing.Size(187, 22);
             this.tsmiConfig.Tag = "frmConfig";
             this.tsmiConfig.Text = "Cấu hình";
             this.tsmiConfig.Click += new System.EventHandler(this.MenuItems_Click);
@@ -149,7 +151,7 @@
             this.tsmiGrantStock,
             this.tsmiUpdateMenu});
             this.tsmiSecurity.Name = "tsmiSecurity";
-            this.tsmiSecurity.Size = new System.Drawing.Size(157, 22);
+            this.tsmiSecurity.Size = new System.Drawing.Size(187, 22);
             this.tsmiSecurity.Text = "Quản lý";
             // 
             // tsmiUser
@@ -195,7 +197,7 @@
             // tsmiDatabaseBackupRestore
             // 
             this.tsmiDatabaseBackupRestore.Name = "tsmiDatabaseBackupRestore";
-            this.tsmiDatabaseBackupRestore.Size = new System.Drawing.Size(157, 22);
+            this.tsmiDatabaseBackupRestore.Size = new System.Drawing.Size(187, 22);
             this.tsmiDatabaseBackupRestore.Tag = "frmDacBackupRestore";
             this.tsmiDatabaseBackupRestore.Text = "Cơ sở dữ liệu";
             this.tsmiDatabaseBackupRestore.Click += new System.EventHandler(this.MenuItems_Click);
@@ -203,7 +205,7 @@
             // frmDacLogBook
             // 
             this.frmDacLogBook.Name = "frmDacLogBook";
-            this.frmDacLogBook.Size = new System.Drawing.Size(157, 22);
+            this.frmDacLogBook.Size = new System.Drawing.Size(187, 22);
             this.frmDacLogBook.Tag = "frmDacLogBook";
             this.frmDacLogBook.Text = "Lịch sử SD PM";
             this.frmDacLogBook.Click += new System.EventHandler(this.MenuItems_Click);
@@ -211,7 +213,7 @@
             // tsmiClose
             // 
             this.tsmiClose.Name = "tsmiClose";
-            this.tsmiClose.Size = new System.Drawing.Size(157, 22);
+            this.tsmiClose.Size = new System.Drawing.Size(187, 22);
             this.tsmiClose.Tag = "tsmiClose";
             this.tsmiClose.Text = "Thoát";
             this.tsmiClose.Click += new System.EventHandler(this.MenuItems_Click);
@@ -508,7 +510,7 @@
             // theoSảnPhẩmToolStripMenuItem
             // 
             this.theoSảnPhẩmToolStripMenuItem.Name = "theoSảnPhẩmToolStripMenuItem";
-            this.theoSảnPhẩmToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.theoSảnPhẩmToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
             this.theoSảnPhẩmToolStripMenuItem.Tag = "frmReportImExStock";
             this.theoSảnPhẩmToolStripMenuItem.Text = "Theo sản phẩm";
             this.theoSảnPhẩmToolStripMenuItem.Click += new System.EventHandler(this.MenuItems_Click);
@@ -516,7 +518,7 @@
             // tsmiReportByStock
             // 
             this.tsmiReportByStock.Name = "tsmiReportByStock";
-            this.tsmiReportByStock.Size = new System.Drawing.Size(180, 22);
+            this.tsmiReportByStock.Size = new System.Drawing.Size(165, 22);
             this.tsmiReportByStock.Tag = "frmReportImExStockBaseStock";
             this.tsmiReportByStock.Text = "Theo kho";
             this.tsmiReportByStock.Click += new System.EventHandler(this.MenuItems_Click);
@@ -524,7 +526,7 @@
             // tsmiReportByStamp
             // 
             this.tsmiReportByStamp.Name = "tsmiReportByStamp";
-            this.tsmiReportByStamp.Size = new System.Drawing.Size(180, 22);
+            this.tsmiReportByStamp.Size = new System.Drawing.Size(165, 22);
             this.tsmiReportByStamp.Tag = "frmReportImExStockInThisYear";
             this.tsmiReportByStamp.Text = "Theo tem";
             this.tsmiReportByStamp.Click += new System.EventHandler(this.MenuItems_Click);
@@ -568,6 +570,14 @@
             this.tsmiReportActivateAddingPoint.Tag = "frmReportActivateAddingPoint";
             this.tsmiReportActivateAddingPoint.Text = "Kích hoạt tích điểm";
             this.tsmiReportActivateAddingPoint.Click += new System.EventHandler(this.MenuItems_Click);
+            // 
+            // miRefactor
+            // 
+            this.miRefactor.Name = "miRefactor";
+            this.miRefactor.Size = new System.Drawing.Size(187, 22);
+            this.miRefactor.Tag = "frmRefactor";
+            this.miRefactor.Text = "Tái cấu trúc dữ liệu";
+            this.miRefactor.Click += new System.EventHandler(this.MenuItems_Click);
             // 
             // frmMain
             // 
@@ -649,6 +659,7 @@
         private System.Windows.Forms.ToolStripMenuItem tsmiInventory;
         private System.Windows.Forms.ToolStripMenuItem tsmiReportByStamp;
         private System.Windows.Forms.ToolStripMenuItem tsmiDacLockPackage;
+        private System.Windows.Forms.ToolStripMenuItem miRefactor;
     }
 }
 

@@ -22,7 +22,7 @@ namespace DAC.Core.Services.Implements
                         response.ResponseData = new SecUsersVM
                         {
                             LoginID = user.LoginId,
-                            AgencyName = dbContext.DacAgency.FirstOrDefault(x => x.Code == user.AgencyCode)?.Name,
+                            AgencyName = dbContext.DacCustomer.FirstOrDefault(x => x.Code == user.AgencyCode)?.Name,
                             CreatedDate = user.CreatedDate,
                             DeadlineOfUsing = user.DeadlineOfUsing,
                             Email = user.Email,

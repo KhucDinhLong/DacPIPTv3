@@ -17,16 +17,16 @@ namespace PIPT
     public partial class frmDacStore : Form
     {
         #region Variables
-        IDacAgencyService _agencyService;
+        IDacCustomerService _agencyService;
         IProvinceService _provinceService;
         IDacStoreService _storeService;
-        List<DacAgencyVM> LstAgency;
+        List<DacCustomerVM> LstAgency;
         List<DacStoreVM> LstStore;
         List<Province> LstProvince;
         DacStoreVM originalObject;
         #endregion
         #region Form's Events
-        public frmDacStore(IDacAgencyService agencyService, IProvinceService provinceService, IDacStoreService storeService)
+        public frmDacStore(IDacCustomerService agencyService, IProvinceService provinceService, IDacStoreService storeService)
         {
             InitializeComponent();
             _agencyService = agencyService;
@@ -43,7 +43,7 @@ namespace PIPT
             var CurrentUser = Session.CurrentUser;
             if (CurrentUser != null)
             {
-                LstAgency = _agencyService.GetAll().ResponseData ?? new List<DacAgencyVM>();
+                LstAgency = _agencyService.GetAll().ResponseData ?? new List<DacCustomerVM>();
                 LstStore = _storeService.GetAll().ResponseData?.ToList();
                 if (!CurrentUser.isAdmin.HasValue || !CurrentUser.isAdmin.Value)
                 {

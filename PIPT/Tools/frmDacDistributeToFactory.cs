@@ -52,10 +52,10 @@ namespace PIPT
         }
         #endregion
         #region Variables
-        List<DacDistributeToFactory> distributeToFactoryCollection = new List<DacDistributeToFactory>();
-        List<DacDistributeToFactoryDetails> distributeDetailsCollection = new List<DacDistributeToFactoryDetails>();
-        BindingList<DacDistributeToFactory> bdlDistributeToFactory;
-        BindingList<DacDistributeToFactoryDetails> bdlDistributeDetails;
+        List<DacExport1> distributeToFactoryCollection = new List<DacExport1>();
+        List<DacExportDetail1> distributeDetailsCollection = new List<DacExportDetail1>();
+        BindingList<DacExport1> bdlDistributeToFactory;
+        BindingList<DacExportDetail1> bdlDistributeDetails;
         DacDistributeToFactoryCS distributeToFactoryCS = new DacDistributeToFactoryCS();
         DacDistributeToFactoryDetailsCS dacDistributeDetailsCS = new DacDistributeToFactoryDetailsCS();
         // DataView for Agency table
@@ -88,9 +88,9 @@ namespace PIPT
             distributeToFactoryCollection = distributeToFactoryCS.GetListDistributeToFactory(
                 DateTime.Parse(CommonBO.GetSecConfig("DateStartGettingData").Value),
                 DateTime.Now, string.Empty, string.Empty);
-            AddObjectDistributorIntoBindingList(distributeToFactoryCollection);
+            //AddObjectDistributorIntoBindingList(distributeToFactoryCollection);
             // Get data from database
-            AddObjectDetailsIntoBindingList(distributeDetailsCollection);
+            //AddObjectDetailsIntoBindingList(DacExportDetail1);
             EnableControls(false);
 
             // Init Events For Select All CheckBox
@@ -150,10 +150,10 @@ namespace PIPT
             gridLookUpEditProduct.Properties.DataSource = dvProduct;
             gridLookUpEditProductChoose.Properties.DataSource = dvProduct;
         }
-        private void AddObjectDistributorIntoBindingList(List<DacDistributeToFactory> DistributeToFactoryCollection)
+        private void AddObjectDistributorIntoBindingList(List<DacExport1> DistributeToFactoryCollection)
         {
-            bdlDistributeToFactory = new BindingList<DacDistributeToFactory>();
-            foreach (DacDistributeToFactory DistributeToFactory in DistributeToFactoryCollection)
+            bdlDistributeToFactory = new BindingList<DacExport1>();
+            foreach (DacExport1 DistributeToFactory in DistributeToFactoryCollection)
             {
                 bdlDistributeToFactory.Add(DistributeToFactory);
             }
@@ -186,10 +186,10 @@ namespace PIPT
             }
             EnableControls(false);
         }
-        private void AddObjectDetailsIntoBindingList(List<DacDistributeToFactoryDetails> distributeDetailsCollection)
+        private void AddObjectDetailsIntoBindingList(List<DacExportDetail1> distributeDetailsCollection)
         {
-            bdlDistributeDetails = new BindingList<DacDistributeToFactoryDetails>();
-            foreach (DacDistributeToFactoryDetails distributeDetail in distributeDetailsCollection)
+            bdlDistributeDetails = new BindingList<DacExportDetail1>();
+            foreach (DacExportDetail1 distributeDetail in distributeDetailsCollection)
             {
                 bdlDistributeDetails.Add(distributeDetail);
             }
@@ -258,7 +258,7 @@ namespace PIPT
             bool bResult = true;
             if (ucDataButtonAgency.DataMode == DataState.Insert)
             {
-                DacDistributeToFactory distributeToFactory = new DacDistributeToFactory();
+                DacExport1 distributeToFactory = new DacExport1();
 
                 distributeToFactory.OrderNumber = textBoxOrderNumber.Text;
                 // Kiem tra lai OrderNumber
@@ -271,9 +271,7 @@ namespace PIPT
                     }
                 }
                 distributeToFactory.CreatedDate = dateTimePickerCreatedDate.Value;
-                distributeToFactory.ProvinceCode = string.Empty; // comboBoxProvince.SelectedValue.ToString();
-                distributeToFactory.FactoryCode = gridLookUpEditFactory.EditValue.ToString();
-                distributeToFactory.ProductCode = gridLookUpEditProduct.EditValue.ToString();
+                distributeToFactory.CustomerCode = string.Empty; // comboBoxProvince.SelectedValue.ToString();
                 distributeToFactory.Quantity = Convert.ToDouble(textBoxQuantity.Text);
                 distributeToFactory.Description = richTextBoxDescription.Text;
                 distributeToFactory.Active = checkBoxActive.Checked;
@@ -285,10 +283,10 @@ namespace PIPT
                     // Doi lai ID da luu trong database
                     for (int i = 0; i < distributeDetailsCollection.Count; i++)
                     {
-                        distributeDetailsCollection[i].DistributorID = iCurrentID;
+                        distributeDetailsCollection[i].ExportId = iCurrentID;
                     }
                     // Convert list to datatable
-                    DataTable dataTable = CommonCore.GetDataTable(distributeDetailsCollection, typeof(DacDistributeToFactoryDetails));
+                    DataTable dataTable = CommonCore.GetDataTable(distributeDetailsCollection, typeof(DacExportDetail1));
                     dataTable.TableName = "DacDistributeToFactoryDetails"; // Ten bang trong CSDL
                     DacDistributeToFactoryDetailsCS dacDistributeDetailsCS = new DacDistributeToFactoryDetailsCS();
                     // Khai bao mang cac cot trong bang du lieu can mapping
@@ -300,8 +298,8 @@ namespace PIPT
             else
             {
                 // Update data in to DacDistributeToFactory
-                DacDistributeToFactory distributeToFactory = new DacDistributeToFactory();
-                distributeToFactory = (DacDistributeToFactory)gridViewDistributor.GetRow(gridViewDistributor.FocusedRowHandle);
+                DacExport1 distributeToFactory = new DacExport1();
+                distributeToFactory = (DacExport1)gridViewDistributor.GetRow(gridViewDistributor.FocusedRowHandle);
                 // Update to DataBase
                 bResult = distributeToFactoryCS.Update(distributeToFactory);
             }
@@ -335,10 +333,10 @@ namespace PIPT
         {
             SaveData();
         }
-        private void AddDistributDetails(DacDistributeToFactoryDetails distributeDetails)
+        private void AddDistributDetails(DacExportDetail1 distributeDetails)
         {
             // Kiem tra su ton tai cua ma QRCode
-            foreach (DacDistributeToFactoryDetails detail in distributeDetailsCollection)
+            foreach (DacExportDetail1 detail in distributeDetailsCollection)
             {
                 // Neu co roi thi thoat luon khoi ham.
                 if (detail.DacCode == distributeDetails.DacCode)
@@ -348,7 +346,7 @@ namespace PIPT
                 }
             }
             // Kiem tra trong database
-            List<DacDistributeToFactoryDetails> detailsCollection = dacDistributeDetailsCS.GetDistributeDetails(distributeDetails.DacCode);
+            List<DacExportDetail1> detailsCollection = dacDistributeDetailsCS.GetDistributeDetails(distributeDetails.DacCode);
             if (detailsCollection.Count > 0)
             {
                 MessageBox.Show("Mã QRCode này đã tồn tại trong CSDL. \r\nBạn không thể thêm QRCode được nữa!", "Thông báo", MessageBoxButtons.OK);
@@ -359,7 +357,7 @@ namespace PIPT
             {
                 int iDistributorID = (int)gridViewDistributor.GetFocusedRowCellValue(gridColumnID);
                 // Gan lai ID cho DistributeDetails
-                distributeDetails.DistributorID = iDistributorID;
+                distributeDetails.ExportId = iDistributorID;
             }
             distributeDetailsCollection.Add(distributeDetails);
             labelProductCount.Text = String.Format("Số sản phẩm đã thêm: {0:0,0}", distributeDetailsCollection.Count);
@@ -522,8 +520,8 @@ namespace PIPT
         {
             if (gridLookUpEditProductChoose.Properties.GetIndexByKeyValue(gridLookUpEditProductChoose.EditValue) >= 0)
             {
-                var NewDetail = new DacDistributeToFactoryDetails();
-                NewDetail.DistributorID = gridLookUpEditFactory.Properties.GetIndexByKeyValue(gridLookUpEditFactory.EditValue);
+                var NewDetail = new DacExportDetail1();
+                NewDetail.ExportId = gridLookUpEditFactory.Properties.GetIndexByKeyValue(gridLookUpEditFactory.EditValue);
                 NewDetail.DacCode = CommonCore.GetSerialFromScanner(textBoxDacCode.Text.Trim());
                 NewDetail.ProductCode = gridLookUpEditProductChoose.EditValue.ToString();
                 AddDistributDetails(NewDetail);
@@ -541,21 +539,21 @@ namespace PIPT
             {
                 int iQuantity = 0;
                 string sContent = string.Empty;
-                foreach (DacDistributeToFactoryDetails details in distributeDetailsCollection)
+                foreach (DacExportDetail1 details in distributeDetailsCollection)
                 {
-                    if (details.ID == 0)
+                    if (details.Id == 0)
                     {
                         dacDistributeDetailsCS.Insert(details);
                         iQuantity += 1;
                         sContent += details.DacCode + "-" + details.ProductCode + ", ";
                     }
                 }
-                if (iQuantity > 0 && distributeDetailsCollection[0].DistributorID.HasValue)
+                if (iQuantity > 0 && distributeDetailsCollection[0].ExportId.HasValue)
                 {
                     // Lưu nhật ký
                     CommonBO.Instance().TraceLogEvent("Thêm QRCode vào lệnh phân phối đến Đại lý: " + textBoxOrderNumber.Text + " - "
                         + textBoxQuantity.Text + " - " + gridLookUpEditFactory.EditValue + " - " + sContent, CommonBS.CurrentUser.LoginID);
-                    distributeToFactoryCS.Update(distributeDetailsCollection[0].DistributorID.Value, iQuantity);
+                    distributeToFactoryCS.Update(distributeDetailsCollection[0].ExportId.Value, iQuantity);
                 }
                 this.GetDetailData();
                 MessageBox.Show("Bạn đã thêm các mã QRCode thành công!", "Thông báo");
@@ -571,18 +569,18 @@ namespace PIPT
             if (MessageBox.Show("Bạn có chắc chắn xóa mã QRCode đã chọn?", "Thong bao - Xoa ma QRCode", MessageBoxButtons.OKCancel) == DialogResult.OK)
             {
                 string sContent = string.Empty;
-                List<DacDistributeToFactoryDetails> detailsCollection = new List<DacDistributeToFactoryDetails>();
+                List<DacExportDetail1> detailsCollection = new List<DacExportDetail1>();
                 foreach (DataGridViewRow Row in dataGridViewDetails.Rows)
                     if (((DataGridViewCheckBoxCell)Row.Cells["IsSelected"]).Value != null)
                     {
                         if ((bool)((DataGridViewCheckBoxCell)Row.Cells["IsSelected"]).Value)
                         {
-                            DacDistributeToFactoryDetails distributeDetails = (DacDistributeToFactoryDetails)Row.DataBoundItem;
+                            DacExportDetail1 distributeDetails = (DacExportDetail1)Row.DataBoundItem;
                             detailsCollection.Add(distributeDetails);
-                            if (distributeDetails.ID > 0)
+                            if (distributeDetails.Id > 0)
                             {
                                 // Xoa tren Database
-                                dacDistributeDetailsCS.Delete(distributeDetails.ID);
+                                dacDistributeDetailsCS.Delete(distributeDetails.Id);
                                 sContent += distributeDetails.DacCode + "-" + distributeDetails.ProductCode + ", ";
                             }
                         }
@@ -590,7 +588,7 @@ namespace PIPT
                 // Lưu nhật ký
                 CommonBO.Instance().TraceLogEvent("Xóa QRCode khỏi lệnh phân phối đến Xưởng SX: " + textBoxOrderNumber.Text + " - "
                     + textBoxQuantity.Text + " - " + gridLookUpEditFactory.EditValue + " - " + sContent, CommonBS.CurrentUser.LoginID);
-                foreach (DacDistributeToFactoryDetails distributeDetails in detailsCollection)
+                foreach (DacExportDetail1 distributeDetails in detailsCollection)
                 {
                     bdlDistributeDetails.Remove(distributeDetails);
                     distributeDetailsCollection.Remove(distributeDetails);
@@ -618,8 +616,8 @@ namespace PIPT
                             {
                                 foreach (DacPackageDetails packageDetails in PackageDetailsCollection)
                                 {
-                                    var NewDetail = new DacDistributeToFactoryDetails();
-                                    NewDetail.DistributorID = gridLookUpEditFactory.Properties.GetIndexByKeyValue(gridLookUpEditFactory.EditValue);
+                                    var NewDetail = new DacExportDetail1();
+                                    NewDetail.ExportId = gridLookUpEditFactory.Properties.GetIndexByKeyValue(gridLookUpEditFactory.EditValue);
                                     NewDetail.DacCode = packageDetails.DacCode;
                                     AddDistributDetails(NewDetail);
                                     textBoxDacCode.Text = string.Empty;
@@ -629,8 +627,8 @@ namespace PIPT
                         default:
                             if (gridLookUpEditProductChoose.Properties.GetIndexByKeyValue(gridLookUpEditProductChoose.EditValue) >= 0)
                             {
-                                var NewDetail = new DacDistributeToFactoryDetails();
-                                NewDetail.DistributorID = gridLookUpEditFactory.Properties.GetIndexByKeyValue(gridLookUpEditFactory.EditValue);
+                                var NewDetail = new DacExportDetail1();
+                                NewDetail.ExportId = gridLookUpEditFactory.Properties.GetIndexByKeyValue(gridLookUpEditFactory.EditValue);
                                 NewDetail.DacCode = serial;
                                 NewDetail.ProductCode = gridLookUpEditProductChoose.EditValue.ToString();
                                 AddDistributDetails(NewDetail);
@@ -639,8 +637,8 @@ namespace PIPT
                             else
                             {
                                 //MessageBox.Show("Bạn chưa chọn sản phẩm nào, hãy chọn một sản phẩm để tiếp tục!", "Thông báo", MessageBoxButtons.OK);
-                                var NewDetail = new DacDistributeToFactoryDetails();
-                                NewDetail.DistributorID = gridLookUpEditFactory.Properties.GetIndexByKeyValue(gridLookUpEditFactory.EditValue);
+                                var NewDetail = new DacExportDetail1();
+                                NewDetail.ExportId = gridLookUpEditFactory.Properties.GetIndexByKeyValue(gridLookUpEditFactory.EditValue);
                                 NewDetail.DacCode = serial;
                                 AddDistributDetails(NewDetail);
                                 textBoxDacCode.Text = string.Empty;
@@ -692,8 +690,8 @@ namespace PIPT
                 {
                     for (long i = iFrSerie; i <= iToSerie; i++)
                     {
-                        var NewDetail = new DacDistributeToFactoryDetails();
-                        NewDetail.DistributorID = gridLookUpEditFactory.Properties.GetIndexByKeyValue(gridLookUpEditFactory.EditValue);
+                        var NewDetail = new DacExportDetail1();
+                        NewDetail.ExportId = gridLookUpEditFactory.Properties.GetIndexByKeyValue(gridLookUpEditFactory.EditValue);
                         NewDetail.DacCode = String.Format("{0}{1:0000000000}", sPreSeri, i);
                         NewDetail.ProductCode = gridLookUpEditProductChoose.EditValue.ToString();
                         AddDistributDetails(NewDetail);

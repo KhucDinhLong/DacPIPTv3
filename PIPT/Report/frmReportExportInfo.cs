@@ -12,10 +12,10 @@ namespace PIPT
     public partial class frmReportExportInfo : Form
     {
         #region Variables
-        IDacDistributeToAgencyService _exportService;
-        List<DacDistributeToAgencyVM> LstInfo;
+        IDacExportService _exportService;
+        List<DacExportVM> LstInfo;
         #endregion
-        public frmReportExportInfo(IDacDistributeToAgencyService exportService)
+        public frmReportExportInfo(IDacExportService exportService)
         {
             InitializeComponent();
             _exportService = exportService;
@@ -56,7 +56,7 @@ namespace PIPT
                 LstInfo = LstInfo.Where(x => (dtpFrom.EditValue == null || x.CreatedDate.HasValue && x.CreatedDate.Value >= DateTime.Parse(dtpFrom.EditValue.ToString()).Date)
                                             && (dtpTo.EditValue == null || x.CreatedDate.HasValue && x.CreatedDate.Value <= DateTime.Parse(dtpTo.EditValue.ToString()).AddDays(1).Date)
                                             && (string.IsNullOrWhiteSpace(txtCustomerCode.Text)
-                                                || (!string.IsNullOrWhiteSpace(x.AgencyCode) && x.AgencyCode.ToLower().Contains(txtCustomerCode.Text.Trim().ToLower()))
+                                                || (!string.IsNullOrWhiteSpace(x.CustomerCode) && x.CustomerCode.ToLower().Contains(txtCustomerCode.Text.Trim().ToLower()))
                                                 || (!string.IsNullOrWhiteSpace(x.AgencyName) && x.AgencyName.ToLower().Contains(txtCustomerCode.Text.Trim().ToLower()))))?.ToList();
                 if (!string.IsNullOrWhiteSpace(txtProductCode.Text))
                 {

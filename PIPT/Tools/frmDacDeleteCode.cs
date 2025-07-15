@@ -10,9 +10,9 @@ namespace PIPT
     public partial class frmDacDeleteCode : Form
     {
         #region Variables
-        IDacDistributeToAgencyService _exportToAgencyService;
-        IDacDistributeToAgencyDetailsService _exportToAgencyDetailService;
-        IDacDistributeToStoreService _exportToStoreService;
+        IDacExportService _exportToAgencyService;
+        IDacExportDetailService _exportToAgencyDetailService;
+        IDacExport2Service _exportToStoreService;
         IDacDistributeToStoreDetailsService _exportToStoreDetailService;
         IDacPackageService _packageService;
         IDacPackageDetailService _packageDetailService;
@@ -22,8 +22,8 @@ namespace PIPT
         // --------------------
         #endregion
         #region Form's Events
-        public frmDacDeleteCode(IDacDistributeToAgencyService exportToAgencyService, IDacDistributeToAgencyDetailsService exportToAgencyDetailService
-            , IDacDistributeToStoreService exportToStoreService, IDacDistributeToStoreDetailsService exportToStoreDetailService
+        public frmDacDeleteCode(IDacExportService exportToAgencyService, IDacExportDetailService exportToAgencyDetailService
+            , IDacExport2Service exportToStoreService, IDacDistributeToStoreDetailsService exportToStoreDetailService
             , IDacPackageService packageService, IDacPackageDetailService packageDetailService
             , IDacInsertToWarehouseService importWarehouseService, IDacInsertToWarehouseDetailsService importWarehouseDetailService)
         {

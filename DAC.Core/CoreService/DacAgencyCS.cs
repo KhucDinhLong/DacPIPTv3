@@ -8,15 +8,15 @@ namespace DAC.Core
 {
     public class DacAgencyCS
     {
-        public List<DacAgency> GetListAgency()
+        public List<DacCustomer> GetListAgency()
         {
-            List<DacAgency> dacAgencyCollection = new List<DacAgency>();
+            List<DacCustomer> dacAgencyCollection = new List<DacCustomer>();
             DacDbAccess dacDb = new DacDbAccess();
             dacDb.CreateNewSqlCommand();
             SqlDataReader reader = dacDb.ExecuteReader("spDacAgency_SelectAll");
             while (reader.Read())
             {
-                DacAgency dacAgency = new DacAgency();
+                DacCustomer dacAgency = new DacCustomer();
 
                 dacAgency.Id = (int)reader["ID"];
                 dacAgency.Code = reader["Code"].ToString();
@@ -46,9 +46,9 @@ namespace DAC.Core
 
             return dacAgencyCollection;
         }
-        public List<DacAgency> GetListAgency(string sCode, string sName, string sMobileNum)
+        public List<DacCustomer> GetListAgency(string sCode, string sName, string sMobileNum)
         {
-            List<DacAgency> dacAgencyCollection = new List<DacAgency>();
+            List<DacCustomer> dacAgencyCollection = new List<DacCustomer>();
             DacDbAccess dacDb = new DacDbAccess();
             dacDb.CreateNewSqlCommand();
             dacDb.AddParameter("@Code", sCode.ToUpper());
@@ -57,7 +57,7 @@ namespace DAC.Core
             SqlDataReader reader = dacDb.ExecuteReader("spDacAgency_SelectByCode");
             while (reader.Read())
             {
-                DacAgency dacAgency = new DacAgency();
+                DacCustomer dacAgency = new DacCustomer();
                 dacAgency.Id = (int)reader["ID"];
                 dacAgency.Code = reader["Code"].ToString();
                 dacAgency.Name = reader["Name"].ToString();
@@ -86,7 +86,7 @@ namespace DAC.Core
 
             return dacAgencyCollection;
         }
-        public bool Insert(DacAgency dacAgency)
+        public bool Insert(DacCustomer dacAgency)
         {
             DacDbAccess dacDb = new DacDbAccess();
             try
@@ -120,7 +120,7 @@ namespace DAC.Core
                 throw ex;
             }
         }
-        public bool Update(DacAgency dacAgency)
+        public bool Update(DacCustomer dacAgency)
         {
             DacDbAccess dacDb = new DacDbAccess();
             try

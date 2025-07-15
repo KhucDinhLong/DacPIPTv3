@@ -18,22 +18,22 @@ namespace PIPT
     public partial class frmDacDistributeToStore : Form
     {
         #region Variables
-        IDacDistributeToStoreService _exportService;
+        IDacExport2Service _exportService;
         IDacProductService _productService;
         IDacDistributeToStoreDetailsService _detailService;
         IDacStockService _stockService;
         IDacStoreService _storeService;
         ISecConfigService _configService;
-        List<DacDistributeToStoreVM> LstExportInfo;
+        List<DacExport2VM> LstExportInfo;
         List<DacProductVM> LstProducts;
         List<DacStock> LstStock;
         List<DacStoreVM> LstStore;
-        DacDistributeToStoreVM originalObject;
+        DacExport2VM originalObject;
         SecConfig AutoIncreaseCode;
         // --------------------
         #endregion
         #region Form's Events
-        public frmDacDistributeToStore(IDacDistributeToStoreService exportService, IDacProductService productService, IDacDistributeToStoreDetailsService detailService, IDacStockService stockService, IDacStoreService storeService, ISecConfigService configService)
+        public frmDacDistributeToStore(IDacExport2Service exportService, IDacProductService productService, IDacDistributeToStoreDetailsService detailService, IDacStockService stockService, IDacStoreService storeService, ISecConfigService configService)
         {
             InitializeComponent();
             _exportService = exportService;
@@ -157,7 +157,7 @@ namespace PIPT
         private void LoadData()
         {
             SetSelectControlDataSource();
-            LstExportInfo = _exportService.GetAll().ResponseData ?? new List<DacDistributeToStoreVM>();
+            LstExportInfo = _exportService.GetAll().ResponseData ?? new List<DacExport2VM>();
             gcExport.DataSource = LstExportInfo;
             if (LstExportInfo != null && LstExportInfo.Any())
             {
@@ -242,7 +242,7 @@ namespace PIPT
         {
             if (ValidateData())
             {
-                DacDistributeToStoreVM exportInfoVM = LstExportInfo[gvExport.FocusedRowHandle];
+                DacExport2VM exportInfoVM = LstExportInfo[gvExport.FocusedRowHandle];
                 exportInfoVM = CreateSaveData(exportInfoVM);
                 if (exportInfoVM != null && exportInfoVM.LstDetails != null)
                 {
@@ -320,11 +320,11 @@ namespace PIPT
             return false;
         }
 
-        private DacDistributeToStoreVM CreateSaveData(DacDistributeToStoreVM exportInfoVM)
+        private DacExport2VM CreateSaveData(DacExport2VM exportInfoVM)
         {
             exportInfoVM.Id = ucDataButtonStore.DataMode == DataState.Insert ? 0 : exportInfoVM.Id;
             exportInfoVM.OrderNumber = ucDataButtonStore.DataMode == DataState.Edit ? exportInfoVM.OrderNumber : txtOrderNumber.Text;
-            exportInfoVM.StoreCode = lueStore.EditValue.ToString();
+            exportInfoVM.CustomerCode = lueStore.EditValue.ToString();
             exportInfoVM.Quantity = int.Parse(txtQuantity.Text);
             exportInfoVM.Description = txtDescription.Text;
             exportInfoVM.Active = true;
@@ -333,14 +333,14 @@ namespace PIPT
             return exportInfoVM;
         }
 
-        private void BindDataToControl(DacDistributeToStoreVM exportInfoVM)
+        private void BindDataToControl(DacExport2VM exportInfoVM)
         {
             txtOrderNumber.Text = exportInfoVM.OrderNumber;
             txtQuantity.Text = exportInfoVM.Quantity?.ToString();
             dtCreatedDate.Value = exportInfoVM.CreatedDate.HasValue ? exportInfoVM.CreatedDate.Value : DateTime.Now;
             txtDescription.Text = exportInfoVM.Description;
             lueStock.EditValue = exportInfoVM.StockCode;
-            lueStore.EditValue = exportInfoVM.StoreCode;
+            lueStore.EditValue = exportInfoVM.CustomerCode;
             SetProductName();
         }
 
@@ -555,7 +555,7 @@ namespace PIPT
         #region Buttons' Event
         private void ucDataButtonStore_InsertHandler()
         {
-            DacDistributeToStoreVM exportInfo = new DacDistributeToStoreVM();
+            DacExport2VM exportInfo = new DacExport2VM();
             if (AutoIncreaseCode != null && AutoIncreaseCode.Value == "true")
             {
                 exportInfo.OrderNumber = _exportService.GenerateNewCode().ResponseData;
@@ -597,7 +597,7 @@ namespace PIPT
                         StringBuilder sContent = new StringBuilder();
                         sContent.Append("Xóa phiếu xuất " + LstExportInfo[gvExport.FocusedRowHandle].OrderNumber);
                         sContent.Append("-");
-                        sContent.Append(LstExportInfo[gvExport.FocusedRowHandle].StoreCode);
+                        sContent.Append(LstExportInfo[gvExport.FocusedRowHandle].CustomerCode);
                         sContent.Append("-");
                         sContent.Append(LstExportInfo[gvExport.FocusedRowHandle].CreatedDate.Value.ToString("dd/MM/yyyy"));
                         if (LstExportInfo[gvExport.FocusedRowHandle].LstDetails != null && LstExportInfo[gvExport.FocusedRowHandle].LstDetails.Any())

@@ -17,14 +17,14 @@ namespace DAC.DAL
             modelBuilder.Entity<SecStockUser>().HasKey(obj => new { obj.StockId, obj.LoginId });
         }
 
-        public DbSet<DacAgency> DacAgency { get; set; }
+        public DbSet<DacCustomer> DacCustomer { get; set; }
         public DbSet<DacContainer> DacContainer { get; set; }
         public DbSet<DacContainerDetails> DacContainerDetails { get; set; }
-        public DbSet<DacDistributeToAgency> DacDistributeToAgency { get; set; }
-        public DbSet<DacDistributeToAgencyDetails> DacDistributeToAgencyDetails { get; set; }
-        public DbSet<DacDistributeToFactory> DacDistributeToFactory { get; set; }
-        public DbSet<DacDistributeToFactoryDetails> DacDistributeToFactoryDetails { get; set; }
-        public DbSet<DacDistributeToStore> DacDistributeToStore { get; set; }
+        public DbSet<DacExport> DacExport { get; set; }
+        public DbSet<DacExportDetail> DacExportDetail { get; set; }
+        public DbSet<DacExport1> DacExport1 { get; set; }
+        public DbSet<DacExportDetail1> DacExportDetail1 { get; set; }
+        public DbSet<DacExport2> DacExport2 { get; set; }
         public DbSet<DacDistributeToStoreDetails> DacDistributeToStoreDetails { get; set; }
         public DbSet<DacFactory> DacFactory { get; set; }
         public DbSet<DacInsertToWarehouse> DacInsertToWarehouse { get; set; }

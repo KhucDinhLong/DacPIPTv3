@@ -16,7 +16,7 @@ namespace PIPT
             container.RegisterType<IDacPackageDetailService, DacPackageDetailService>();
             container.RegisterType<IDacProductCategoryService, DacProductCategoryService>();
             container.RegisterType<IDacProductUnitService, DacProductUnitService>();
-            container.RegisterType<IDacAgencyService, DacAgencyService>();
+            container.RegisterType<IDacCustomerService, DacCustomerService>();
             container.RegisterType<IProvinceService, ProvinceService>();
             container.RegisterType<IDacRegionService, DacRegionService>();
             container.RegisterType<INationalityService, NationalityService>();
@@ -30,10 +30,11 @@ namespace PIPT
             container.RegisterType<IDacInsertToWarehouseDetailsService, DacInsertToWarehouseDetailsService>();
             container.RegisterType<ISecConfigService, SecConfigService>();
             container.RegisterType<IDacStockService, DacStockService>();
-            container.RegisterType<IDacDistributeToAgencyService, DacDistributeToAgencyService>();
-            container.RegisterType<IDacDistributeToAgencyDetailsService, DacDistributeToAgencyDetailsService>();
-            container.RegisterType<IDacDistributeToStoreService, DacDistributeToStoreService>();
+            container.RegisterType<IDacExportService, DacExportService>();
+            container.RegisterType<IDacExportDetailService, DacExportDetailService>();
+            container.RegisterType<IDacExport2Service, DacDacExport2Service>();
             container.RegisterType<IDacDistributeToStoreDetailsService, DacDistributeToStoreDetailsService>();
+            container.RegisterType<IPIPTOldVersionMetaDataService, PIPTOldVersionMetaDataService>();
 
             return container;
         }

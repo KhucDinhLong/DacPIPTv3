@@ -7,16 +7,16 @@ using System.Linq;
 
 namespace DAC.Core.Services.Implements
 {
-    public class DacDistributeToAgencyDetailsService : IDacDistributeToAgencyDetailsService
+    public class DacExportDetailService : IDacExportDetailService
     {
-        public BaseViewModel<DacDistributeToAgencyDetails> GetByDacCode(string DacCode)
+        public BaseViewModel<DacExportDetail> GetByDacCode(string DacCode)
         {
-            var response = new BaseViewModel<DacDistributeToAgencyDetails>();
+            var response = new BaseViewModel<DacExportDetail>();
             try
             {
                 using (var dbContext = new PIPTDbContext())
                 {
-                    var detail = dbContext.DacDistributeToAgencyDetails.FirstOrDefault(x => x.DacCode == DacCode);
+                    var detail = dbContext.DacExportDetail.FirstOrDefault(x => x.DacCode == DacCode);
                     response.ResponseData = detail;
                 }
             }
@@ -27,18 +27,18 @@ namespace DAC.Core.Services.Implements
             return response;
         }
 
-        public BaseViewModel<bool> AddRange(List<DacDistributeToAgencyDetails> LstDetail)
+        public BaseViewModel<bool> AddRange(List<DacExportDetail> LstDetail)
         {
             var response = new BaseViewModel<bool>();
             try
             {
                 using (var dbContext = new PIPTDbContext())
                 {
-                    dbContext.DacDistributeToAgencyDetails.AddRange(LstDetail);
-                    int? ExportId = LstDetail.FirstOrDefault().DistributeToAgencyId;
+                    dbContext.DacExportDetail.AddRange(LstDetail);
+                    int? ExportId = LstDetail.FirstOrDefault().ExportId;
                     if (ExportId.HasValue)
                     {
-                        var exportInfo = dbContext.DacDistributeToAgency.FirstOrDefault(x => x.Id == ExportId);
+                        var exportInfo = dbContext.DacExport.FirstOrDefault(x => x.Id == ExportId);
                         if (exportInfo != null && exportInfo.Quantity.HasValue)
                         {
                             exportInfo.Quantity = exportInfo.Quantity.Value + LstDetail.Count;
@@ -62,14 +62,14 @@ namespace DAC.Core.Services.Implements
             {
                 using (var dbContext = new PIPTDbContext())
                 {
-                    var detail = dbContext.DacDistributeToAgencyDetails.Where(x => LstDacCode.Contains(x.DacCode));
+                    var detail = dbContext.DacExportDetail.Where(x => LstDacCode.Contains(x.DacCode));
                     if (detail != null && detail.Any())
                     {
-                        dbContext.DacDistributeToAgencyDetails.RemoveRange(detail);
-                        int? ExportId = detail.FirstOrDefault().DistributeToAgencyId;
+                        dbContext.DacExportDetail.RemoveRange(detail);
+                        int? ExportId = detail.FirstOrDefault().ExportId;
                         if (ExportId.HasValue)
                         {
-                            var exportInfo = dbContext.DacDistributeToAgency.FirstOrDefault(x => x.Id == ExportId);
+                            var exportInfo = dbContext.DacExport.FirstOrDefault(x => x.Id == ExportId);
                             if (exportInfo != null && exportInfo.Quantity.HasValue && exportInfo.Quantity.Value > detail.Count())
                             {
                                 exportInfo.Quantity = exportInfo.Quantity.Value - detail.Count();
@@ -95,11 +95,11 @@ namespace DAC.Core.Services.Implements
             {
                 using (var dbContext = new PIPTDbContext())
                 {
-                    var detail = dbContext.DacDistributeToAgencyDetails.FirstOrDefault(x => x.DacCode == DacCode);
+                    var detail = dbContext.DacExportDetail.FirstOrDefault(x => x.DacCode == DacCode);
                     if (detail != null)
                     {
-                        var exportInfo = dbContext.DacDistributeToAgency.FirstOrDefault(x => x.Id == detail.DistributeToAgencyId);
-                        dbContext.DacDistributeToAgencyDetails.Remove(detail);
+                        var exportInfo = dbContext.DacExport.FirstOrDefault(x => x.Id == detail.ExportId);
+                        dbContext.DacExportDetail.Remove(detail);
                         if (exportInfo != null)
                         {
                             exportInfo.Quantity--;
@@ -117,19 +117,19 @@ namespace DAC.Core.Services.Implements
             return response;
         }
 
-        public BaseViewModel<DacDistributeToAgencyVM> GetExportInfo(string DacCode)
+        public BaseViewModel<DacExportVM> GetExportInfo(string DacCode)
         {
-            var response = new BaseViewModel<DacDistributeToAgencyVM>();
+            var response = new BaseViewModel<DacExportVM>();
             try
             {
                 using (var dbContext = new PIPTDbContext())
                 {
-                    var info = (from d in dbContext.DacDistributeToAgencyDetails
-                                join e in dbContext.DacDistributeToAgency on d.DistributeToAgencyId equals e.Id
+                    var info = (from d in dbContext.DacExportDetail
+                                join e in dbContext.DacExport on d.ExportId equals e.Id
                                 where d.DacCode == DacCode
-                                select new DacDistributeToAgencyVM
+                                select new DacExportVM
                                 {
-                                    AgencyCode = e.AgencyCode,
+                                    CustomerCode = e.CustomerCode,
                                     CreatedDate = e.CreatedDate,
                                 }).FirstOrDefault();
                     response.ResponseData = info;

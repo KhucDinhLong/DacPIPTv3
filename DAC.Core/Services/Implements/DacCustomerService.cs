@@ -1,5 +1,6 @@
 ﻿using DAC.Core.Services.Interfaces;
 using DAC.DAL;
+using DAC.DAL.OldVersion;
 using DAC.DAL.ViewModels;
 using OfficeOpenXml;
 using System;
@@ -7,19 +8,20 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
+using DacAgency = DAC.DAL.DacCustomer;
 
 namespace DAC.Core.Services.Implements
 {
-    public class DacAgencyService : IDacAgencyService
+    public class DacCustomerService : IDacCustomerService
     {
-        public BaseViewModel<List<DacAgencyVM>> GetAll()
+        public BaseViewModel<List<DacCustomerVM>> GetAll()
         {
-            var response = new BaseViewModel<List<DacAgencyVM>>();
+            var response = new BaseViewModel<List<DacCustomerVM>>();
             try
             {
                 using (var dbContext = new PIPTDbContext())
                 {
-                    response.ResponseData = dbContext.DacAgency.Select(x => new DacAgencyVM
+                    response.ResponseData = dbContext.DacCustomer.Select(x => new DacCustomerVM
                     {
                         Id = x.Id,
                         Code = x.Code,
@@ -40,7 +42,7 @@ namespace DAC.Core.Services.Implements
                         ProvinceCode = x.ProvinceCode,
                         Region = x.Region,
                         TaxCode = x.TaxCode,
-                        ParentName = dbContext.DacAgency.FirstOrDefault(y => y.Code == x.DependCode).Name
+                        ParentName = dbContext.DacCustomer.FirstOrDefault(y => y.Code == x.DependCode).Name
                     }).OrderByDescending(x => x.CreatedDate).ToList();
                 }
             }
@@ -58,7 +60,7 @@ namespace DAC.Core.Services.Implements
             {
                 using (var dbContext = new PIPTDbContext())
                 {
-                    response.ResponseData = dbContext.DacAgency.FirstOrDefault(x => x.Id == id);
+                    response.ResponseData = dbContext.DacCustomer.FirstOrDefault(x => x.Id == id);
                 }
             }
             catch (Exception ex)
@@ -76,7 +78,7 @@ namespace DAC.Core.Services.Implements
                 using (var dbContext = new PIPTDbContext())
                 {
                     newAgency.CreatedDate = DateTime.Now;
-                    dbContext.DacAgency.Add(newAgency);
+                    dbContext.DacCustomer.Add(newAgency);
                     dbContext.SaveChanges();
                     response.ResponseData = newAgency;
                 }
@@ -115,10 +117,10 @@ namespace DAC.Core.Services.Implements
             {
                 using (var dbContext = new PIPTDbContext())
                 {
-                    var agency = dbContext.DacAgency.FirstOrDefault(x => x.Id == id);
+                    var agency = dbContext.DacCustomer.FirstOrDefault(x => x.Id == id);
                     if (agency != null)
                     {
-                        dbContext.DacAgency.Remove(agency);
+                        dbContext.DacCustomer.Remove(agency);
                         dbContext.SaveChanges();
                         response.ResponseData = true;
                     }
@@ -143,8 +145,8 @@ namespace DAC.Core.Services.Implements
             {
                 using (var dbContext = new PIPTDbContext())
                 {
-                    response.ResponseData = dbContext.DacAgency.Any(x => x.DependCode == code) || dbContext.DacStore.Any(x => x.AgencyCode == code)
-                        || dbContext.DacDistributeToAgency.Any(x => x.AgencyCode == code);
+                    response.ResponseData = dbContext.DacCustomer.Any(x => x.DependCode == code) || dbContext.DacStore.Any(x => x.AgencyCode == code)
+                        || dbContext.DacExport.Any(x => x.CustomerCode == code);
                 }
             }
             catch (Exception ex)
@@ -162,7 +164,7 @@ namespace DAC.Core.Services.Implements
             {
                 using (var dbContext = new PIPTDbContext())
                 {
-                    response.ResponseData = dbContext.DacAgency.FirstOrDefault(x => x.Code == code);
+                    response.ResponseData = dbContext.DacCustomer.FirstOrDefault(x => x.Code == code);
                 }
             }
             catch (Exception ex)
@@ -172,14 +174,14 @@ namespace DAC.Core.Services.Implements
             return response;
         }
 
-        public BaseViewModel<DacAgencyVM> GetIncludeStores(string code)
+        public BaseViewModel<DacCustomerVM> GetIncludeStores(string code)
         {
-            var response = new BaseViewModel<DacAgencyVM>();
+            var response = new BaseViewModel<DacCustomerVM>();
             try
             {
                 using (var dbContext = new PIPTDbContext())
                 {
-                    var agency = dbContext.DacAgency.Where(x => x.Code == code).Select(x => new DacAgencyVM
+                    var agency = dbContext.DacCustomer.Where(x => x.Code == code).Select(x => new DacCustomerVM
                     {
                         Id = x.Id,
                         Code = x.Code,
@@ -269,7 +271,7 @@ namespace DAC.Core.Services.Implements
 
                 using (var db = new PIPTDbContext())
                 {
-                    db.DacAgency.AddRange(agencies);
+                    db.DacCustomer.AddRange(agencies);
                     var count = db.SaveChanges();
                     response.ResponseData = count;
                 }
@@ -279,6 +281,57 @@ namespace DAC.Core.Services.Implements
                 response.ex = ex;
             }
             return response;
+        }
+
+        public bool RestoreData()
+        {
+            List<DacAgency> LstAgency = new List<DacAgency>();
+            try
+            {
+                using (var oldVersionDbContext = new PIPTOldVerDbContext())
+                {
+                    var data = oldVersionDbContext.DacAgency?.ToList();
+                    if (data != null && data.Any())
+                    {
+                        foreach (var item in data)
+                        {
+                            DacAgency restoreData = new DacAgency();
+                            restoreData.Code = item.Code;
+                            restoreData.Name = item.Name;
+                            restoreData.Address = item.Address;
+                            restoreData.ProvinceCode = item.ProvinceCode;
+                            restoreData.OwnerName = item.OwnerName;
+                            restoreData.TaxCode = item.TaxCode;
+                            restoreData.PhoneNum = item.PhoneNum;
+                            restoreData.MobileNum = item.MobileNum;
+                            restoreData.Email = item.Email;
+                            restoreData.Description = item.Description;
+                            restoreData.JoinContact = item.JoinContact;
+                            restoreData.DependCode = item.DependCode;
+                            restoreData.Region = item.Region;
+                            restoreData.CreatedDate = item.CreatedDate;
+                            restoreData.CreatedUser = item.CreatedUser;
+                            restoreData.ModifiedDate = item.ModifiedDate;
+                            restoreData.ModifiedUser = item.ModifiedUser;
+                            restoreData.Active = item.Active;
+                            LstAgency.Add(restoreData);
+                        }
+                    }
+                }
+                if (LstAgency != null && LstAgency.Any())
+                {
+                    using (var dbContext = new PIPTDbContext())
+                    {
+                        dbContext.DacCustomer.AddRange(LstAgency);
+                        dbContext.SaveChanges();
+                    }
+                }
+                return true;
+            }
+            catch 
+            {
+                return false;
+            }
         }
     }
 }

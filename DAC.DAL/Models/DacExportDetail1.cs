@@ -3,12 +3,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DAC.DAL
 {
-    [Table("DacDistributeToFactoryDetails")]
-    public class DacDistributeToFactoryDetails
+    [Table("DacExportDetail1")]
+    public class DacExportDetail1
     {
         [Key]
-        public long ID { get; set; }
-        public int? DistributorID { get; set; }
+        public long Id { get; set; }
+        public int? ExportId { get; set; }
         public string DacCode { get; set; }
         public string ProductCode { get; set; }
     }

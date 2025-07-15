@@ -9,7 +9,7 @@ namespace DAC.Core.Services.Interfaces
         BaseViewModel<DacDistributeToStoreDetails> GetByDacCode(string DacCode);
         BaseViewModel<bool> AddRange(List<DacDistributeToStoreDetails> LstDetail);
         BaseViewModel<bool> DeleteByDacCode(List<string> LstDacCode);
-        BaseViewModel<DacDistributeToStoreVM> GetExportInfo(string DacCode);
+        BaseViewModel<DacExport2VM> GetExportInfo(string DacCode);
         BaseViewModel<bool> DeleteByDacCode(string DacCode);
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DAC.DAL.ViewModels
 {
-    public class DacAgencyVM
+    public class DacCustomerVM
     {
         public int Id { get; set; }
         public string Code { get; set; }

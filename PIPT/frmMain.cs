@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using DAC.Core.Common;
 using DAC.Core.Security;
+using PIPT.Tools;
 using Unity;
 
 namespace PIPT
@@ -348,6 +349,9 @@ namespace PIPT
                     break;
                 case "frmReportActivateAddingPoint":
                     frm = frmReportActivateAddingPoint.Instance(this, true);
+                    break;
+                case "frmRefactor":
+                    OpenForm(typeof(frmRefactor));
                     break;
                     #endregion
             }

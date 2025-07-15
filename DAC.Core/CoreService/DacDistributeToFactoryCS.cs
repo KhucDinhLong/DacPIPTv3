@@ -8,9 +8,9 @@ namespace DAC.Core
 {
     public class DacDistributeToFactoryCS
     {
-        public List<DacDistributeToFactory> GetListDistributeToFactory(DateTime FrDate, DateTime ToDate, string FactoryCode, string ProductCode)
+        public List<DacExport1> GetListDistributeToFactory(DateTime FrDate, DateTime ToDate, string FactoryCode, string ProductCode)
         {
-            List<DacDistributeToFactory> dacDistributeToFactoryCollection = new List<DacDistributeToFactory>();
+            List<DacExport1> dacDistributeToFactoryCollection = new List<DacExport1>();
             DacDbAccess dacDb = new DacDbAccess();
             dacDb.CreateNewSqlCommand();
             dacDb.AddParameter("@FrDate", FrDate);
@@ -20,14 +20,12 @@ namespace DAC.Core
             SqlDataReader reader = dacDb.ExecuteReader("spDacDistributeToFactory_Select");
             while (reader.Read())
             {
-                DacDistributeToFactory dacDistributeToFactory = new DacDistributeToFactory();
+                DacExport1 dacDistributeToFactory = new DacExport1();
 
-                dacDistributeToFactory.ID = (int)reader["ID"];
+                dacDistributeToFactory.Id = (int)reader["ID"];
                 dacDistributeToFactory.OrderNumber = reader["OrderNumber"].ToString();
                 dacDistributeToFactory.CreatedDate = (DateTime)reader["CreatedDate"];
-                dacDistributeToFactory.ProvinceCode = reader["ProvinceCode"].ToString();
-                dacDistributeToFactory.FactoryCode = reader["FactoryCode"].ToString();
-                dacDistributeToFactory.ProductCode = reader["ProductCode"].ToString();
+                dacDistributeToFactory.CustomerCode = reader["CustomerCode"].ToString();
                 dacDistributeToFactory.Quantity = (double)reader["Quantity"];
                 dacDistributeToFactory.Description = reader["Description"].ToString();
                 dacDistributeToFactory.Active = (bool)reader["Active"];
@@ -49,7 +47,7 @@ namespace DAC.Core
             sMaxOrderNumber += 1;
             return String.Format("{0:00000}", sMaxOrderNumber);
         }
-        public bool Insert(DacDistributeToFactory distributeToFactory, ref int iNewID)
+        public bool Insert(DacExport1 distributeToFactory, ref int iNewID)
         {
             DacDbAccess dacDb = new DacDbAccess();
             try
@@ -58,9 +56,7 @@ namespace DAC.Core
                 // Add parameters
                 dacDb.AddParameter("@OrderNumber", distributeToFactory.OrderNumber);
                 dacDb.AddParameter("@CreatedDate", distributeToFactory.CreatedDate);
-                dacDb.AddParameter("@ProvinceCode", distributeToFactory.ProvinceCode);
-                dacDb.AddParameter("@FactoryCode", distributeToFactory.FactoryCode);
-                dacDb.AddParameter("@ProductCode", distributeToFactory.ProductCode);
+                dacDb.AddParameter("@ProvinceCode", distributeToFactory.CustomerCode);
                 dacDb.AddParameter("@Quantity", distributeToFactory.Quantity);
                 dacDb.AddParameter("@Description", distributeToFactory.Description);
                 dacDb.AddParameter("@Active", distributeToFactory.Active);
@@ -76,19 +72,17 @@ namespace DAC.Core
                 throw ex;
             }
         }
-        public bool Update(DacDistributeToFactory distributeToFactory)
+        public bool Update(DacExport1 distributeToFactory)
         {
             DacDbAccess dacDb = new DacDbAccess();
             try
             {
                 dacDb.CreateNewSqlCommand();
                 // Add parameters
-                dacDb.AddParameter("@ID", distributeToFactory.ID);
+                dacDb.AddParameter("@ID", distributeToFactory.Id);
                 dacDb.AddParameter("@OrderNumber", distributeToFactory.OrderNumber);
                 dacDb.AddParameter("@CreatedDate", distributeToFactory.CreatedDate);
-                dacDb.AddParameter("@ProvinceCode", distributeToFactory.ProvinceCode);
-                dacDb.AddParameter("@FactoryCode", distributeToFactory.FactoryCode);
-                dacDb.AddParameter("@ProductCode", distributeToFactory.ProductCode);
+                dacDb.AddParameter("@ProvinceCode", distributeToFactory.CustomerCode);
                 dacDb.AddParameter("@Quantity", distributeToFactory.Quantity);
                 dacDb.AddParameter("@Description", distributeToFactory.Description);
                 dacDb.AddParameter("@Active", distributeToFactory.Active);

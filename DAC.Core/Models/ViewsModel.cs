@@ -6,7 +6,7 @@ namespace DAC.Core.Models
 {
     public class DacDistributeToStoreViewModel
     {
-        public DacDistributeToStore DacDistributeToStore { get; set; }
+        public DacExport2 DacDistributeToStore { get; set; }
         public List<DacDistributeToStoreDetails> StoreDetailsCollection { get; set; }
     }
 

@@ -474,6 +474,12 @@
     <Compile Include="Tools\frmDacLockDistributor.Designer.cs">
       <DependentUpon>frmDacLockDistributor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Tools\frmRefactor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\frmRefactor.Designer.cs">
+      <DependentUpon>frmRefactor.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\ucDataButton.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -655,6 +661,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Tools\frmDacLockDistributor.resx">
       <DependentUpon>frmDacLockDistributor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\frmRefactor.resx">
+      <DependentUpon>frmRefactor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\ucDataButton.resx">
       <DependentUpon>ucDataButton.cs</DependentUpon>

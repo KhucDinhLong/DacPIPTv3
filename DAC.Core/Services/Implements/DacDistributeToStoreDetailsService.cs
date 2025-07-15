@@ -20,7 +20,7 @@ namespace DAC.Core.Services.Implements
                     int? ExportId = LstDetail.FirstOrDefault().DistributeToStoreId;
                     if (ExportId.HasValue)
                     {
-                        var exportInfo = dbContext.DacDistributeToStore.FirstOrDefault(x => x.Id == ExportId);
+                        var exportInfo = dbContext.DacExport2.FirstOrDefault(x => x.Id == ExportId);
                         if (exportInfo != null && exportInfo.Quantity.HasValue)
                         {
                             exportInfo.Quantity = exportInfo.Quantity.Value + LstDetail.Count();
@@ -51,7 +51,7 @@ namespace DAC.Core.Services.Implements
                         int? ExportId = detail.FirstOrDefault().DistributeToStoreId;
                         if (ExportId.HasValue)
                         {
-                            var exportInfo = dbContext.DacDistributeToStore.FirstOrDefault(x => x.Id == ExportId);
+                            var exportInfo = dbContext.DacExport2.FirstOrDefault(x => x.Id == ExportId);
                             if (exportInfo != null && exportInfo.Quantity.HasValue && exportInfo.Quantity.Value > detail.Count())
                             {
                                 exportInfo.Quantity = exportInfo.Quantity.Value - detail.Count();
@@ -80,7 +80,7 @@ namespace DAC.Core.Services.Implements
                     var detail = dbContext.DacDistributeToStoreDetails.FirstOrDefault(x => x.DacCode == DacCode);
                     if (detail != null)
                     {
-                        var exportInfo = dbContext.DacDistributeToStore.FirstOrDefault(x => x.Id == detail.DistributeToStoreId);
+                        var exportInfo = dbContext.DacExport2.FirstOrDefault(x => x.Id == detail.DistributeToStoreId);
                         dbContext.DacDistributeToStoreDetails.Remove(detail);
                         if (exportInfo != null)
                         {
@@ -117,19 +117,19 @@ namespace DAC.Core.Services.Implements
             return response;
         }
 
-        public BaseViewModel<DacDistributeToStoreVM> GetExportInfo(string DacCode)
+        public BaseViewModel<DacExport2VM> GetExportInfo(string DacCode)
         {
-            var response = new BaseViewModel<DacDistributeToStoreVM>();
+            var response = new BaseViewModel<DacExport2VM>();
             try
             {
                 using (var dbContext = new PIPTDbContext())
                 {
                     var info = (from d in dbContext.DacDistributeToStoreDetails
-                                join e in dbContext.DacDistributeToStore on d.DistributeToStoreId equals e.Id
+                                join e in dbContext.DacExport2 on d.DistributeToStoreId equals e.Id
                                 where d.DacCode == DacCode
-                                select new DacDistributeToStoreVM
+                                select new DacExport2VM
                                 {
-                                    StoreCode = e.StoreCode,
+                                    CustomerCode = e.CustomerCode,
                                     CreatedDate = e.CreatedDate,
                                 }).FirstOrDefault();
                     response.ResponseData = info;

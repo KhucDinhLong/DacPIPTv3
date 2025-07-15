@@ -108,8 +108,8 @@ namespace DAC.Core.Services.Implements
                 using (var dbContext = new PIPTDbContext())
                 {
                     response.ResponseData = dbContext.DacInsertToWarehouse.Any(x => x.StockCode == code)
-                        || dbContext.DacDistributeToAgency.Any(x => x.StockCode == code)
-                        || dbContext.DacDistributeToStore.Any(x => x.StockCode == code);
+                        || dbContext.DacExport.Any(x => x.StockCode == code)
+                        || dbContext.DacExport2.Any(x => x.StockCode == code);
                 }
             }
             catch (Exception ex)

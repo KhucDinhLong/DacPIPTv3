@@ -16,16 +16,16 @@ namespace PIPT
     public partial class frmDacAgency : Form
     {
         #region Variables
-        IDacAgencyService _agencyService;
+        IDacCustomerService _agencyService;
         IProvinceService _provinceService;
         IDacRegionService _regionService;
-        List<DacAgencyVM> LstAgency;
+        List<DacCustomerVM> LstAgency;
         List<DacRegion> LstRegion;
         List<Province> LstProvince;
-        DacAgencyVM originalObject;
+        DacCustomerVM originalObject;
         #endregion
         #region Form's Events
-        public frmDacAgency(IDacAgencyService agencyService, IProvinceService provinceService, IDacRegionService regionService)
+        public frmDacAgency(IDacCustomerService agencyService, IProvinceService provinceService, IDacRegionService regionService)
         {
             InitializeComponent();
             _agencyService = agencyService;
@@ -42,7 +42,7 @@ namespace PIPT
             LstAgency = _agencyService.GetAll().ResponseData?.ToList();
             LstRegion = _regionService.GetAll().ResponseData ?? new List<DacRegion>();
             LstProvince = _provinceService.GetAll().ResponseData ?? new List<Province>();
-            lueAgency.Properties.DataSource = LstAgency ?? new List<DacAgencyVM>();
+            lueAgency.Properties.DataSource = LstAgency ?? new List<DacCustomerVM>();
             lueAgency.Properties.ValueMember = "Code";
             lueAgency.Properties.DisplayMember = "Name";
             lueProvince.Properties.DataSource = LstProvince;
@@ -117,7 +117,7 @@ namespace PIPT
         {
             if (ValidateData())
             {
-                DacAgency agency = CreateSaveData();
+                DacCustomer agency = CreateSaveData();
                 if (ucDataButtonAgency.DataMode == DataState.Insert)
                 {
                     agency = _agencyService.Create(agency).ResponseData;
@@ -132,9 +132,9 @@ namespace PIPT
             return false;
         }
 
-        private DacAgency CreateSaveData()
+        private DacCustomer CreateSaveData()
         {
-            DacAgency agency = new DacAgency();
+            DacCustomer agency = new DacCustomer();
             agency.Id = ucDataButtonAgency.DataMode == DataState.Edit ? LstAgency[gvAgency.FocusedRowHandle].Id : 0;
             agency.Code = ucDataButtonAgency.DataMode == DataState.Insert ? txtAgencyCode.Text : LstAgency[gvAgency.FocusedRowHandle].Code;
             agency.Name = txtAgencyName.Text;
@@ -209,7 +209,7 @@ namespace PIPT
         #region Buttons' Event
         private void ucDataButtonAgency_InsertHandler()
         {
-            DacAgencyVM NewAgency = new DacAgencyVM();
+            DacCustomerVM NewAgency = new DacCustomerVM();
             NewAgency.CreatedUser = CommonBS.CurrentUser.LoginID;
             NewAgency.Active = true;
             LstAgency.Add(NewAgency);

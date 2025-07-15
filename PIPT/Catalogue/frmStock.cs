@@ -16,14 +16,14 @@ namespace PIPT
     public partial class frmStock : Form
     {
         #region Variables
-        IDacAgencyService _agencyService;
+        IDacCustomerService _agencyService;
         IDacStockService _stockService;
-        List<DacAgencyVM> LstAgency;
+        List<DacCustomerVM> LstAgency;
         List<DacStock> LstStock;
         DacStock originalObject;
         #endregion
         #region Form's Events
-        public frmStock(IDacAgencyService agencyService, IDacStockService stockService)
+        public frmStock(IDacCustomerService agencyService, IDacStockService stockService)
         {
             InitializeComponent();
             _agencyService = agencyService;
@@ -64,7 +64,7 @@ namespace PIPT
             var CurrentUser = Session.CurrentUser;
             if (CurrentUser != null)
             {
-                LstAgency = _agencyService.GetAll().ResponseData ?? new List<DacAgencyVM>();
+                LstAgency = _agencyService.GetAll().ResponseData ?? new List<DacCustomerVM>();
                 LstStock = _stockService.GetAll().ResponseData?.ToList();
                 if (!CurrentUser.isAdmin.HasValue || !CurrentUser.isAdmin.Value)
                 {

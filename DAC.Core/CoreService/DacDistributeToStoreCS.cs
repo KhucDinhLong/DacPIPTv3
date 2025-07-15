@@ -8,9 +8,9 @@ namespace DAC.Core
 {
     public class DacDistributeToStoreCS
     {
-        public List<DacDistributeToStore> GetListDistributeToStore(DateTime FrDate, DateTime ToDate, string StoreCode, string ProductCode, string LoginID, string AgencyCode)
+        public List<DacExport2> GetListDistributeToStore(DateTime FrDate, DateTime ToDate, string StoreCode, string ProductCode, string LoginID, string AgencyCode)
         {
-            List<DacDistributeToStore> dacDistributeToStoreCollection = new List<DacDistributeToStore>();
+            List<DacExport2> dacDistributeToStoreCollection = new List<DacExport2>();
             DacDbAccess dacDb = new DacDbAccess();
             dacDb.CreateNewSqlCommand();
             dacDb.AddParameter("@FrDate", FrDate);
@@ -23,12 +23,12 @@ namespace DAC.Core
             SqlDataReader reader = dacDb.ExecuteReader("spDacDistributeToStore_Select");
             while (reader.Read())
             {
-                DacDistributeToStore dacDistributeToStore = new DacDistributeToStore();
+                DacExport2 dacDistributeToStore = new DacExport2();
 
                 dacDistributeToStore.Id = int.Parse(reader["Id"].ToString());
                 dacDistributeToStore.OrderNumber = reader["OrderNumber"].ToString();
                 dacDistributeToStore.CreatedDate = (DateTime)reader["CreatedDate"];
-                dacDistributeToStore.StoreCode = reader["StoreCode"].ToString();
+                dacDistributeToStore.CustomerCode = reader["StoreCode"].ToString();
                 dacDistributeToStore.Quantity = (double)reader["Quantity"];
                 dacDistributeToStore.Description = reader["Description"].ToString();
                 dacDistributeToStore.Active = (bool)reader["Active"];
@@ -42,10 +42,10 @@ namespace DAC.Core
             return dacDistributeToStoreCollection;
         }
 
-        public DacDistributeToStore GetDistributeToStore(string sID)
+        public DacExport2 GetDistributeToStore(string sID)
         {
             DacDbAccess dacDb = new DacDbAccess();
-            DacDistributeToStore dacDistributeToStore = new DacDistributeToStore();
+            DacExport2 dacDistributeToStore = new DacExport2();
             try
             {
                 dacDb.CreateNewSqlCommand();
@@ -58,7 +58,7 @@ namespace DAC.Core
                     dacDistributeToStore.Id = int.Parse(reader["Id"].ToString());
                     dacDistributeToStore.OrderNumber = reader["OrderNumber"].ToString();
                     dacDistributeToStore.CreatedDate = (DateTime)reader["CreatedDate"];
-                    dacDistributeToStore.StoreCode = reader["StoreCode"].ToString();
+                    dacDistributeToStore.CustomerCode = reader["StoreCode"].ToString();
                     dacDistributeToStore.Quantity = (double)reader["Quantity"];
                     dacDistributeToStore.Description = reader["Description"].ToString();
                     dacDistributeToStore.Active = (bool)reader["Active"];
@@ -122,7 +122,7 @@ namespace DAC.Core
                 return String.Format("{0}-0000000001", AgencyCode);
         }
 
-        public bool Insert(DacDistributeToStore distributeToStore, ref int iNewID)
+        public bool Insert(DacExport2 distributeToStore, ref int iNewID)
         {
             DacDbAccess dacDb = new DacDbAccess();
             try
@@ -131,7 +131,7 @@ namespace DAC.Core
                 // Add parameters
                 dacDb.AddParameter("@OrderNumber", distributeToStore.OrderNumber);
                 dacDb.AddParameter("@CreatedDate", distributeToStore.CreatedDate);
-                dacDb.AddParameter("@StoreCode", distributeToStore.StoreCode);
+                dacDb.AddParameter("@StoreCode", distributeToStore.CustomerCode);
                 dacDb.AddParameter("@Quantity", distributeToStore.Quantity);
                 dacDb.AddParameter("@Description", distributeToStore.Description);
                 dacDb.AddParameter("@Active", distributeToStore.Active);
@@ -148,7 +148,7 @@ namespace DAC.Core
                 throw ex;
             }
         }
-        public bool Update(DacDistributeToStore distributeToStore)
+        public bool Update(DacExport2 distributeToStore)
         {
             DacDbAccess dacDb = new DacDbAccess();
             try
@@ -158,7 +158,7 @@ namespace DAC.Core
                 dacDb.AddParameter("@Id", distributeToStore.Id);
                 dacDb.AddParameter("@OrderNumber", distributeToStore.OrderNumber);
                 dacDb.AddParameter("@CreatedDate", distributeToStore.CreatedDate);
-                dacDb.AddParameter("@StoreCode", distributeToStore.StoreCode);
+                dacDb.AddParameter("@StoreCode", distributeToStore.CustomerCode);
                 dacDb.AddParameter("@Quantity", distributeToStore.Quantity);
                 dacDb.AddParameter("@Description", distributeToStore.Description);
                 dacDb.AddParameter("@Active", distributeToStore.Active);

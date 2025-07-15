@@ -20,7 +20,7 @@ namespace DAC.Core.Services.Implements
                 using (var db = new PIPTDbContext())
                 {
                     response.ResponseData = (from store in db.DacStore
-                                             join agency in db.DacAgency on store.AgencyCode equals agency.Code into left
+                                             join agency in db.DacCustomer on store.AgencyCode equals agency.Code into left
                                              from l in left.DefaultIfEmpty()
                                              select new DacStoreVM
                                              {
@@ -128,7 +128,7 @@ namespace DAC.Core.Services.Implements
             {
                 using (var dbContext = new PIPTDbContext())
                 {
-                    response.ResponseData = dbContext.DacDistributeToAgency.Any(x => x.AgencyCode == code);
+                    response.ResponseData = dbContext.DacExport.Any(x => x.CustomerCode == code);
                 }
             }
             catch (Exception ex)

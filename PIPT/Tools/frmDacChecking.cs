@@ -10,14 +10,14 @@ namespace PIPT
         #region Variables
         IDacPackageService _packageService;
         IDacProductService _productService;
-        IDacDistributeToAgencyDetailsService _exportToAgencyDetailService;
+        IDacExportDetailService _exportToAgencyDetailService;
         IDacDistributeToStoreDetailsService _exportToStoreDetailService;
-        IDacAgencyService _agencyService;
+        IDacCustomerService _agencyService;
         IDacStoreService _storeService;
         #endregion
         #region Form's Events
-        public frmDacChecking(IDacPackageService packageService, IDacProductService productService, IDacDistributeToAgencyDetailsService exportToAgencyDetailService
-            , IDacDistributeToStoreDetailsService exportToStoreDetailService, IDacAgencyService agencyService, IDacStoreService storeService)
+        public frmDacChecking(IDacPackageService packageService, IDacProductService productService, IDacExportDetailService exportToAgencyDetailService
+            , IDacDistributeToStoreDetailsService exportToStoreDetailService, IDacCustomerService agencyService, IDacStoreService storeService)
         {
             InitializeComponent();
             _packageService = packageService;
@@ -70,8 +70,8 @@ namespace PIPT
             if (ExportToAgencyInfo != null)
             {
                 txtNgayXuat.Text = ExportToAgencyInfo.CreatedDate.HasValue ? ExportToAgencyInfo.CreatedDate.Value.ToString("dd/MM/yyyy") : string.Empty;
-                txtAgencyCode.Text = ExportToAgencyInfo.AgencyCode;
-                var agency = _agencyService.GetByCode(ExportToAgencyInfo.AgencyCode)?.ResponseData;
+                txtAgencyCode.Text = ExportToAgencyInfo.CustomerCode;
+                var agency = _agencyService.GetByCode(ExportToAgencyInfo.CustomerCode)?.ResponseData;
                 if (agency != null)
                 {
                     txtAgencyName.Text = agency.Name;
@@ -102,8 +102,8 @@ namespace PIPT
             if (ExportToStoreInfo != null)
             {
                 txtStoreDateExport.Text = ExportToAgencyInfo.CreatedDate.HasValue ? ExportToAgencyInfo.CreatedDate.Value.ToString("dd/MM/yyyy") : string.Empty;
-                txtStoreCode.Text = ExportToAgencyInfo.AgencyCode;
-                var store = _storeService.GetByCode(ExportToStoreInfo.StoreCode)?.ResponseData;
+                txtStoreCode.Text = ExportToAgencyInfo.CustomerCode;
+                var store = _storeService.GetByCode(ExportToStoreInfo.CustomerCode)?.ResponseData;
                 if (store != null)
                 {
                     txtStoreName.Text = store.Name;

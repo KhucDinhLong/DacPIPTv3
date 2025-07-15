@@ -18,22 +18,22 @@ namespace PIPT
     public partial class frmDacDistributeToAgency : Form
     {
         #region Variables
-        IDacDistributeToAgencyService _exportService;
+        IDacExportService _exportService;
         IDacProductService _productService;
-        IDacDistributeToAgencyDetailsService _detailService;
+        IDacExportDetailService _detailService;
         IDacStockService _stockService;
-        IDacAgencyService _agencyService;
+        IDacCustomerService _agencyService;
         ISecConfigService _configService;
-        List<DacDistributeToAgencyVM> LstExportInfo;
+        List<DacExportVM> LstExportInfo;
         List<DacProductVM> LstProducts;
         List<DacStock> LstStock;
-        List<DacAgencyVM> LstAgency;
-        DacDistributeToAgencyVM originalObject;
+        List<DacCustomerVM> LstAgency;
+        DacExportVM originalObject;
         SecConfig AutoIncreaseCode;
         // --------------------
         #endregion
         #region Form's Events
-        public frmDacDistributeToAgency(IDacDistributeToAgencyService exportService, IDacProductService productService, IDacDistributeToAgencyDetailsService detailService, IDacStockService stockService, IDacAgencyService agencyService, ISecConfigService configService)
+        public frmDacDistributeToAgency(IDacExportService exportService, IDacProductService productService, IDacExportDetailService detailService, IDacStockService stockService, IDacCustomerService agencyService, ISecConfigService configService)
         {
             InitializeComponent();
             _exportService = exportService;
@@ -72,7 +72,7 @@ namespace PIPT
                 }
                 else
                 {
-                    LstExportInfo[gvExportInfo.FocusedRowHandle].LstDetails = new List<DacDistributeToAgencyDetailVM>();
+                    LstExportInfo[gvExportInfo.FocusedRowHandle].LstDetails = new List<DacExportDetailVM>();
                     originalObject = null;
                 }
                 if (gvExportInfo.FocusedRowHandle >= 0 && LstExportInfo != null && LstExportInfo.Count > gvExportInfo.FocusedRowHandle && LstExportInfo[gvExportInfo.FocusedRowHandle] != null)
@@ -156,7 +156,7 @@ namespace PIPT
         private void LoadData()
         {
             SetSelectControlDataSource();
-            LstExportInfo = _exportService.GetAll().ResponseData ?? new List<DacDistributeToAgencyVM>();
+            LstExportInfo = _exportService.GetAll().ResponseData ?? new List<DacExportVM>();
             gcExportInfo.DataSource = LstExportInfo;
             if (LstExportInfo != null && LstExportInfo.Any())
             {
@@ -241,7 +241,7 @@ namespace PIPT
         {
             if (ValidateData())
             {
-                DacDistributeToAgencyVM exportInfoVM = LstExportInfo[gvExportInfo.FocusedRowHandle];
+                DacExportVM exportInfoVM = LstExportInfo[gvExportInfo.FocusedRowHandle];
                 exportInfoVM = CreateSaveData(exportInfoVM);
                 if (exportInfoVM != null && exportInfoVM.LstDetails != null)
                 {
@@ -319,11 +319,11 @@ namespace PIPT
             return false;
         }
 
-        private DacDistributeToAgencyVM CreateSaveData(DacDistributeToAgencyVM exportInfoVM)
+        private DacExportVM CreateSaveData(DacExportVM exportInfoVM)
         {
             exportInfoVM.Id = ucDataButtonAgency.DataMode == DataState.Insert ? 0 : exportInfoVM.Id;
             exportInfoVM.OrderNumber = ucDataButtonAgency.DataMode == DataState.Edit ? exportInfoVM.OrderNumber : txtOrderNumber.Text;
-            exportInfoVM.AgencyCode = lueAgency.EditValue.ToString();
+            exportInfoVM.CustomerCode = lueAgency.EditValue.ToString();
             exportInfoVM.Quantity = int.Parse(txtQuantity.Text);
             exportInfoVM.Description = txtDescription.Text;
             exportInfoVM.Active = true;
@@ -332,14 +332,14 @@ namespace PIPT
             return exportInfoVM;
         }
 
-        private void BindDataToControl(DacDistributeToAgencyVM exportInfoVM)
+        private void BindDataToControl(DacExportVM exportInfoVM)
         {
             txtOrderNumber.Text = exportInfoVM.OrderNumber;
             txtQuantity.Text = exportInfoVM.Quantity?.ToString();
             dtpCreatedDate.Value = exportInfoVM.CreatedDate.HasValue ? exportInfoVM.CreatedDate.Value : DateTime.Now;
             txtDescription.Text = exportInfoVM.Description;
             lueDacStock.EditValue = exportInfoVM.StockCode;
-            lueAgency.EditValue = exportInfoVM.AgencyCode;
+            lueAgency.EditValue = exportInfoVM.CustomerCode;
             SetProductName();
         }
 
@@ -387,7 +387,7 @@ namespace PIPT
                 {
                     for (long i = iFrSerie; i <= iToSerie; i++)
                     {
-                        var NewDetail = new DacDistributeToAgencyDetailVM();
+                        var NewDetail = new DacExportDetailVM();
                         NewDetail.DacCode = String.Format("{0}{1:" + CommonBO.GetSecConfig("SeriLength").Pattern + "}", sPreSeri, i);
                         NewDetail.ProductCode = lueProduct.EditValue.ToString();
                         NewDetail.ProductName = lueProduct.Text;
@@ -458,7 +458,7 @@ namespace PIPT
                 try
                 {
                     int.Parse(serial);
-                    var NewDetail = new DacDistributeToAgencyDetailVM();
+                    var NewDetail = new DacExportDetailVM();
                     NewDetail.DacCode = serial;
                     NewDetail.ProductCode = lueProduct.EditValue.ToString();
                     NewDetail.ProductName = lueProduct.Text;
@@ -551,7 +551,7 @@ namespace PIPT
         #region Buttons' Event
         private void ucDataButtonAgency_InsertHandler()
         {
-            DacDistributeToAgencyVM exportInfo = new DacDistributeToAgencyVM();
+            DacExportVM exportInfo = new DacExportVM();
             if (AutoIncreaseCode != null && AutoIncreaseCode.Value == "true")
             {
                 exportInfo.OrderNumber = _exportService.GenerateNewCode().ResponseData;
@@ -593,7 +593,7 @@ namespace PIPT
                         StringBuilder sContent = new StringBuilder();
                         sContent.Append("Xóa phiếu xuất " + LstExportInfo[gvExportInfo.FocusedRowHandle].OrderNumber);
                         sContent.Append("-");
-                        sContent.Append(LstExportInfo[gvExportInfo.FocusedRowHandle].AgencyCode);
+                        sContent.Append(LstExportInfo[gvExportInfo.FocusedRowHandle].CustomerCode);
                         sContent.Append("-");
                         sContent.Append(LstExportInfo[gvExportInfo.FocusedRowHandle].CreatedDate.Value.ToString("dd/MM/yyyy"));
                         if (LstExportInfo[gvExportInfo.FocusedRowHandle].LstDetails != null && LstExportInfo[gvExportInfo.FocusedRowHandle].LstDetails.Any())
@@ -657,10 +657,10 @@ namespace PIPT
                     if (MessageBox.Show("Lưu ý rằng việc thêm các mã QR có thể sẽ cập nhật lại số lượng chỉ định trong phiếu xuất này. " +
                         "Bạn có xác nhận muốn tiếp tục?", "Xác nhận cập nhật", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
                     {
-                        var LstNewDetail = LstExportInfo[gvExportInfo.FocusedRowHandle].LstDetails.Where(x => x.Id <= 0)?.Select(x => new DacDistributeToAgencyDetails
+                        var LstNewDetail = LstExportInfo[gvExportInfo.FocusedRowHandle].LstDetails.Where(x => x.Id <= 0)?.Select(x => new DacExportDetail
                         {
                             Id = x.Id,
-                            DistributeToAgencyId = x.DistributeToAgencyId,
+                            ExportId = x.ExportId,
                             DacCode = x.DacCode,
                             ProductCode = lueProduct.EditValue.ToString()
                         })?.ToList();
@@ -670,7 +670,7 @@ namespace PIPT
                             sContent.Append("Thêm các mã: ");
                             for (int i = 0; i < LstNewDetail.Count; i++)
                             {
-                                LstNewDetail[i].DistributeToAgencyId = LstExportInfo[gvExportInfo.FocusedRowHandle].Id;
+                                LstNewDetail[i].ExportId = LstExportInfo[gvExportInfo.FocusedRowHandle].Id;
                             }
                             if (_detailService.AddRange(LstNewDetail).ResponseData)
                             {
