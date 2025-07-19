@@ -1,4 +1,5 @@
 ﻿using DAC.Core;
+using DAC.Core.Common;
 using DAC.Core.Services.Interfaces;
 using System;
 using System.Windows.Forms;
@@ -10,20 +11,22 @@ namespace PIPT
         #region Variables
         IDacPackageService _packageService;
         IDacProductService _productService;
-        IDacExportDetailService _exportToAgencyDetailService;
-        IDacDistributeToStoreDetailsService _exportToStoreDetailService;
+        IDacExportDetailProcessService _exportDetailService;
         IDacCustomerService _agencyService;
         IDacStoreService _storeService;
+        bool visibleExportGroup;
+        bool visibleExportGroup1;
+        bool visibleExportGroup2;
+        bool visibleExportGroup3;
         #endregion
         #region Form's Events
-        public frmDacChecking(IDacPackageService packageService, IDacProductService productService, IDacExportDetailService exportToAgencyDetailService
-            , IDacDistributeToStoreDetailsService exportToStoreDetailService, IDacCustomerService agencyService, IDacStoreService storeService)
+        public frmDacChecking(IDacPackageService packageService, IDacProductService productService, IDacExportDetailProcessService exportDetailService
+            , IDacCustomerService agencyService, IDacStoreService storeService)
         {
             InitializeComponent();
             _packageService = packageService;
             _productService = productService;
-            _exportToAgencyDetailService = exportToAgencyDetailService;
-            _exportToStoreDetailService = exportToStoreDetailService;
+            _exportDetailService = exportDetailService;
             _agencyService = agencyService;
             _storeService = storeService;
         }
@@ -46,26 +49,23 @@ namespace PIPT
 
         public void GetInfo(string sDacCode)
         {
-            string sProductCode = string.Empty;
-            var ExportToAgencyInfo = _exportToAgencyDetailService.GetExportInfo(sDacCode)?.ResponseData;
-            var ExportToStoreInfo = _exportToStoreDetailService.GetExportInfo(sDacCode)?.ResponseData;
+            string ExportProductCode = string.Empty;
+            string PackageProductCode = string.Empty;
+            var ExportInfo = _exportDetailService.GetExportInfo(sDacCode)?.ResponseData;
             var PackageInfo = _packageService.GetInfo(sDacCode)?.ResponseData;
             if (PackageInfo != null)
             {
                 txtPackageCreateDate.Text = PackageInfo.CreatedDate.HasValue ? PackageInfo.CreatedDate.Value.ToString("dd/MM/yyyy") : string.Empty;
                 txtPackageCode.Text = PackageInfo.PackageCode;
-                txtPackageProductCode.Text = PackageInfo.ProductCode;
-                txtPackageProductName.Text = PackageInfo.ProductName;
                 txtQuantity.Text = PackageInfo.Quantity.HasValue ? PackageInfo.Quantity.Value.ToString() : string.Empty;
                 txtBatch.Text = PackageInfo.Batch;
-                txtFactory.Text = PackageInfo.FactoryCode;
                 txtPersonPackage.Text = PackageInfo.PersonPackaged;
-                grbPackageInfo.Visible = true;
+                grPackage.Visible = true;
                 sProductCode = PackageInfo.ProductCode;
             }
             else
             {
-                grbPackageInfo.Visible = false;
+                grPackage.Visible = false;
             }
             if (ExportToAgencyInfo != null)
             {
@@ -80,7 +80,7 @@ namespace PIPT
                     txtAgencyMobile.Text = agency.MobileNum;
                     txtAgencyEmail.Text = agency.Email;
                     txtAgencyProvince.Text = agency.ProvinceCode;
-                    
+
                     txtAgencyDependCode.Text = agency.DependCode;
                     txtAgencyJoinContact.Text = agency.JoinContact;
                     txtAgencyPhoneNum.Text = agency.PhoneNum;
@@ -124,9 +124,9 @@ namespace PIPT
             {
                 groupBoxStore.Visible = false;
             }
-            if (!string.IsNullOrWhiteSpace(sProductCode))
+            if (!string.IsNullOrWhiteSpace(ExportProductCode))
             {
-                var product = _productService.GetByCode(sProductCode)?.ResponseData;
+                var product = _productService.GetByCode(ExportProductCode)?.ResponseData;
                 if (product != null)
                 {
                     txtProductCode.Text = product.Code;
@@ -134,19 +134,51 @@ namespace PIPT
                     txtProductRegisterNumber.Text = product.RegisterNumber;
                     txtProductManufacture.Text = product.Manufacture;
                     txtProductGeneralFormat.Text = product.GeneralFormat;
-                    groupBoxProduct.Visible = true;
+                    grProduct.Visible = true;
                 }
                 else
                 {
-                    groupBoxProduct.Visible = false;
+                    grProduct.Visible = false;
                 }
             }
             else
             {
-                groupBoxProduct.Visible = false;
+                grProduct.Visible = false;
             }
-            
-                
+
+
+        }
+
+        private void frmDacChecking_Load(object sender, EventArgs e)
+        {
+            if ((Session.CurrentUser.isAdmin.HasValue && Session.CurrentUser.isAdmin.Value) || Session.CurrentUser.Level == 4)
+            {
+                visibleExportGroup = visibleExportGroup1 = visibleExportGroup2 = visibleExportGroup3 = true;
+            }
+            else
+            {
+                switch (Session.CurrentUser.Level.Value)
+                {
+                    case 1:
+                        visibleExportGroup = true;
+                        visibleExportGroup1 = visibleExportGroup2 = visibleExportGroup3 = false;
+                        break;
+                    case 2:
+                        visibleExportGroup = visibleExportGroup1 = true;
+                        visibleExportGroup2 = visibleExportGroup3 = false;
+                        break;
+                    case 3:
+                        visibleExportGroup = visibleExportGroup1 = visibleExportGroup2 = true;
+                        visibleExportGroup3 = false;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            grExport.Visible = visibleExportGroup;
+            grExport1.Visible = visibleExportGroup1;
+            grExport2.Visible = visibleExportGroup2;
+            grExport3.Visible = visibleExportGroup3;
         }
     }
 }

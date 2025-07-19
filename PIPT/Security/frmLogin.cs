@@ -33,7 +33,7 @@ namespace PIPT
             if (user != null)
             {
                 if ((user.LstGroup != null && user.LstGroup.FirstOrDefault(x => x.IsAdmin.HasValue && x.IsAdmin.Value) != null) 
-                    || ((!user.LockedUser.HasValue || !user.LockedUser.Value) && user.DeadlineOfUsing >= DateTime.Now))
+                    || ((!user.LockedUser.HasValue || !user.LockedUser.Value) && user.DeadlineOfUsing >= DateTime.Now && user.Level.HasValue && user.Level > 0))
                 {
                     Session.CurrentUser = user;
                     CommonBS.CurrentUser = new User();
@@ -50,6 +50,11 @@ namespace PIPT
                     CommonBO.SecConfigs = SecConfigCS.GetSecConfigs();
                     CommonBS.IsAdminUser = user.isAdmin.HasValue ? user.isAdmin.Value : false;
                     this.DialogResult = DialogResult.OK;
+                }
+                else if (!user.Level.HasValue || user.Level.Value < 0)
+                {
+                    MessageBox.Show("Không lấy được thông tin khách hàng sử dụng tài khoản này!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    txtUserName.Focus();
                 }
                 else
                 {

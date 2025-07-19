@@ -39,7 +39,6 @@
             this.labelSearchCode = new System.Windows.Forms.Label();
             this.panelPackage = new System.Windows.Forms.Panel();
             this.btnDetailDelete = new System.Windows.Forms.Button();
-            this.chkDeleteProductFromStore = new DevExpress.XtraEditors.CheckEdit();
             this.chkDeleteProductFromAgency = new DevExpress.XtraEditors.CheckEdit();
             this.chkDeleteProductFromWarehouse = new DevExpress.XtraEditors.CheckEdit();
             this.chkDeleteProductFromPackage = new DevExpress.XtraEditors.CheckEdit();
@@ -49,7 +48,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.gvDacCode)).BeginInit();
             this.panelAddDacCode.SuspendLayout();
             this.panelPackage.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.chkDeleteProductFromStore.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chkDeleteProductFromAgency.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chkDeleteProductFromWarehouse.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chkDeleteProductFromPackage.Properties)).BeginInit();
@@ -140,20 +138,19 @@
             // panelPackage
             // 
             this.panelPackage.Controls.Add(this.btnDetailDelete);
-            this.panelPackage.Controls.Add(this.chkDeleteProductFromStore);
             this.panelPackage.Controls.Add(this.chkDeleteProductFromAgency);
             this.panelPackage.Controls.Add(this.chkDeleteProductFromWarehouse);
             this.panelPackage.Controls.Add(this.chkDeleteProductFromPackage);
             this.panelPackage.Location = new System.Drawing.Point(6, 91);
             this.panelPackage.Name = "panelPackage";
-            this.panelPackage.Size = new System.Drawing.Size(270, 138);
+            this.panelPackage.Size = new System.Drawing.Size(270, 111);
             this.panelPackage.TabIndex = 9;
             // 
             // btnDetailDelete
             // 
             this.btnDetailDelete.Image = global::PIPT.Properties.Resources.Delete1616;
             this.btnDetailDelete.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnDetailDelete.Location = new System.Drawing.Point(6, 103);
+            this.btnDetailDelete.Location = new System.Drawing.Point(6, 78);
             this.btnDetailDelete.Name = "btnDetailDelete";
             this.btnDetailDelete.Size = new System.Drawing.Size(105, 24);
             this.btnDetailDelete.TabIndex = 7;
@@ -162,19 +159,11 @@
             this.btnDetailDelete.UseVisualStyleBackColor = true;
             this.btnDetailDelete.Click += new System.EventHandler(this.buttonDetailDelete_Click);
             // 
-            // chkDeleteProductFromStore
-            // 
-            this.chkDeleteProductFromStore.Location = new System.Drawing.Point(6, 78);
-            this.chkDeleteProductFromStore.Name = "chkDeleteProductFromStore";
-            this.chkDeleteProductFromStore.Properties.Caption = "Xóa sản phẩm khỏi đơn hàng xuất cho cửa hàng";
-            this.chkDeleteProductFromStore.Size = new System.Drawing.Size(255, 19);
-            this.chkDeleteProductFromStore.TabIndex = 6;
-            // 
             // chkDeleteProductFromAgency
             // 
             this.chkDeleteProductFromAgency.Location = new System.Drawing.Point(6, 53);
             this.chkDeleteProductFromAgency.Name = "chkDeleteProductFromAgency";
-            this.chkDeleteProductFromAgency.Properties.Caption = "Xóa sản phẩm khỏi đơn hàng xuất cho đại lý";
+            this.chkDeleteProductFromAgency.Properties.Caption = "Xóa sản phẩm khỏi đơn hàng";
             this.chkDeleteProductFromAgency.Size = new System.Drawing.Size(243, 19);
             this.chkDeleteProductFromAgency.TabIndex = 5;
             // 
@@ -198,7 +187,7 @@
             // 
             this.lblProductCount.AutoSize = true;
             this.lblProductCount.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblProductCount.Location = new System.Drawing.Point(6, 232);
+            this.lblProductCount.Location = new System.Drawing.Point(6, 205);
             this.lblProductCount.Name = "lblProductCount";
             this.lblProductCount.Size = new System.Drawing.Size(100, 13);
             this.lblProductCount.TabIndex = 0;
@@ -223,7 +212,6 @@
             this.panelAddDacCode.ResumeLayout(false);
             this.panelAddDacCode.PerformLayout();
             this.panelPackage.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.chkDeleteProductFromStore.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chkDeleteProductFromAgency.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chkDeleteProductFromWarehouse.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chkDeleteProductFromPackage.Properties)).EndInit();
@@ -240,7 +228,6 @@
         private System.Windows.Forms.Button btnEnter;
         private System.Windows.Forms.Label lblProductCount;
         private System.Windows.Forms.Button btnDetailDelete;
-        private DevExpress.XtraEditors.CheckEdit chkDeleteProductFromStore;
         private DevExpress.XtraEditors.CheckEdit chkDeleteProductFromAgency;
         private DevExpress.XtraEditors.CheckEdit chkDeleteProductFromPackage;
         private DevExpress.XtraEditors.CheckEdit chkDeleteProductFromWarehouse;

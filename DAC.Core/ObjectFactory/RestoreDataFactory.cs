@@ -13,7 +13,7 @@ namespace DAC.Core.ObjectFactory
                 case "DacAgency":
                     return new DacCustomerService();
                 case "DacDistributeToAgency":
-                    return new DacExportService();
+                    return new DacExportProcessService();
                 default:
                     throw new ArgumentException("Unknown table");
             }

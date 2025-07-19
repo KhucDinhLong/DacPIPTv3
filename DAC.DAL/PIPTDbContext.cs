@@ -25,7 +25,9 @@ namespace DAC.DAL
         public DbSet<DacExport1> DacExport1 { get; set; }
         public DbSet<DacExportDetail1> DacExportDetail1 { get; set; }
         public DbSet<DacExport2> DacExport2 { get; set; }
-        public DbSet<DacDistributeToStoreDetails> DacDistributeToStoreDetails { get; set; }
+        public DbSet<DacExportDetail2> DacExportDetail2 { get; set; }
+        public DbSet<DacExport3> DacExport3 { get; set; }
+        public DbSet<DacExportDetail3> DacExportDetail3 { get; set; }
         public DbSet<DacFactory> DacFactory { get; set; }
         public DbSet<DacInsertToWarehouse> DacInsertToWarehouse { get; set; }
         public DbSet<DacInsertToWarehouseDetails> DacInsertToWarehouseDetails { get; set; }

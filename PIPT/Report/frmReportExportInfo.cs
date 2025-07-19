@@ -12,10 +12,10 @@ namespace PIPT
     public partial class frmReportExportInfo : Form
     {
         #region Variables
-        IDacExportService _exportService;
+        IDacExportProcessService _exportService;
         List<DacExportVM> LstInfo;
         #endregion
-        public frmReportExportInfo(IDacExportService exportService)
+        public frmReportExportInfo(IDacExportProcessService exportService)
         {
             InitializeComponent();
             _exportService = exportService;
@@ -51,13 +51,13 @@ namespace PIPT
             {
                 for (int i = 0; i < LstInfo.Count; i++)
                 {
-                    LstInfo[i] = _exportService.GetDetail(LstInfo[i].Id)?.ResponseData;
+                    LstInfo[i] = _exportService.GetDetail(LstInfo[i].Id, LstInfo[i].CustomerLevel.Value)?.ResponseData;
                 }
                 LstInfo = LstInfo.Where(x => (dtpFrom.EditValue == null || x.CreatedDate.HasValue && x.CreatedDate.Value >= DateTime.Parse(dtpFrom.EditValue.ToString()).Date)
                                             && (dtpTo.EditValue == null || x.CreatedDate.HasValue && x.CreatedDate.Value <= DateTime.Parse(dtpTo.EditValue.ToString()).AddDays(1).Date)
                                             && (string.IsNullOrWhiteSpace(txtCustomerCode.Text)
                                                 || (!string.IsNullOrWhiteSpace(x.CustomerCode) && x.CustomerCode.ToLower().Contains(txtCustomerCode.Text.Trim().ToLower()))
-                                                || (!string.IsNullOrWhiteSpace(x.AgencyName) && x.AgencyName.ToLower().Contains(txtCustomerCode.Text.Trim().ToLower()))))?.ToList();
+                                                || (!string.IsNullOrWhiteSpace(x.CustomerName) && x.CustomerName.ToLower().Contains(txtCustomerCode.Text.Trim().ToLower()))))?.ToList();
                 if (!string.IsNullOrWhiteSpace(txtProductCode.Text))
                 {
                     LstInfo = LstInfo.Where(x => (string.IsNullOrWhiteSpace(txtProductCode.Text)
@@ -78,7 +78,7 @@ namespace PIPT
                 {
                     for (int i = 0; i < LstInfo.Count; i++)
                     {
-                        LstInfo[i] = _exportService.GetDetail(LstInfo[i].Id)?.ResponseData;
+                        LstInfo[i] = _exportService.GetDetail(LstInfo[i].Id, LstInfo[i].CustomerLevel.Value)?.ResponseData;
                     }
                 }
             }

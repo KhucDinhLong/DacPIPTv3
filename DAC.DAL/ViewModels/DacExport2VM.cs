@@ -6,6 +6,7 @@ namespace DAC.DAL.ViewModels
     public class DacExport2VM
     {
         public int Id { get; set; }
+        public string OriginalId { get; set; }
         public string OrderNumber { get; set; }
         public DateTime? CreatedDate { get; set; }
         public string CustomerCode { get; set; }
@@ -17,6 +18,6 @@ namespace DAC.DAL.ViewModels
         public string StoreName { get; set; }
         public string StockName { get; set; }
         public int RealityQuantity { get; set; }
-        public List<DacDistributeToStoreDetailsVM> LstDetails { get; set; }
+        public List<DacExportDetail2VM> LstDetails { get; set; }
     }
 }

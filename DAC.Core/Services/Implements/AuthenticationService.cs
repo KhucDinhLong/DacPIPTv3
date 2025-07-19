@@ -22,7 +22,7 @@ namespace DAC.Core.Services.Implements
                         response.ResponseData = new SecUsersVM
                         {
                             LoginID = user.LoginId,
-                            AgencyName = dbContext.DacCustomer.FirstOrDefault(x => x.Code == user.AgencyCode)?.Name,
+                            CustomerName = dbContext.DacCustomer.FirstOrDefault(x => x.Code == user.CustomerCode)?.Name,
                             CreatedDate = user.CreatedDate,
                             DeadlineOfUsing = user.DeadlineOfUsing,
                             Email = user.Email,
@@ -32,13 +32,14 @@ namespace DAC.Core.Services.Implements
                             LockedDate = user.LockedDate,
                             LockedReason = user.LockedReason,
                             LockedUser = user.LockedUser,
-                            AgencyCode = user.AgencyCode
+                            CustomerCode = user.CustomerCode
                         };
                         response.ResponseData.LstGroup = (from g in dbContext.SecGroups
                                                           join gu in dbContext.SecGroupUser on g.GroupId equals gu.GroupId
                                                           where gu.LoginId == user.LoginId
                                                           select g)?.ToList();
                         response.ResponseData.isAdmin = response.ResponseData.LstGroup != null && response.ResponseData.LstGroup.FirstOrDefault(x => x.IsAdmin.HasValue && x.IsAdmin.Value) != null;
+                        response.ResponseData.Level = GetUserLevel(response.ResponseData.CustomerCode, response.ResponseData.isAdmin.HasValue ? response.ResponseData.isAdmin.Value : false);
                     }
                 }
             }
@@ -47,6 +48,39 @@ namespace DAC.Core.Services.Implements
                 response.ex = ex;
             }
             return response;
+        }
+
+        private int? GetUserLevel(string CustomerCode, bool isAdmin)
+        {
+            if (isAdmin)
+            {
+                return 0;
+            }
+            if (string.IsNullOrWhiteSpace(CustomerCode))
+            {
+                return 1;
+            }
+            try
+            {
+                using (var dbContext = new PIPTDbContext())
+                {
+                    var customer = dbContext.DacCustomer.FirstOrDefault(x => x.Code == CustomerCode);
+                    if (customer != null)
+                    {
+                        var parent = dbContext.DacCustomer.FirstOrDefault(x => x.Code == customer.DependCode);
+                        if (parent != null)
+                        {
+                            return GetUserLevel(parent.Code, false).HasValue ? 1 + GetUserLevel(parent.Code, false).Value : null;
+                        }
+                        return 2;
+                    }
+                    return -1;
+                }
+            }
+            catch 
+            {
+                return null;
+            }
         }
     }
 }

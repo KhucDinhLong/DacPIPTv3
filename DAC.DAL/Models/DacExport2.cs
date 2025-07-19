@@ -7,6 +7,7 @@ namespace DAC.DAL
     public class DacExport2
     {
         public int Id { get; set; }
+        public string OriginalId { get; set; }
         public string OrderNumber { get; set; }
         public DateTime? CreatedDate { get; set; }
         public string CustomerCode { get; set; }

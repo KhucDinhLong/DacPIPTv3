@@ -42,8 +42,15 @@ namespace DAC.Core.Services.Implements
                         ProvinceCode = x.ProvinceCode,
                         Region = x.Region,
                         TaxCode = x.TaxCode,
-                        ParentName = dbContext.DacCustomer.FirstOrDefault(y => y.Code == x.DependCode).Name
+                        ParentName = dbContext.DacCustomer.FirstOrDefault(y => y.Code == x.DependCode).Name,
                     }).OrderByDescending(x => x.CreatedDate).ToList();
+                    if (response.ResponseData != null && response.ResponseData.Any())
+                    {
+                        foreach (var item in response.ResponseData)
+                        {
+                            item.Level = GetLevel(item.DependCode);
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -283,7 +290,7 @@ namespace DAC.Core.Services.Implements
             return response;
         }
 
-        public bool RestoreData()
+        public bool RestoreData(int CustomerLevel)
         {
             List<DacAgency> LstAgency = new List<DacAgency>();
             try
@@ -331,6 +338,30 @@ namespace DAC.Core.Services.Implements
             catch 
             {
                 return false;
+            }
+        }
+
+        private int GetLevel(string DependCode)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(DependCode))
+                {
+                    return 1;
+                }
+                using (var db = new PIPTDbContext())
+                {
+                    var parent = db.DacCustomer.FirstOrDefault(x => x.Code == DependCode);
+                    if (parent != null)
+                    {
+                        return 1 + GetLevel(parent.DependCode);
+                    }
+                    return -1;
+                }
+            }
+            catch 
+            {
+                return -1;
             }
         }
     }

@@ -25,6 +25,7 @@ namespace DAC.DAL.ViewModels
         public DateTime? ModifiedDate { get; set; }
         public string ModifiedUser { get; set; }
         public string ParentName { get; set; }
+        public int Level { get; set; }
         public List<DacStore> LstStore { get; set; }
     }
 }

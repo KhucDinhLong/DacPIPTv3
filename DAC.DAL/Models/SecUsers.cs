@@ -19,6 +19,6 @@ namespace DAC.DAL
         public DateTime? LastLogin { get; set; }
         public DateTime? LastChangedPassword { get; set; }
         public DateTime? DeadlineOfUsing { get; set; }
-        public string AgencyCode { get; set; }
+        public string CustomerCode { get; set; }
     }
 }

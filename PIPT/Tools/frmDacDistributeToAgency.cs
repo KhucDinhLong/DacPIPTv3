@@ -18,11 +18,11 @@ namespace PIPT
     public partial class frmDacDistributeToAgency : Form
     {
         #region Variables
-        IDacExportService _exportService;
+        IDacExportProcessService _exportService;
         IDacProductService _productService;
-        IDacExportDetailService _detailService;
+        IDacExportDetailProcessService _detailService;
         IDacStockService _stockService;
-        IDacCustomerService _agencyService;
+        IDacCustomerService _customerService;
         ISecConfigService _configService;
         List<DacExportVM> LstExportInfo;
         List<DacProductVM> LstProducts;
@@ -30,22 +30,25 @@ namespace PIPT
         List<DacCustomerVM> LstAgency;
         DacExportVM originalObject;
         SecConfig AutoIncreaseCode;
+        SecConfig UseStock;
         // --------------------
         #endregion
         #region Form's Events
-        public frmDacDistributeToAgency(IDacExportService exportService, IDacProductService productService, IDacExportDetailService detailService, IDacStockService stockService, IDacCustomerService agencyService, ISecConfigService configService)
+        public frmDacDistributeToAgency(IDacExportProcessService exportService, IDacProductService productService, IDacExportDetailProcessService detailService, IDacStockService stockService, IDacCustomerService customerService, ISecConfigService configService)
         {
             InitializeComponent();
             _exportService = exportService;
             _productService = productService;
             _detailService = detailService;
             _stockService = stockService;
-            _agencyService = agencyService;
+            _customerService = customerService;
             _configService = configService;
+            _exportService.UserLevel = Session.CurrentUser.Level.Value;
         }
         private void frmDacDistributeToAgency_Load(object sender, EventArgs e)
         {
             AutoIncreaseCode = _configService.GetByCode("AutoIncreaseOrder").ResponseData;
+            UseStock = _configService.GetByCode("UseStock").ResponseData;
             LoadData();
         }
 
@@ -67,7 +70,7 @@ namespace PIPT
             {
                 if (LstExportInfo[gvExportInfo.FocusedRowHandle].Id > 0)
                 {
-                    LstExportInfo[gvExportInfo.FocusedRowHandle] = _exportService.GetDetail(LstExportInfo[gvExportInfo.FocusedRowHandle].Id).ResponseData;
+                    LstExportInfo[gvExportInfo.FocusedRowHandle] = _exportService.GetDetail(LstExportInfo[gvExportInfo.FocusedRowHandle].Id, LstExportInfo[gvExportInfo.FocusedRowHandle].CustomerLevel.Value).ResponseData;
                     originalObject = LstExportInfo[gvExportInfo.FocusedRowHandle].Clone();
                 }
                 else
@@ -167,6 +170,8 @@ namespace PIPT
             {
                 gvExportInfo_FocusedRowChanged(ucDataButtonAgency, new DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs(0, 0));
             }
+            lblStock.Visible = UseStock != null && UseStock.Value == "true";
+            lueDacStock.Visible = UseStock != null && UseStock.Value == "true";
         }
 
         private void EnableControls(bool bIsEnabled)
@@ -193,12 +198,6 @@ namespace PIPT
             {
                 MessageBox.Show("Chưa có số lệnh xuất!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 txtOrderNumber.Focus();
-                return false;
-            }
-            if (lueProduct.EditValue == null || string.IsNullOrWhiteSpace(lueProduct.EditValue.ToString().Trim()))
-            {
-                MessageBox.Show("Bạn chưa chọn sản phẩm.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                lueProduct.Focus();
                 return false;
             }
             if (string.IsNullOrWhiteSpace(txtQuantity.Text))
@@ -247,7 +246,7 @@ namespace PIPT
                 {
                     foreach (var detail in exportInfoVM.LstDetails)
                     {
-                        var invalidProduct = _exportService.InvalidProductCode(detail.DacCode, detail.ProductCode);
+                        var invalidProduct = _exportService.InvalidProductCode(detail.DacCode, detail.ProductCode, exportInfoVM.CustomerLevel.Value);
                         if (invalidProduct.ResponseData)
                         {
                             if (invalidProduct.ex != null)
@@ -266,7 +265,7 @@ namespace PIPT
                     }
                     if (exportInfoVM.Id <= 0)
                     {
-                        if (_exportService.GetByCode(exportInfoVM.OrderNumber).ResponseData != null)
+                        if (_exportService.GetByCode(exportInfoVM.OrderNumber, exportInfoVM.CustomerLevel.Value).ResponseData != null)
                         {
                             MessageBox.Show("Mã lệnh này đã được sử dụng! ", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
@@ -391,14 +390,19 @@ namespace PIPT
                         NewDetail.DacCode = String.Format("{0}{1:" + CommonBO.GetSecConfig("SeriLength").Pattern + "}", sPreSeri, i);
                         NewDetail.ProductCode = lueProduct.EditValue.ToString();
                         NewDetail.ProductName = lueProduct.Text;
-                        if (_detailService.GetByDacCode(NewDetail.DacCode).ResponseData != null)
+                        if (_detailService.GetByDacCode(NewDetail.DacCode, LstExportInfo[gvExportInfo.FocusedRowHandle].CustomerLevel.Value).ResponseData != null)
                         {
                             MessageBox.Show("Mã QR đã được xuất!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             break;
                         }
+                        else if (!_detailService.Exportable(NewDetail.DacCode, Session.CurrentUser.CustomerCode, LstExportInfo[gvExportInfo.FocusedRowHandle].CustomerLevel.Value).ResponseData)
+                        {
+                            MessageBox.Show("Mã QR chưa được xuất đến, không thể xuất đi!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            break;
+                        }
                         else
                         {
-                            var invalidProduct = _exportService.InvalidProductCode(NewDetail.DacCode, NewDetail.ProductCode);
+                            var invalidProduct = _exportService.InvalidProductCode(NewDetail.DacCode, NewDetail.ProductCode, LstExportInfo[gvExportInfo.FocusedRowHandle].CustomerLevel.Value);
                             if (invalidProduct.ResponseData)
                             {
                                 if (invalidProduct.ex != null)
@@ -462,13 +466,17 @@ namespace PIPT
                     NewDetail.DacCode = serial;
                     NewDetail.ProductCode = lueProduct.EditValue.ToString();
                     NewDetail.ProductName = lueProduct.Text;
-                    if (_detailService.GetByDacCode(NewDetail.DacCode).ResponseData != null)
+                    if (_detailService.GetByDacCode(NewDetail.DacCode, LstExportInfo[gvExportInfo.FocusedRowHandle].CustomerLevel.Value).ResponseData != null)
                     {
                         MessageBox.Show("Mã QR đã được xuất!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
+                    else if (!_detailService.Exportable(NewDetail.DacCode, Session.CurrentUser.CustomerCode, LstExportInfo[gvExportInfo.FocusedRowHandle].CustomerLevel.Value).ResponseData)
+                    {
+                        MessageBox.Show("Mã QR chưa được xuất đến, không thể xuất đi!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                     else
                     {
-                        var invalidProduct = _exportService.InvalidProductCode(NewDetail.DacCode, NewDetail.ProductCode);
+                        var invalidProduct = _exportService.InvalidProductCode(NewDetail.DacCode, NewDetail.ProductCode, LstExportInfo[gvExportInfo.FocusedRowHandle].CustomerLevel.Value);
                         if (invalidProduct.ResponseData)
                         {
                             if (invalidProduct.ex != null)
@@ -533,11 +541,11 @@ namespace PIPT
             lueDacStock.Properties.DataSource = LstStock;
             lueDacStock.Properties.ValueMember = "Code";
             lueDacStock.Properties.DisplayMember = "Name";
-            LstAgency = _agencyService.GetAll().ResponseData;
+            LstAgency = _customerService.GetAll().ResponseData;
             if (!Session.CurrentUser.isAdmin.HasValue || !Session.CurrentUser.isAdmin.Value)
             {
-                LstStock = LstStock?.Where(x => x.AgencyCode == Session.CurrentUser.AgencyCode)?.ToList();
-                LstAgency = LstAgency?.Where(x => x.DependCode == Session.CurrentUser.AgencyCode)?.ToList();
+                LstStock = LstStock?.Where(x => x.AgencyCode == Session.CurrentUser.CustomerCode)?.ToList();
+                LstAgency = LstAgency?.Where(x => x.DependCode == Session.CurrentUser.CustomerCode)?.ToList();
             }
             lueAgency.Properties.DataSource = LstAgency;
             lueAgency.Properties.ValueMember = "Code";
@@ -552,10 +560,6 @@ namespace PIPT
         private void ucDataButtonAgency_InsertHandler()
         {
             DacExportVM exportInfo = new DacExportVM();
-            if (AutoIncreaseCode != null && AutoIncreaseCode.Value == "true")
-            {
-                exportInfo.OrderNumber = _exportService.GenerateNewCode().ResponseData;
-            }
             LstExportInfo.Add(exportInfo);
             gcExportInfo.RefreshDataSource();
             gvExportInfo.FocusedRowHandle = LstExportInfo.IndexOf(LstExportInfo.Last());
@@ -587,7 +591,7 @@ namespace PIPT
             {
                 if (MessageBox.Show("Bạn có chắc chắn xóa phiếu xuất đã chọn?", "Xác nhận", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
                 {
-                    var result = _exportService.Delete(LstExportInfo[gvExportInfo.FocusedRowHandle].Id).ResponseData;
+                    var result = _exportService.Delete(LstExportInfo[gvExportInfo.FocusedRowHandle].Id, LstExportInfo[gvExportInfo.FocusedRowHandle].CustomerLevel.Value).ResponseData;
                     if (result)
                     {
                         StringBuilder sContent = new StringBuilder();
@@ -657,13 +661,7 @@ namespace PIPT
                     if (MessageBox.Show("Lưu ý rằng việc thêm các mã QR có thể sẽ cập nhật lại số lượng chỉ định trong phiếu xuất này. " +
                         "Bạn có xác nhận muốn tiếp tục?", "Xác nhận cập nhật", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
                     {
-                        var LstNewDetail = LstExportInfo[gvExportInfo.FocusedRowHandle].LstDetails.Where(x => x.Id <= 0)?.Select(x => new DacExportDetail
-                        {
-                            Id = x.Id,
-                            ExportId = x.ExportId,
-                            DacCode = x.DacCode,
-                            ProductCode = lueProduct.EditValue.ToString()
-                        })?.ToList();
+                        var LstNewDetail = LstExportInfo[gvExportInfo.FocusedRowHandle].LstDetails.Where(x => x.Id <= 0)?.ToList();
                         if (LstNewDetail != null && LstNewDetail.Any())
                         {
                             StringBuilder sContent = new StringBuilder();
@@ -672,13 +670,13 @@ namespace PIPT
                             {
                                 LstNewDetail[i].ExportId = LstExportInfo[gvExportInfo.FocusedRowHandle].Id;
                             }
-                            if (_detailService.AddRange(LstNewDetail).ResponseData)
+                            if (_detailService.AddRange(LstNewDetail, LstExportInfo[gvExportInfo.FocusedRowHandle].CustomerLevel.Value).ResponseData)
                             {
                                 lblQuantity.Text = "Số sản phẩm đã thêm: " + LstExportInfo[gvExportInfo.FocusedRowHandle].LstDetails.Count;
                                 sContent.Append(string.Join(",", LstNewDetail.Select(x => x.DacCode)?.ToList()));
                                 if (LstExportInfo[gvExportInfo.FocusedRowHandle] != null)
                                 {
-                                    var EditedPackage = _exportService.GetDetail(LstExportInfo[gvExportInfo.FocusedRowHandle].Id).ResponseData;
+                                    var EditedPackage = _exportService.GetDetail(LstExportInfo[gvExportInfo.FocusedRowHandle].Id, LstExportInfo[gvExportInfo.FocusedRowHandle].CustomerLevel.Value).ResponseData;
                                     if (EditedPackage != null)
                                     {
                                         LstExportInfo[gvExportInfo.FocusedRowHandle].Quantity = EditedPackage.RealityQuantity;
@@ -731,11 +729,27 @@ namespace PIPT
                             sContent.Append("Xóa mã: ");
                             var LstDelete = LstExportInfo[gvExportInfo.FocusedRowHandle].LstDetails
                                 .Where(x => SelectedIndex.Contains(LstExportInfo[gvExportInfo.FocusedRowHandle].LstDetails.IndexOf(x)))?.Select(x => x.DacCode)?.ToList();
+                            int ExceptCount = 0;
                             if (LstDelete != null)
                             {
-                                var result = _detailService.DeleteByDacCode(LstDelete).ResponseData;
-                                if (result)
+                                var result = _detailService.DeleteByDacCode(LstDelete, LstExportInfo[gvExportInfo.FocusedRowHandle].CustomerLevel.Value);
+                                if (result.ResponseData)
                                 {
+                                    if (!string.IsNullOrWhiteSpace(result.ErrorMessage))
+                                    {
+                                        string[] arrExported = result.ErrorMessage.Split(',');
+                                        if (arrExported.Length > 0)
+                                        {
+                                            foreach (var item in arrExported)
+                                            {
+                                                var exported = LstDelete.FirstOrDefault(x => x == item);
+                                                if (exported != null)
+                                                {
+                                                    LstDelete.Remove(exported);
+                                                }
+                                            }
+                                        }
+                                    }
                                     sContent.Append(string.Join(",", LstDelete));
                                     for (int i = 0; i < LstDelete.Count; i++)
                                     {
@@ -752,13 +766,22 @@ namespace PIPT
                                     lblQuantity.Text = "Số sản phẩm đã thêm: " + LstExportInfo[gvExportInfo.FocusedRowHandle].LstDetails.Count;
                                     if (LstExportInfo[gvExportInfo.FocusedRowHandle] != null)
                                     {
-                                        var EditedInfo = _exportService.GetDetail(LstExportInfo[gvExportInfo.FocusedRowHandle].Id).ResponseData;
+                                        var EditedInfo = _exportService.GetDetail(LstExportInfo[gvExportInfo.FocusedRowHandle].Id, LstExportInfo[gvExportInfo.FocusedRowHandle].CustomerLevel.Value).ResponseData;
                                         if (EditedInfo != null)
                                         {
                                             LstExportInfo[gvExportInfo.FocusedRowHandle].Quantity = EditedInfo.RealityQuantity;
                                             txtQuantity.Text = LstExportInfo[gvExportInfo.FocusedRowHandle].Quantity.ToString();
                                             gcExportInfo.RefreshDataSource();
                                         }
+                                    }
+                                    if (!string.IsNullOrWhiteSpace(result.ErrorMessage))
+                                    {
+                                        string[] arrExcept = result.ErrorMessage.Split(',');
+                                        if (arrExcept != null)
+                                        {
+                                            ExceptCount = arrExcept.Length;
+                                        }
+                                        MessageBox.Show("Không thể xóa các mã " + result.ErrorMessage + " do khách hàng đã xuất! Các mã còn lại trong danh sách đã được xóa thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                     }
                                 }
                                 else
@@ -767,7 +790,7 @@ namespace PIPT
                                 }
                             }
                             gcDetail.RefreshDataSource();
-                            MessageBox.Show("Xóa thành công " + SelectedIndex.Length + " mã đã chọn.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show("Xóa thành công " + (SelectedIndex.Length - ExceptCount) + "/" + SelectedIndex.Length + " mã đã chọn.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             // Lưu nhật ký
                             CommonBO.Instance().TraceLogEvent(sContent.ToString(), CommonBS.CurrentUser.LoginID);
                         }
@@ -830,5 +853,36 @@ namespace PIPT
 
         }
         #endregion
+
+        private void lueAgency_EditValueChanged(object sender, EventArgs e)
+        {
+            if (ucDataButtonAgency.DataMode == DataState.Insert)
+            {
+                if (lueAgency.EditValue != null && LstExportInfo != null && gvExportInfo.FocusedRowHandle >= 0 && LstExportInfo.Count > gvExportInfo.FocusedRowHandle && LstAgency != null)
+                {
+                    var selectedCustomer = LstAgency.FirstOrDefault(x => x.Code == lueAgency.EditValue.ToString());
+                    if (selectedCustomer != null)
+                    {
+                        LstExportInfo[gvExportInfo.FocusedRowHandle].CustomerLevel = selectedCustomer.Level;
+                        if (AutoIncreaseCode != null && AutoIncreaseCode.Value == "true" && ucDataButtonAgency.DataMode == DataState.Insert)
+                        {
+                            LstExportInfo[gvExportInfo.FocusedRowHandle].OrderNumber = _exportService.GenerateNewCode(selectedCustomer.Level).ResponseData;
+                            txtOrderNumber.Text = LstExportInfo[gvExportInfo.FocusedRowHandle].OrderNumber;
+                        }
+                    }
+                }
+            }
+            else if (ucDataButtonAgency.DataMode == DataState.Edit)
+            {
+                if (lueAgency.EditValue == null || LstAgency == null || LstAgency.FirstOrDefault(x => x.Code == lueAgency.EditValue.ToString()).Level != LstExportInfo[gvExportInfo.FocusedRowHandle].CustomerLevel)
+                {
+                    MessageBox.Show("Khách hàng không cùng cấp!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (originalObject != null && !string.IsNullOrWhiteSpace(originalObject.CustomerCode))
+                    {
+                        lueAgency.EditValue = originalObject.CustomerCode;
+                    }
+                }
+            }
+        }
     }
 }

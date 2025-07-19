@@ -16,9 +16,10 @@ namespace DAC.DAL.ViewModels
         public DateTime? LastLogin { get; set; }
         public DateTime? LastChangedPassword { get; set; }
         public DateTime? DeadlineOfUsing { get; set; }
-        public string AgencyCode { get; set; }
+        public string CustomerCode { get; set; }
         public List<SecGroups> LstGroup { get; set; }
-        public string AgencyName { get; set; }
+        public string CustomerName { get; set; }
         public bool? isAdmin { get; set; }
+        public int? Level { get; set; }
     }
 }

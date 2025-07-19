@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace DAC.Core.Services.Implements
 {
-    public static class DacExport1Service
+    public static class DacExport3Service
     {
         public static BaseViewModel<DacExportVM> Create(DacExportVM exportInfoVM)
         {
@@ -17,7 +17,7 @@ namespace DAC.Core.Services.Implements
             {
                 using (var dbContext = new PIPTDbContext())
                 {
-                    var NewExportInfo = new DacExport1
+                    var NewExportInfo = new DacExport3
                     {
                         Id = exportInfoVM.Id,
                         OrderNumber = exportInfoVM.OrderNumber,
@@ -28,23 +28,23 @@ namespace DAC.Core.Services.Implements
                         StockCode = exportInfoVM.StockCode,
                         Active = exportInfoVM.Active,
                     };
-                    dbContext.DacExport1.Add(NewExportInfo);
+                    dbContext.DacExport3.Add(NewExportInfo);
                     dbContext.SaveChanges();
                     if (NewExportInfo.Id > 0)
                     {
                         if (exportInfoVM.LstDetails != null && exportInfoVM.LstDetails.Any())
                         {
-                            List<DacExportDetailVM> LstDuplicateSeri = exportInfoVM.LstDetails.Where(x => dbContext.DacExportDetail1.FirstOrDefault(y => y.DacCode == x.DacCode) != null)?.ToList();
+                            List<DacExportDetailVM> LstDuplicateSeri = exportInfoVM.LstDetails.Where(x => dbContext.DacExportDetail3.FirstOrDefault(y => y.DacCode == x.DacCode) != null)?.ToList();
                             if (LstDuplicateSeri != null && LstDuplicateSeri.Any())
                             {
                                 exportInfoVM.LstDetails = exportInfoVM.LstDetails.Except(LstDuplicateSeri)?.ToList();
                             }
                             if (exportInfoVM.LstDetails != null && exportInfoVM.LstDetails.Any())
                             {
-                                List<DacExportDetail1> LstNewDetail = new List<DacExportDetail1>();
+                                List<DacExportDetail3> LstNewDetail = new List<DacExportDetail3>();
                                 foreach (var detail in exportInfoVM.LstDetails)
                                 {
-                                    var newDetail = new DacExportDetail1();
+                                    var newDetail = new DacExportDetail3();
                                     newDetail.Id = detail.Id;
                                     newDetail.ExportId = NewExportInfo.Id;
                                     newDetail.DacCode = detail.DacCode;
@@ -58,18 +58,18 @@ namespace DAC.Core.Services.Implements
                                 }
                                 try
                                 {
-                                    dbContext.DacExportDetail1.AddRange(LstNewDetail);
+                                    dbContext.DacExportDetail3.AddRange(LstNewDetail);
                                     dbContext.SaveChanges();
                                     exportInfoVM.Id = NewExportInfo.Id;
                                 }
                                 catch
                                 {
-                                    dbContext.DacExport1.Remove(NewExportInfo);
+                                    dbContext.DacExport3.Remove(NewExportInfo);
                                 }
                             }
                             else
                             {
-                                dbContext.DacExport1.Remove(NewExportInfo);
+                                dbContext.DacExport3.Remove(NewExportInfo);
                                 response.ErrorMessage += "Toàn bộ các mã QR đã được xuất ở lệnh khác! Lưu phiếu xuất không thành công!";
                             }
                         }
@@ -91,15 +91,15 @@ namespace DAC.Core.Services.Implements
             {
                 using (var dbContext = new PIPTDbContext())
                 {
-                    var LstDetails = dbContext.DacExportDetail1.Where(x => x.ExportId == exportInfoId);
+                    var LstDetails = dbContext.DacExportDetail3.Where(x => x.ExportId == exportInfoId);
                     if (LstDetails != null && LstDetails.Any())
                     {
-                        dbContext.DacExportDetail1.RemoveRange(LstDetails);
+                        dbContext.DacExportDetail3.RemoveRange(LstDetails);
                     }
-                    var exportInfo = dbContext.DacExport1.FirstOrDefault(x => x.Id == exportInfoId);
+                    var exportInfo = dbContext.DacExport3.FirstOrDefault(x => x.Id == exportInfoId);
                     if (exportInfo != null)
                     {
-                        dbContext.DacExport1.Remove(exportInfo);
+                        dbContext.DacExport3.Remove(exportInfo);
                     }
                     dbContext.SaveChanges();
                     response.ResponseData = true;
@@ -120,7 +120,7 @@ namespace DAC.Core.Services.Implements
             {
                 using (var dbContext = new PIPTDbContext())
                 {
-                    var exportInfo = dbContext.DacExport1.FirstOrDefault(x => x.Id == exportInfoVM.Id);
+                    var exportInfo = dbContext.DacExport3.FirstOrDefault(x => x.Id == exportInfoVM.Id);
                     if (exportInfo != null)
                     {
                         exportInfo.Quantity = exportInfoVM.Quantity;
@@ -149,7 +149,7 @@ namespace DAC.Core.Services.Implements
             {
                 using (var dbContext = new PIPTDbContext())
                 {
-                    var LstCode = dbContext.DacExport1?.Select(x => x.OrderNumber)?.ToList();
+                    var LstCode = dbContext.DacExport3?.Select(x => x.OrderNumber)?.ToList();
                     if (LstCode != null && LstCode.Any())
                     {
                         var LstThisMonth = LstCode.Where(x => x.Substring(0, 4) == DateTime.Now.Year.ToString().Substring(2, 2) + DateTime.Now.Month.ToString("D2"))?.OrderByDescending(x => x)?.ToList();
@@ -183,7 +183,7 @@ namespace DAC.Core.Services.Implements
             {
                 using (var dbContext = new PIPTDbContext())
                 {
-                    var queryable = (from i in dbContext.DacExport1
+                    var queryable = (from i in dbContext.DacExport3
                                      join a in dbContext.DacCustomer on i.CustomerCode equals a.Code
                                      join s in dbContext.DacStock on i.StockCode equals s.Code into left
                                      from l in left.DefaultIfEmpty()
@@ -199,7 +199,7 @@ namespace DAC.Core.Services.Implements
                                          Active = i.Active,
                                          CustomerName = a.Name,
                                          StockName = l != null ? l.Name : null,
-                                         CustomerLevel = 2
+                                         CustomerLevel = 4
                                      })?.OrderByDescending(x => x.CreatedDate)?.ToList();
                     response.ResponseData = queryable;
                 }
@@ -218,12 +218,12 @@ namespace DAC.Core.Services.Implements
             {
                 using (var dbContext = new PIPTDbContext())
                 {
-                    var exportData = dbContext.DacExport1.FirstOrDefault(x => x.OrderNumber == OrderNumber);
+                    var exportData = dbContext.DacExport3.FirstOrDefault(x => x.OrderNumber == OrderNumber);
 
                     response.ResponseData = exportData != null ? new DacExportVM
                     {
                         Id = exportData.Id,
-                        OriginalId = exportData.OriginalId,
+                        OriginalId = exportData.OriginalId?.ToString(),
                         OrderNumber = exportData.OrderNumber,
                         CreatedDate = exportData.CreatedDate,
                         CustomerCode = exportData.CustomerCode,
@@ -248,7 +248,7 @@ namespace DAC.Core.Services.Implements
             {
                 using (var dbContext = new PIPTDbContext())
                 {
-                    var exportInfo = dbContext.DacExport1.FirstOrDefault(x => x.Id == Id);
+                    var exportInfo = dbContext.DacExport3.FirstOrDefault(x => x.Id == Id);
                     if (exportInfo != null)
                     {
                         var queryable = new DacExportVM
@@ -263,8 +263,8 @@ namespace DAC.Core.Services.Implements
                             Active = exportInfo.Active,
                             CustomerName = dbContext.DacCustomer.FirstOrDefault(x => x.Code == exportInfo.CustomerCode)?.Name,
                             StockName = dbContext.DacStock.FirstOrDefault(x => x.Code == exportInfo.StockCode)?.Name,
-                            CustomerLevel = 2,
-                            LstDetails = dbContext.DacExportDetail1.Where(x => x.ExportId == Id)?.Select(x => new DacExportDetailVM
+                            CustomerLevel = 1,
+                            LstDetails = dbContext.DacExportDetail3.Where(x => x.ExportId == Id)?.Select(x => new DacExportDetailVM
                             {
                                 Id = x.Id,
                                 ExportId = x.ExportId,
@@ -337,61 +337,62 @@ namespace DAC.Core.Services.Implements
 
         public static bool RestoreData()
         {
-            List<DacExport1> LstExport = new List<DacExport1>();
-            List<DacExportDetail1> LstExportDetail = new List<DacExportDetail1>();
+            List<DacExport3> LstExport = new List<DacExport3>();
+            List<DacExportDetail3> LstExportDetail = new List<DacExportDetail3>();
             try
             {
-                using (var oldVersionDbContext = new PIPTOldVerDbContext())
-                {
-                    var data = oldVersionDbContext.DacDistributeToFactory?.ToList();
-                    if (data != null && data.Any())
-                    {
-                        foreach (var item in data)
-                        {
-                            DacExport1 restoreData = new DacExport1();
-                            restoreData.OrderNumber = item.OrderNumber;
-                            restoreData.CreatedDate = item.CreatedDate;
-                            restoreData.CustomerCode = item.FactoryCode;
-                            restoreData.Quantity = item.Quantity;
-                            restoreData.Description = item.Description;
-                            restoreData.Active = item.Active;
-                            restoreData.OriginalId = item.ID.ToString();
-                            LstExport.Add(restoreData);
-                        }
-                    }
-                }
-                if (LstExport != null && LstExport.Any())
-                {
-                    using (var dbContext = new PIPTDbContext())
-                    {
-                        dbContext.DacExport1.AddRange(LstExport);
-                        dbContext.SaveChanges();
-                    }
-                    foreach (var item in LstExport)
-                    {
-                        LstExportDetail.Clear();
-                        using (var oldVersionDbContext = new PIPTOldVerDbContext())
-                        {
-                            var details = oldVersionDbContext.DacDistributeToFactoryDetails.Where(x => x.DistributorID.HasValue && x.DistributorID.Value.ToString() == item.OriginalId);
-                            if (details != null && details.Any())
-                            {
-                                foreach (var detail in details)
-                                {
-                                    DacExportDetail1 restoreDetail = new DacExportDetail1();
-                                    restoreDetail.ExportId = item.Id;
-                                    restoreDetail.DacCode = detail.DacCode;
-                                    restoreDetail.ProductCode = detail.ProductCode;
-                                    LstExportDetail.Add(restoreDetail);
-                                }
-                            }
-                        }
-                        using (var dbContext = new PIPTDbContext())
-                        {
-                            dbContext.DacExportDetail1.AddRange(LstExportDetail);
-                            dbContext.SaveChanges();
-                        }
-                    }
-                }
+                //using (var oldVersionDbContext = new PIPTOldVerDbContext())
+                //{
+                //    var data = oldVersionDbContext.DacDistributeToStore?.ToList();
+                //    if (data != null && data.Any())
+                //    {
+                //        foreach (var item in data)
+                //        {
+                //            DacExport3 restoreData = new DacExport3();
+                //            restoreData.OrderNumber = item.OrderNumber;
+                //            restoreData.CreatedDate = item.CreatedDate;
+                //            restoreData.CustomerCode = item.StoreCode;
+                //            restoreData.Quantity = item.Quantity;
+                //            restoreData.Description = item.Description;
+                //            restoreData.Active = item.Active;
+                //            restoreData.StockCode = item.StockID;
+                //            restoreData.OriginalId = item.ID.ToString();
+                //            LstExport.Add(restoreData);
+                //        }
+                //    }
+                //}
+                //if (LstExport != null && LstExport.Any())
+                //{
+                //    using (var dbContext = new PIPTDbContext())
+                //    {
+                //        dbContext.DacExport3.AddRange(LstExport);
+                //        dbContext.SaveChanges();
+                //    }
+                //    foreach (var item in LstExport)
+                //    {
+                //        LstExportDetail.Clear();
+                //        using (var oldVersionDbContext = new PIPTOldVerDbContext())
+                //        {
+                //            var details = oldVersionDbContext.DacDistributeToStoreDetails.Where(x => x.DistributorID.HasValue && x.DistributorID.ToString() == item.OriginalId);
+                //            if (details != null && details.Any())
+                //            {
+                //                foreach (var detail in details)
+                //                {
+                //                    DacExportDetail3 restoreDetail = new DacExportDetail3();
+                //                    restoreDetail.ExportId = item.Id;
+                //                    restoreDetail.DacCode = detail.DacCode;
+                //                    restoreDetail.ProductCode = detail.ProductCode;
+                //                    LstExportDetail.Add(restoreDetail);
+                //                }
+                //            }
+                //        }
+                //        using (var dbContext = new PIPTDbContext())
+                //        {
+                //            dbContext.DacExportDetail3.AddRange(LstExportDetail);
+                //            dbContext.SaveChanges();
+                //        }
+                //    }
+                //}
                 return true;
             }
             catch

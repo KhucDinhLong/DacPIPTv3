@@ -19,7 +19,7 @@ namespace DAC.Core.Services.Implements
                 {
                     result.ResponseData = db.SecUsers.Select(u => new SecUsersVM
                     {
-                        AgencyCode = u.AgencyCode,
+                        CustomerCode = u.CustomerCode,
                         CreatedDate = u.CreatedDate,
                         DeadlineOfUsing = u.DeadlineOfUsing,
                         Email = u.Email,
@@ -186,7 +186,7 @@ namespace DAC.Core.Services.Implements
                     SecUsers entity = isCreate ? new SecUsers() : db.SecUsers.FirstOrDefault(x => x.LoginId == usersVM.LoginID);
                     if (entity != null)
                     {
-                        entity.AgencyCode = usersVM.AgencyCode;
+                        entity.CustomerCode = usersVM.CustomerCode;
                         entity.CreatedDate = usersVM.CreatedDate;
                         entity.DeadlineOfUsing = usersVM.DeadlineOfUsing;
                         entity.Email = usersVM.Email;

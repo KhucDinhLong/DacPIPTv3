@@ -51,14 +51,11 @@
             this.gridColumnModifiedUser = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumnDescription = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumnActive = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.panelSearchAgency = new System.Windows.Forms.Panel();
-            this.btnImport = new System.Windows.Forms.Button();
-            this.btnPaste = new System.Windows.Forms.Button();
             this.panelAgency = new System.Windows.Forms.Panel();
             this.lblModifiedDate = new System.Windows.Forms.Label();
             this.lblCreatedDate = new System.Windows.Forms.Label();
             this.txtDescription = new System.Windows.Forms.TextBox();
-            this.lueAgency = new DevExpress.XtraEditors.GridLookUpEdit();
+            this.lueDependCode = new DevExpress.XtraEditors.GridLookUpEdit();
             this.gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.gridColumn1 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumn2 = new DevExpress.XtraGrid.Columns.GridColumn();
@@ -81,7 +78,7 @@
             this.txtTaxCode = new System.Windows.Forms.TextBox();
             this.txtOwnerName = new System.Windows.Forms.TextBox();
             this.labelDescription = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
+            this.lblDependCode = new System.Windows.Forms.Label();
             this.txtMobileNum = new System.Windows.Forms.TextBox();
             this.labelModifiedDate = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -99,9 +96,8 @@
             this.groupBoxStore.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gcAgency)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gvAgency)).BeginInit();
-            this.panelSearchAgency.SuspendLayout();
             this.panelAgency.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.lueAgency.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.lueDependCode.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.lueProvince.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridLookUpEditViewProvince)).BeginInit();
@@ -112,7 +108,6 @@
             // groupBoxStore
             // 
             this.groupBoxStore.Controls.Add(this.gcAgency);
-            this.groupBoxStore.Controls.Add(this.panelSearchAgency);
             this.groupBoxStore.Controls.Add(this.panelAgency);
             this.groupBoxStore.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBoxStore.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -339,47 +334,12 @@
             this.gridColumnActive.VisibleIndex = 18;
             this.gridColumnActive.Width = 26;
             // 
-            // panelSearchAgency
-            // 
-            this.panelSearchAgency.Controls.Add(this.btnImport);
-            this.panelSearchAgency.Controls.Add(this.btnPaste);
-            this.panelSearchAgency.Location = new System.Drawing.Point(851, 67);
-            this.panelSearchAgency.Name = "panelSearchAgency";
-            this.panelSearchAgency.Size = new System.Drawing.Size(198, 85);
-            this.panelSearchAgency.TabIndex = 10;
-            // 
-            // btnImport
-            // 
-            this.btnImport.Image = global::PIPT.Properties.Resources.Excel;
-            this.btnImport.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnImport.Location = new System.Drawing.Point(124, 57);
-            this.btnImport.Name = "btnImport";
-            this.btnImport.Size = new System.Drawing.Size(71, 24);
-            this.btnImport.TabIndex = 5;
-            this.btnImport.Text = "Import";
-            this.btnImport.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnImport.UseVisualStyleBackColor = true;
-            this.btnImport.Click += new System.EventHandler(this.buttonImport_Click);
-            // 
-            // btnPaste
-            // 
-            this.btnPaste.Image = global::PIPT.Properties.Resources.Excel;
-            this.btnPaste.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnPaste.Location = new System.Drawing.Point(3, 57);
-            this.btnPaste.Name = "btnPaste";
-            this.btnPaste.Size = new System.Drawing.Size(71, 24);
-            this.btnPaste.TabIndex = 3;
-            this.btnPaste.Text = "Paste";
-            this.btnPaste.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnPaste.UseVisualStyleBackColor = true;
-            this.btnPaste.Click += new System.EventHandler(this.buttonSearch_Click);
-            // 
             // panelAgency
             // 
             this.panelAgency.Controls.Add(this.lblModifiedDate);
             this.panelAgency.Controls.Add(this.lblCreatedDate);
             this.panelAgency.Controls.Add(this.txtDescription);
-            this.panelAgency.Controls.Add(this.lueAgency);
+            this.panelAgency.Controls.Add(this.lueDependCode);
             this.panelAgency.Controls.Add(this.lueProvince);
             this.panelAgency.Controls.Add(this.lueRegion);
             this.panelAgency.Controls.Add(this.txtAgencyCode);
@@ -393,7 +353,7 @@
             this.panelAgency.Controls.Add(this.txtTaxCode);
             this.panelAgency.Controls.Add(this.txtOwnerName);
             this.panelAgency.Controls.Add(this.labelDescription);
-            this.panelAgency.Controls.Add(this.label4);
+            this.panelAgency.Controls.Add(this.lblDependCode);
             this.panelAgency.Controls.Add(this.txtMobileNum);
             this.panelAgency.Controls.Add(this.labelModifiedDate);
             this.panelAgency.Controls.Add(this.label2);
@@ -409,7 +369,7 @@
             this.panelAgency.Controls.Add(this.label3);
             this.panelAgency.Location = new System.Drawing.Point(3, 20);
             this.panelAgency.Name = "panelAgency";
-            this.panelAgency.Size = new System.Drawing.Size(842, 132);
+            this.panelAgency.Size = new System.Drawing.Size(1069, 132);
             this.panelAgency.TabIndex = 9;
             // 
             // lblModifiedDate
@@ -430,28 +390,28 @@
             // 
             // txtDescription
             // 
-            this.txtDescription.Location = new System.Drawing.Point(592, 56);
+            this.txtDescription.Location = new System.Drawing.Point(786, 30);
             this.txtDescription.Multiline = true;
             this.txtDescription.Name = "txtDescription";
-            this.txtDescription.Size = new System.Drawing.Size(247, 21);
+            this.txtDescription.Size = new System.Drawing.Size(277, 94);
             this.txtDescription.TabIndex = 14;
             // 
-            // lueAgency
+            // lueDependCode
             // 
-            this.lueAgency.EditValue = "";
-            this.lueAgency.Location = new System.Drawing.Point(374, 84);
-            this.lueAgency.Name = "lueAgency";
-            this.lueAgency.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            this.lueDependCode.EditValue = "";
+            this.lueDependCode.Location = new System.Drawing.Point(374, 84);
+            this.lueDependCode.Name = "lueDependCode";
+            this.lueDependCode.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.lueAgency.Properties.DisplayMember = "Name";
-            this.lueAgency.Properties.ImmediatePopup = true;
-            this.lueAgency.Properties.NullText = "";
-            this.lueAgency.Properties.PopupFilterMode = DevExpress.XtraEditors.PopupFilterMode.Contains;
-            this.lueAgency.Properties.PopupView = this.gridView1;
-            this.lueAgency.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.Standard;
-            this.lueAgency.Properties.ValueMember = "Code";
-            this.lueAgency.Size = new System.Drawing.Size(142, 20);
-            this.lueAgency.TabIndex = 13;
+            this.lueDependCode.Properties.DisplayMember = "Name";
+            this.lueDependCode.Properties.ImmediatePopup = true;
+            this.lueDependCode.Properties.NullText = "";
+            this.lueDependCode.Properties.PopupFilterMode = DevExpress.XtraEditors.PopupFilterMode.Contains;
+            this.lueDependCode.Properties.PopupView = this.gridView1;
+            this.lueDependCode.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.Standard;
+            this.lueDependCode.Properties.ValueMember = "Code";
+            this.lueDependCode.Size = new System.Drawing.Size(142, 20);
+            this.lueDependCode.TabIndex = 13;
             // 
             // gridView1
             // 
@@ -662,20 +622,20 @@
             // labelDescription
             // 
             this.labelDescription.AutoSize = true;
-            this.labelDescription.Location = new System.Drawing.Point(544, 58);
+            this.labelDescription.Location = new System.Drawing.Point(738, 32);
             this.labelDescription.Name = "labelDescription";
             this.labelDescription.Size = new System.Drawing.Size(42, 13);
             this.labelDescription.TabIndex = 4;
             this.labelDescription.Text = "Ghi chú";
             // 
-            // label4
+            // lblDependCode
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(291, 87);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(77, 13);
-            this.label4.TabIndex = 4;
-            this.label4.Text = "Đại lý cấp trên";
+            this.lblDependCode.AutoSize = true;
+            this.lblDependCode.Location = new System.Drawing.Point(308, 87);
+            this.lblDependCode.Name = "lblDependCode";
+            this.lblDependCode.Size = new System.Drawing.Size(59, 13);
+            this.lblDependCode.TabIndex = 4;
+            this.lblDependCode.Text = "Trực thuộc";
             // 
             // txtMobileNum
             // 
@@ -833,10 +793,9 @@
             this.groupBoxStore.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gcAgency)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gvAgency)).EndInit();
-            this.panelSearchAgency.ResumeLayout(false);
             this.panelAgency.ResumeLayout(false);
             this.panelAgency.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.lueAgency.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.lueDependCode.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.lueProvince.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridLookUpEditViewProvince)).EndInit();
@@ -869,15 +828,13 @@
         private System.Windows.Forms.Label labelCode;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Panel panelSearchAgency;
-        private System.Windows.Forms.Button btnPaste;
         private DevExpress.XtraGrid.GridControl gcAgency;
         private DevExpress.XtraGrid.Views.Grid.GridView gvAgency;
         private DevExpress.XtraEditors.GridLookUpEdit lueRegion;
         private DevExpress.XtraGrid.Views.Grid.GridView gridLookUpEditViewAgency;
         private System.Windows.Forms.TextBox txtJoinContact;
         private System.Windows.Forms.TextBox txtTaxCode;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label lblDependCode;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label labelTaxCode;
         private System.Windows.Forms.Label label1;
@@ -907,8 +864,7 @@
         private System.Windows.Forms.Label labelModifiedDate;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumnMobileNum;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumnEmail;
-        private System.Windows.Forms.Button btnImport;
-        private DevExpress.XtraEditors.GridLookUpEdit lueAgency;
+        private DevExpress.XtraEditors.GridLookUpEdit lueDependCode;
         private DevExpress.XtraGrid.Views.Grid.GridView gridView1;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn1;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn2;

@@ -68,7 +68,7 @@ namespace PIPT
                 LstStock = _stockService.GetAll().ResponseData?.ToList();
                 if (!CurrentUser.isAdmin.HasValue || !CurrentUser.isAdmin.Value)
                 {
-                    LstStock = LstStock?.Where(x => x.AgencyCode == CurrentUser.AgencyCode)?.ToList();
+                    LstStock = LstStock?.Where(x => x.AgencyCode == CurrentUser.CustomerCode)?.ToList();
                 }
                 lueAgency.Properties.DataSource = LstAgency;
                 lueAgency.Properties.ValueMember = "Code";

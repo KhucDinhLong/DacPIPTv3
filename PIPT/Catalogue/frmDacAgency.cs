@@ -19,6 +19,7 @@ namespace PIPT
         IDacCustomerService _agencyService;
         IProvinceService _provinceService;
         IDacRegionService _regionService;
+        List<DacCustomerVM> LstAllAgency;
         List<DacCustomerVM> LstAgency;
         List<DacRegion> LstRegion;
         List<Province> LstProvince;
@@ -39,35 +40,35 @@ namespace PIPT
 
         private void LoadData()
         {
-            LstAgency = _agencyService.GetAll().ResponseData?.ToList();
+            LstAllAgency = _agencyService.GetAll().ResponseData?.ToList();
             LstRegion = _regionService.GetAll().ResponseData ?? new List<DacRegion>();
             LstProvince = _provinceService.GetAll().ResponseData ?? new List<Province>();
-            lueAgency.Properties.DataSource = LstAgency ?? new List<DacCustomerVM>();
-            lueAgency.Properties.ValueMember = "Code";
-            lueAgency.Properties.DisplayMember = "Name";
             lueProvince.Properties.DataSource = LstProvince;
             lueProvince.Properties.ValueMember = "Code";
             lueProvince.Properties.DisplayMember = "Name";
             lueRegion.Properties.DataSource = LstRegion;
             lueRegion.Properties.ValueMember = "Code";
             lueRegion.Properties.DisplayMember = "Name";
+            if (!Session.CurrentUser.isAdmin.HasValue || !Session.CurrentUser.isAdmin.Value)
+            {
+                lblDependCode.Visible = false;
+                lueDependCode.Visible = false;
+                LstAgency = LstAllAgency?.Where(x => x.DependCode == Session.CurrentUser.CustomerCode)?.ToList();
+            }
+            else
+            {
+                lblDependCode.Visible = true;
+                lueDependCode.Visible = true;
+                lueDependCode.Properties.DataSource = LstAllAgency ?? new List<DacCustomerVM>();
+                lueDependCode.Properties.ValueMember = "Code";
+                lueDependCode.Properties.DisplayMember = "Name";
+                LstAgency = LstAllAgency;
+            }
             gcAgency.DataSource = LstAgency;
             if (LstAgency != null && LstAgency.Any())
             {
                 gvAgency.FocusedRowHandle = 0;
                 originalObject = LstAgency[gvAgency.FocusedRowHandle];
-            }
-            if (!Session.CurrentUser.isAdmin.HasValue || !Session.CurrentUser.isAdmin.Value)
-            {
-                if (!string.IsNullOrWhiteSpace(Session.CurrentUser.AgencyCode))
-                {
-                    lueAgency.EditValue = Session.CurrentUser.AgencyCode;
-                    lueAgency.ReadOnly = true;
-                }
-                else
-                {
-                    lueAgency.ReadOnly = false;
-                }
             }
             EnableControls(false);
         }
@@ -144,7 +145,7 @@ namespace PIPT
             agency.OwnerName = txtOwnerName.Text;
             agency.TaxCode = txtTaxCode.Text;
             agency.JoinContact = txtJoinContact.Text;
-            agency.DependCode = lueAgency.EditValue?.ToString();
+            agency.DependCode = Session.CurrentUser.isAdmin.HasValue && Session.CurrentUser.isAdmin.Value ? lueDependCode.EditValue?.ToString() : Session.CurrentUser.CustomerCode;
             agency.Email = txtEmail.Text;
             agency.Active = chkActive.Checked;
             agency.Description = txtDescription.Text;
@@ -190,7 +191,7 @@ namespace PIPT
                 txtOwnerName.Text = LstAgency[gvAgency.FocusedRowHandle].OwnerName;
                 txtTaxCode.Text = LstAgency[gvAgency.FocusedRowHandle].TaxCode;
                 txtJoinContact.Text = LstAgency[gvAgency.FocusedRowHandle].JoinContact;
-                lueAgency.EditValue = LstAgency[gvAgency.FocusedRowHandle].DependCode;
+                lueDependCode.EditValue = LstAgency[gvAgency.FocusedRowHandle].DependCode;
                 txtEmail.Text = LstAgency[gvAgency.FocusedRowHandle].Email;
                 lblCreatedDate.Text = LstAgency[gvAgency.FocusedRowHandle].CreatedDate.HasValue ? LstAgency[gvAgency.FocusedRowHandle].CreatedDate.Value.ToString("dd/MM/yyyy") : string.Empty;
                 lblModifiedDate.Text = LstAgency[gvAgency.FocusedRowHandle].ModifiedDate.HasValue ? LstAgency[gvAgency.FocusedRowHandle].ModifiedDate.Value.ToString("dd/MM/yyyy") : string.Empty;
@@ -283,7 +284,7 @@ namespace PIPT
                     {
                         gvAgency_FocusedRowChanged(ucDataButtonAgency, new DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs(gvAgency.FocusedRowHandle, gvAgency.FocusedRowHandle));
                     }
-                } 
+                }
             }
             ucDataButtonAgency.DataMode = DataState.View;
         }
@@ -312,66 +313,6 @@ namespace PIPT
             }
         }
         #endregion
-
-        private void buttonSearch_Click(object sender, EventArgs e)
-        {
-            string[] datas = Common.ClipBoardData.Split('\n');
-            if (datas.Length < 1) return;
-            foreach (string data in datas)
-            {
-                CopyToGridControl(data);
-            }
-            ucDataButtonAgency.DataMode = DataState.Insert;
-        }
-        private void CopyToGridControl(string data)
-        {
-            //if (data == string.Empty) return;
-            //string[] rowData = data.Split(new char[] { '\r', '\x09' });
-            //try
-            //{
-            //    string sCode = rowData[1].ToString();
-
-            //    // Kiem tra su ton tai cua ma KH
-            //    if (Common.CheckExistCode(sCode, gvAgency, gridColumnCode))
-            //    {
-            //        MessageBox.Show("Mã " + sCode + " đã tồn tại!", "Thông báo");
-            //        return;
-            //    }
-            //    DacAgency agency = new DacAgency();
-            //    agency.ID = 0;
-            //    agency.Code = sCode;
-            //    agency.Name = rowData[2];
-            //    agency.Address = rowData[3];
-            //    agency.ProvinceCode = rowData[4];
-            //    agency.JoinContact = rowData[5];
-            //    agency.OwnerName = rowData[6];
-            //    agency.TaxCode = rowData[7];
-            //    agency.PhoneNum = rowData[8];
-            //    agency.MobileNum = rowData[9];
-            //    agency.Email = rowData[10];
-            //    agency.DependCode = rowData[11];
-            //    agency.Region = rowData[12];
-            //    agency.CreatedUser = CommonBS.CurrentUser.LoginID;
-            //    try
-            //    {
-            //        agency.CreatedDate = DateTime.Parse(rowData[14]);
-            //    }
-            //    catch
-            //    {
-            //        agency.CreatedDate = DateTime.Now;
-            //    }
-            //    agency.ModifiedDate = DateTime.Now;
-            //    agency.ModifiedUser = string.Empty;
-            //    agency.Description = rowData[17];
-            //    agency.Active = true;
-            //    // Add row in to GridControl
-            //    bdlDacAgency.Add(agency);
-            //}
-            //catch (IndexOutOfRangeException)
-            //{
-            //    MessageBox.Show("Dữ liệu đã sao chép không đúng định dạng");
-            //}
-        }
 
         private void buttonImport_Click(object sender, EventArgs e)
         {

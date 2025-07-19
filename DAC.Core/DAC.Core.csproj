@@ -15,6 +15,7 @@
     <TargetFrameworkProfile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <LangVersion>9</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -123,12 +124,16 @@
     <Compile Include="Services\Implements\DacCustomerService.cs" />
     <Compile Include="Services\Implements\DacContainerDetailsService.cs" />
     <Compile Include="Services\Implements\DacContainerService.cs" />
+    <Compile Include="Services\Implements\DacExport3Service.cs" />
+    <Compile Include="Services\Implements\DacExportDetail3Service.cs" />
+    <Compile Include="Services\Implements\DacExportDetailProcessService.cs" />
     <Compile Include="Services\Implements\DacExportDetailService.cs" />
     <Compile Include="Services\Implements\DacExportService.cs" />
     <Compile Include="Services\Implements\DacExportDetail1Service.cs" />
     <Compile Include="Services\Implements\DacExport1Service.cs" />
-    <Compile Include="Services\Implements\DacDistributeToStoreDetailsService.cs" />
-    <Compile Include="Services\Implements\DacDacExport2Service.cs" />
+    <Compile Include="Services\Implements\DacExportDetail2Service.cs" />
+    <Compile Include="Services\Implements\DacExport2Service.cs" />
+    <Compile Include="Services\Implements\DacExportProcessService.cs" />
     <Compile Include="Services\Implements\DacFactoryService.cs" />
     <Compile Include="Services\Implements\DacInsertToWarehouseDetailsService.cs" />
     <Compile Include="Services\Implements\DacInsertToWarehouseService.cs" />
@@ -163,12 +168,8 @@
     <Compile Include="Services\Interfaces\IDacCustomerService.cs" />
     <Compile Include="Services\Interfaces\IDacContainerDetailsService.cs" />
     <Compile Include="Services\Interfaces\IDacContainerService.cs" />
-    <Compile Include="Services\Interfaces\IDacExportDetailService.cs" />
-    <Compile Include="Services\Interfaces\IDacExportService.cs" />
-    <Compile Include="Services\Interfaces\IDacExportDetail1Service.cs" />
-    <Compile Include="Services\Interfaces\IDacExport1Service.cs" />
-    <Compile Include="Services\Interfaces\IDacDistributeToStoreDetailsService.cs" />
-    <Compile Include="Services\Interfaces\IDacExport2Service.cs" />
+    <Compile Include="Services\Interfaces\IDacExportDetailProcessService.cs" />
+    <Compile Include="Services\Interfaces\IDacExportProcessService.cs" />
     <Compile Include="Services\Interfaces\IDacFactoryService.cs" />
     <Compile Include="Services\Interfaces\IDacInsertToWarehouseDetailsService.cs" />
     <Compile Include="Services\Interfaces\IDacInsertToWarehouseService.cs" />

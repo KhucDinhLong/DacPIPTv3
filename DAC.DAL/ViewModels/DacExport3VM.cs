@@ -1,15 +1,12 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 
-namespace DAC.DAL
+namespace DAC.DAL.ViewModels
 {
-    [Table("DacExport")]
-    public class DacExport
+    public class DacExport3VM
     {
-        [Key]
         public int Id { get; set; }
-        public string OriginalId { get; set; }
+        public int? OriginalId { get; set; }
         public string OrderNumber { get; set; }
         public DateTime? CreatedDate { get; set; }
         public string CustomerCode { get; set; }
@@ -17,5 +14,10 @@ namespace DAC.DAL
         public string Description { get; set; }
         public string StockCode { get; set; }
         public bool? Active { get; set; }
+        public string AgencyName { get; set; }
+        public string StockName { get; set; }
+        public int RealityQuantity { get; set; }
+        public string ProductName { get; set; }
+        public List<DacExportDetail3VM> LstDetails { get; set; }
     }
 }

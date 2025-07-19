@@ -73,7 +73,7 @@ namespace PIPT
                 txtUserName.Text = LstUser[gvUser.FocusedRowHandle].LoginID;
                 txtEmployeeName.Text = LstUser[gvUser.FocusedRowHandle].FullName;
                 txtEmail.Text = LstUser[gvUser.FocusedRowHandle].Email;
-                lueAgency.EditValue = LstUser[gvUser.FocusedRowHandle].AgencyCode;
+                lueAgency.EditValue = LstUser[gvUser.FocusedRowHandle].CustomerCode;
                 chkLocked.Checked = LstUser[gvUser.FocusedRowHandle].LockedUser.HasValue ? LstUser[gvUser.FocusedRowHandle].LockedUser.Value : false;
                 txtPassword.Text = string.Empty;
                 txtConfirmPassword.Text = string.Empty;
@@ -232,9 +232,8 @@ namespace PIPT
             user.Password = ucDataButtonUser.DataMode == DataState.Insert ? CommonUtils.EncryptString(txtPassword.Text) : LstUser[gvUser.FocusedRowHandle].Password;
             user.FullName = txtEmployeeName.Text;
             user.Email = txtEmail.Text;
-            user.AgencyCode = lueAgency.EditValue?.ToString();
+            user.CustomerCode = lueAgency.EditValue?.ToString();
             user.LockedUser = chkLocked.Checked;
-            user.AgencyCode = lueAgency.EditValue?.ToString();
             user.Email = txtEmail.Text;
             user.DeadlineOfUsing = dtpEndDate.Value;
             user.LockedReason = txtLockedReason.Text;

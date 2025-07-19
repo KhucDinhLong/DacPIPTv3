@@ -47,7 +47,7 @@ namespace PIPT
                 LstStore = _storeService.GetAll().ResponseData?.ToList();
                 if (!CurrentUser.isAdmin.HasValue || !CurrentUser.isAdmin.Value)
                 {
-                    LstStore = LstStore?.Where(x => x.AgencyCode == CurrentUser.AgencyCode)?.ToList();
+                    LstStore = LstStore?.Where(x => x.AgencyCode == CurrentUser.CustomerCode)?.ToList();
                 }
                 LstProvince = _provinceService.GetAll().ResponseData ?? new List<Province>();
                 lueAgency.Properties.DataSource = LstAgency;

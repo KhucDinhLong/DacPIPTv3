@@ -37,15 +37,11 @@
             this.chkPrintType = new System.Windows.Forms.CheckBox();
             this.gcExportInfo = new DevExpress.XtraGrid.GridControl();
             this.gvExportInfo = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.gridColumnID = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumnOrder = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.gridColumnAgencyCode = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.gridColumnStockID = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colCustomerCode = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colCustomerName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumnQuantity = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumnCreatedDate = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.gridColumActive = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.gridColumnProvinceCode = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.gridColumnDescription = new DevExpress.XtraGrid.Columns.GridColumn();
             this.btnRefresh = new System.Windows.Forms.Button();
             this.panelAddDacCode = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
@@ -71,7 +67,7 @@
             this.gridView2 = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.gridColumnCode = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumnName = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.labelDacStock = new System.Windows.Forms.Label();
+            this.lblStock = new System.Windows.Forms.Label();
             this.lueAgency = new DevExpress.XtraEditors.GridLookUpEdit();
             this.gridLookUpEditAgencyView = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colCode = new DevExpress.XtraGrid.Columns.GridColumn();
@@ -186,15 +182,11 @@
             // gvExportInfo
             // 
             this.gvExportInfo.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.gridColumnID,
             this.gridColumnOrder,
-            this.gridColumnAgencyCode,
-            this.gridColumnStockID,
+            this.colCustomerCode,
+            this.colCustomerName,
             this.gridColumnQuantity,
-            this.gridColumnCreatedDate,
-            this.gridColumActive,
-            this.gridColumnProvinceCode,
-            this.gridColumnDescription});
+            this.gridColumnCreatedDate});
             this.gvExportInfo.GridControl = this.gcExportInfo;
             this.gvExportInfo.Name = "gvExportInfo";
             this.gvExportInfo.OptionsBehavior.Editable = false;
@@ -202,13 +194,6 @@
             this.gvExportInfo.OptionsView.ShowDetailButtons = false;
             this.gvExportInfo.OptionsView.ShowGroupPanel = false;
             this.gvExportInfo.FocusedRowChanged += new DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventHandler(this.gvExportInfo_FocusedRowChanged);
-            // 
-            // gridColumnID
-            // 
-            this.gridColumnID.Caption = "ID";
-            this.gridColumnID.FieldName = "ID";
-            this.gridColumnID.Name = "gridColumnID";
-            this.gridColumnID.Width = 44;
             // 
             // gridColumnOrder
             // 
@@ -218,26 +203,26 @@
             this.gridColumnOrder.OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
             this.gridColumnOrder.Visible = true;
             this.gridColumnOrder.VisibleIndex = 0;
-            this.gridColumnOrder.Width = 58;
+            this.gridColumnOrder.Width = 64;
             // 
-            // gridColumnAgencyCode
+            // colCustomerCode
             // 
-            this.gridColumnAgencyCode.Caption = "Mã ĐL";
-            this.gridColumnAgencyCode.FieldName = "AgencyCode";
-            this.gridColumnAgencyCode.Name = "gridColumnAgencyCode";
-            this.gridColumnAgencyCode.OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
-            this.gridColumnAgencyCode.Visible = true;
-            this.gridColumnAgencyCode.VisibleIndex = 1;
-            this.gridColumnAgencyCode.Width = 66;
+            this.colCustomerCode.Caption = "Mã khách hàng";
+            this.colCustomerCode.FieldName = "CustomerCode";
+            this.colCustomerCode.Name = "colCustomerCode";
+            this.colCustomerCode.OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Contains;
+            this.colCustomerCode.Visible = true;
+            this.colCustomerCode.VisibleIndex = 1;
+            this.colCustomerCode.Width = 83;
             // 
-            // gridColumnStockID
+            // colCustomerName
             // 
-            this.gridColumnStockID.Caption = "Mã kho";
-            this.gridColumnStockID.FieldName = "StockID";
-            this.gridColumnStockID.Name = "gridColumnStockID";
-            this.gridColumnStockID.Visible = true;
-            this.gridColumnStockID.VisibleIndex = 2;
-            this.gridColumnStockID.Width = 73;
+            this.colCustomerName.Caption = "Tên khách hàng";
+            this.colCustomerName.FieldName = "CustomerName";
+            this.colCustomerName.Name = "colCustomerName";
+            this.colCustomerName.Visible = true;
+            this.colCustomerName.VisibleIndex = 2;
+            this.colCustomerName.Width = 184;
             // 
             // gridColumnQuantity
             // 
@@ -254,32 +239,8 @@
             this.gridColumnCreatedDate.FieldName = "CreatedDate";
             this.gridColumnCreatedDate.Name = "gridColumnCreatedDate";
             this.gridColumnCreatedDate.Visible = true;
-            this.gridColumnCreatedDate.VisibleIndex = 5;
-            this.gridColumnCreatedDate.Width = 66;
-            // 
-            // gridColumActive
-            // 
-            this.gridColumActive.Caption = "Active";
-            this.gridColumActive.FieldName = "Active";
-            this.gridColumActive.Name = "gridColumActive";
-            this.gridColumActive.Visible = true;
-            this.gridColumActive.VisibleIndex = 6;
-            this.gridColumActive.Width = 42;
-            // 
-            // gridColumnProvinceCode
-            // 
-            this.gridColumnProvinceCode.Caption = "Province Code";
-            this.gridColumnProvinceCode.FieldName = "ProvinceCode";
-            this.gridColumnProvinceCode.Name = "gridColumnProvinceCode";
-            // 
-            // gridColumnDescription
-            // 
-            this.gridColumnDescription.Caption = "Ghi chú";
-            this.gridColumnDescription.FieldName = "Description";
-            this.gridColumnDescription.Name = "gridColumnDescription";
-            this.gridColumnDescription.Visible = true;
-            this.gridColumnDescription.VisibleIndex = 4;
-            this.gridColumnDescription.Width = 95;
+            this.gridColumnCreatedDate.VisibleIndex = 4;
+            this.gridColumnCreatedDate.Width = 69;
             // 
             // btnRefresh
             // 
@@ -477,7 +438,7 @@
             this.panelDistributeToAgency.Controls.Add(this.label2);
             this.panelDistributeToAgency.Controls.Add(this.txtDescription);
             this.panelDistributeToAgency.Controls.Add(this.lueDacStock);
-            this.panelDistributeToAgency.Controls.Add(this.labelDacStock);
+            this.panelDistributeToAgency.Controls.Add(this.lblStock);
             this.panelDistributeToAgency.Controls.Add(this.lueAgency);
             this.panelDistributeToAgency.Controls.Add(this.txtQuantity);
             this.panelDistributeToAgency.Controls.Add(this.txtOrderNumber);
@@ -564,14 +525,14 @@
             this.gridColumnName.Visible = true;
             this.gridColumnName.VisibleIndex = 1;
             // 
-            // labelDacStock
+            // lblStock
             // 
-            this.labelDacStock.AutoSize = true;
-            this.labelDacStock.Location = new System.Drawing.Point(287, 15);
-            this.labelDacStock.Name = "labelDacStock";
-            this.labelDacStock.Size = new System.Drawing.Size(52, 13);
-            this.labelDacStock.TabIndex = 15;
-            this.labelDacStock.Text = "Chọn kho";
+            this.lblStock.AutoSize = true;
+            this.lblStock.Location = new System.Drawing.Point(287, 15);
+            this.lblStock.Name = "lblStock";
+            this.lblStock.Size = new System.Drawing.Size(52, 13);
+            this.lblStock.TabIndex = 15;
+            this.lblStock.Text = "Chọn kho";
             // 
             // lueAgency
             // 
@@ -588,6 +549,7 @@
             this.lueAgency.Properties.ValueMember = "Code";
             this.lueAgency.Size = new System.Drawing.Size(394, 20);
             this.lueAgency.TabIndex = 2;
+            this.lueAgency.EditValueChanged += new System.EventHandler(this.lueAgency_EditValueChanged);
             // 
             // gridLookUpEditAgencyView
             // 
@@ -807,13 +769,9 @@
         private DevExpress.XtraGrid.Columns.GridColumn colName;
         private DevExpress.XtraGrid.GridControl gcExportInfo;
         private DevExpress.XtraGrid.Views.Grid.GridView gvExportInfo;
-        private DevExpress.XtraGrid.Columns.GridColumn gridColumnID;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumnOrder;
-        private DevExpress.XtraGrid.Columns.GridColumn gridColumnAgencyCode;
+        private DevExpress.XtraGrid.Columns.GridColumn colCustomerCode;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumnCreatedDate;
-        private DevExpress.XtraGrid.Columns.GridColumn gridColumActive;
-        private DevExpress.XtraGrid.Columns.GridColumn gridColumnProvinceCode;
-        private DevExpress.XtraGrid.Columns.GridColumn gridColumnDescription;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumnQuantity;
         private System.Windows.Forms.TextBox txtQuantity;
         private System.Windows.Forms.Label labelQuantity;
@@ -834,8 +792,8 @@
         private DevExpress.XtraGrid.Views.Grid.GridView gridView2;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumnCode;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumnName;
-        private System.Windows.Forms.Label labelDacStock;
-        private DevExpress.XtraGrid.Columns.GridColumn gridColumnStockID;
+        private System.Windows.Forms.Label lblStock;
+        private DevExpress.XtraGrid.Columns.GridColumn colCustomerName;
         private System.Windows.Forms.CheckBox chkPrintType;
         private System.Windows.Forms.TextBox txtDescription;
         private DevExpress.XtraGrid.GridControl gcDetail;

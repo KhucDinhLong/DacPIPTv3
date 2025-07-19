@@ -6,26 +6,8 @@ using System.Linq;
 
 namespace DAC.Core.Services.Implements
 {
-    public static class DacExportDetailService
+    public static class DacExportDetail3Service
     {
-        public static BaseViewModel<DacExportDetailVM> GetByDacCode(string DacCode)
-        {
-            var response = new BaseViewModel<DacExportDetailVM>();
-            try
-            {
-                using (var dbContext = new PIPTDbContext())
-                {
-                    var detail = dbContext.DacExportDetail.FirstOrDefault(x => x.DacCode == DacCode);
-                    response.ResponseData = detail != null ? new DacExportDetailVM { Id = detail.Id, ExportId = detail.ExportId, DacCode = detail.DacCode, ProductCode = detail.ProductCode } : null;
-                }
-            }
-            catch (Exception ex)
-            {
-                response.ex = ex;
-            }
-            return response;
-        }
-
         public static BaseViewModel<bool> AddRange(List<DacExportDetailVM> LstDetail)
         {
             var response = new BaseViewModel<bool>();
@@ -35,12 +17,12 @@ namespace DAC.Core.Services.Implements
                 {
                     if (LstDetail != null && LstDetail.Any())
                     {
-                        var details = LstDetail.Select(x => new DacExportDetail { Id = x.Id, ExportId = x.ExportId, DacCode = x.DacCode, ProductCode = x.ProductCode });
-                        dbContext.DacExportDetail.AddRange(details);
+                        var details = LstDetail.Select(x => new DacExportDetail3 { Id = x.Id, ExportId = x.ExportId, DacCode = x.DacCode, ProductCode = x.ProductCode });
+                        dbContext.DacExportDetail3.AddRange(details);
                         int? ExportId = LstDetail.FirstOrDefault().ExportId;
                         if (ExportId.HasValue)
                         {
-                            var exportInfo = dbContext.DacExport.FirstOrDefault(x => x.Id == ExportId);
+                            var exportInfo = dbContext.DacExport3.FirstOrDefault(x => x.Id == ExportId);
                             if (exportInfo != null && exportInfo.Quantity.HasValue)
                             {
                                 exportInfo.Quantity = exportInfo.Quantity.Value + LstDetail.Count;
@@ -69,29 +51,20 @@ namespace DAC.Core.Services.Implements
             {
                 using (var dbContext = new PIPTDbContext())
                 {
-                    var exporteds = dbContext.DacExportDetail1.Where(x => LstDacCode.Contains(x.DacCode))?.Select(x => x.DacCode).ToList();
-                    if (exporteds != null)
+                    var detail = dbContext.DacExportDetail3.Where(x => LstDacCode.Contains(x.DacCode));
+                    if (detail != null && detail.Any())
                     {
-                        LstDacCode = LstDacCode.Except(exporteds)?.ToList();
-                        response.ErrorMessage = string.Join(",", exporteds);
-                    }
-                    if (LstDacCode != null)
-                    {
-                        var detail = dbContext.DacExportDetail.Where(x => LstDacCode.Contains(x.DacCode));
-                        if (detail != null && detail.Any())
+                        dbContext.DacExportDetail3.RemoveRange(detail);
+                        int? ExportId = detail.FirstOrDefault().ExportId;
+                        if (ExportId.HasValue)
                         {
-                            dbContext.DacExportDetail.RemoveRange(detail);
-                            int? ExportId = detail.FirstOrDefault().ExportId;
-                            if (ExportId.HasValue)
+                            var exportInfo = dbContext.DacExport3.FirstOrDefault(x => x.Id == ExportId);
+                            if (exportInfo != null && exportInfo.Quantity.HasValue && exportInfo.Quantity.Value > detail.Count())
                             {
-                                var exportInfo = dbContext.DacExport.FirstOrDefault(x => x.Id == ExportId);
-                                if (exportInfo != null && exportInfo.Quantity.HasValue && exportInfo.Quantity.Value > detail.Count())
-                                {
-                                    exportInfo.Quantity = exportInfo.Quantity.Value - detail.Count();
-                                }
+                                exportInfo.Quantity = exportInfo.Quantity.Value - detail.Count();
                             }
-                            dbContext.SaveChanges();
                         }
+                        dbContext.SaveChanges();
                     }
                     response.ResponseData = true;
                 }
@@ -111,11 +84,11 @@ namespace DAC.Core.Services.Implements
             {
                 using (var dbContext = new PIPTDbContext())
                 {
-                    var detail = dbContext.DacExportDetail.FirstOrDefault(x => x.DacCode == DacCode);
+                    var detail = dbContext.DacExportDetail3.FirstOrDefault(x => x.DacCode == DacCode);
                     if (detail != null)
                     {
-                        var exportInfo = dbContext.DacExport.FirstOrDefault(x => x.Id == detail.ExportId);
-                        dbContext.DacExportDetail.Remove(detail);
+                        var exportInfo = dbContext.DacExport3.FirstOrDefault(x => x.Id == detail.ExportId);
+                        dbContext.DacExportDetail3.Remove(detail);
                         if (exportInfo != null)
                         {
                             exportInfo.Quantity--;
@@ -133,6 +106,24 @@ namespace DAC.Core.Services.Implements
             return response;
         }
 
+        public static BaseViewModel<DacExportDetailVM> GetByDacCode(string DacCode)
+        {
+            var response = new BaseViewModel<DacExportDetailVM>();
+            try
+            {
+                using (var dbContext = new PIPTDbContext())
+                {
+                    var detail = dbContext.DacExportDetail3.FirstOrDefault(x => x.DacCode == DacCode);
+                    response.ResponseData = detail != null ? new DacExportDetailVM { Id = detail.Id, ExportId = detail.ExportId, DacCode = detail.DacCode, ProductCode = detail.ProductCode } : null;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.ex = ex;
+            }
+            return response;
+        }
+
         public static BaseViewModel<DacExportVM> GetExportInfo(string DacCode)
         {
             var response = new BaseViewModel<DacExportVM>();
@@ -140,7 +131,7 @@ namespace DAC.Core.Services.Implements
             {
                 using (var dbContext = new PIPTDbContext())
                 {
-                    var info = (from d in dbContext.DacExportDetail
+                    var info = (from d in dbContext.DacExportDetail3
                                 join e in dbContext.DacExport on d.ExportId equals e.Id
                                 where d.DacCode == DacCode
                                 select new DacExportVM
@@ -162,35 +153,23 @@ namespace DAC.Core.Services.Implements
         public static BaseViewModel<bool> Exportable(string DacCode, string CustomerCode)
         {
             var response = new BaseViewModel<bool>();
-            response.ResponseData = true;
-            return response;
-        }
-
-        public static BaseViewModel<bool> Exported(string DacCode)
-        {
-            var response = new BaseViewModel<bool>();
             try
             {
                 using (var dbContext = new PIPTDbContext())
                 {
-                    var exported = dbContext.DacExportDetail1.FirstOrDefault(x => x.DacCode == DacCode);
-                    if(exported != null)
-                    {
-                        response.ResponseData = true;
-                        response.ErrorMessage = "exported";
-                    }
-                    else
-                    {
-                        response.ResponseData = false;
-                    }
-                    return response;
+                    var info = (from d in dbContext.DacExportDetail2
+                                join e in dbContext.DacExport2 on d.ExportId equals e.Id
+                                where d.DacCode == DacCode && e.CustomerCode == CustomerCode
+                                select d).FirstOrDefault();
+                    response.ResponseData = info != null;
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                response.ResponseData = true;
-                return response;
+                response.ResponseData = false;
+                response.ex = ex;
             }
+            return response;
         }
     }
 }

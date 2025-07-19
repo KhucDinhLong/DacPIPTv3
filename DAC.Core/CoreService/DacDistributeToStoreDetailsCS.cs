@@ -8,17 +8,17 @@ namespace DAC.Core
     public class DacDistributeToStoreDetailsCS
     { 
         //spDacDistributeToStoreDetails_SelectByID (DistributorID)
-        public DacDistributeToStoreDetails GetDistributeDetails(long lID)
+        public DacExportDetail2 GetDistributeDetails(long lID)
         {
             DacDbAccess dacDb = new DacDbAccess();
             dacDb.CreateNewSqlCommand();
             dacDb.AddParameter("@ID", lID);
             SqlDataReader reader = dacDb.ExecuteReader("spDacDistributeToStoreDetails_SelectByID");
-            DacDistributeToStoreDetails dacDistributeDetails = new DacDistributeToStoreDetails();
+            DacExportDetail2 dacDistributeDetails = new DacExportDetail2();
             if (reader.Read())
             {
                 dacDistributeDetails.Id = (long)reader["Id"];
-                dacDistributeDetails.DistributeToStoreId = (int) reader["DistributeToStoreId"];
+                dacDistributeDetails.ExportId = (int) reader["DistributeToStoreId"];
                 dacDistributeDetails.DacCode = reader["DacCode"].ToString();
                 dacDistributeDetails.ProductCode = reader["ProductCode"].ToString();
             }
@@ -29,19 +29,19 @@ namespace DAC.Core
             return dacDistributeDetails;
         }
         //spDacDistributeToStoreDetails_SelectByStoreId (DistributorID)
-        public List<DacDistributeToStoreDetails> GetDistributeDetails(int DistributeToStoreId)
+        public List<DacExportDetail2> GetDistributeDetails(int DistributeToStoreId)
         {
-            List<DacDistributeToStoreDetails> dacDistributeDetailsCollection = new List<DacDistributeToStoreDetails>();
+            List<DacExportDetail2> dacDistributeDetailsCollection = new List<DacExportDetail2>();
             DacDbAccess dacDb = new DacDbAccess();
             dacDb.CreateNewSqlCommand();
             dacDb.AddParameter("@DistributeToStoreId", DistributeToStoreId);
             SqlDataReader reader = dacDb.ExecuteReader("spDacDistributeToStoreDetails_SelectByStoreId");
             while (reader.Read())
             {
-                DacDistributeToStoreDetails dacDistributeDetails = new DacDistributeToStoreDetails();
+                DacExportDetail2 dacDistributeDetails = new DacExportDetail2();
 
                 dacDistributeDetails.Id = (long)reader["Id"];
-                dacDistributeDetails.DistributeToStoreId = (int) reader["DistributeToStoreId"];
+                dacDistributeDetails.ExportId = (int) reader["DistributeToStoreId"];
                 dacDistributeDetails.DacCode = reader["DacCode"].ToString();
                 dacDistributeDetails.ProductCode = reader["ProductCode"].ToString();
 
@@ -54,19 +54,19 @@ namespace DAC.Core
             return dacDistributeDetailsCollection;
         }
         //spDacDistributeToStoreDetails_SelectByDacCode (DacCode)
-        public List<DacDistributeToStoreDetails> GetDistributeDetailsByDacCode(string sDacCode)
+        public List<DacExportDetail2> GetDistributeDetailsByDacCode(string sDacCode)
         {
-            List<DacDistributeToStoreDetails> dacDistributeDetailsCollection = new List<DacDistributeToStoreDetails>();
+            List<DacExportDetail2> dacDistributeDetailsCollection = new List<DacExportDetail2>();
             DacDbAccess dacDb = new DacDbAccess();
             dacDb.CreateNewSqlCommand();
             dacDb.AddParameter("@DacCode", sDacCode);
             SqlDataReader reader = dacDb.ExecuteReader("spDacDistributeToStoreDetails_SelectByDacCode");
             while (reader.Read())
             {
-                DacDistributeToStoreDetails dacDistributeDetails = new DacDistributeToStoreDetails();
+                DacExportDetail2 dacDistributeDetails = new DacExportDetail2();
 
                 dacDistributeDetails.Id = (long)reader["Id"];
-                dacDistributeDetails.DistributeToStoreId = (int) reader["DistributeToStoreId"];
+                dacDistributeDetails.ExportId = (int) reader["DistributeToStoreId"];
                 dacDistributeDetails.DacCode = reader["DacCode"].ToString();
                 dacDistributeDetails.ProductCode = reader["ProductCode"].ToString();
 
@@ -79,14 +79,14 @@ namespace DAC.Core
             return dacDistributeDetailsCollection;
         }
         //spDacDistributeToStoreDetails_Insert (DistributorID, DacCode)
-        public bool Insert(DacDistributeToStoreDetails distributeDetails)
+        public bool Insert(DacExportDetail2 distributeDetails)
         {
             DacDbAccess dacDb = new DacDbAccess();
             try
             {
                 dacDb.CreateNewSqlCommand();
                 // Add parameters
-                dacDb.AddParameter("@DistributeToStoreId", distributeDetails.DistributeToStoreId);
+                dacDb.AddParameter("@DistributeToStoreId", distributeDetails.ExportId);
                 dacDb.AddParameter("@DacCode", distributeDetails.DacCode); 
                 dacDb.AddParameter("@ProductCode", distributeDetails.ProductCode);
 

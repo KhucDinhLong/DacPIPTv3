@@ -5,14 +5,12 @@ using DAC.DAL.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DacDistributeToAgency = DAC.DAL.DacExport;
-using DacDistributeToAgencyDetails = DAC.DAL.DacExportDetail;
 
 namespace DAC.Core.Services.Implements
 {
-    public class DacExportService : IDacExportService
+    public static class DacExportService
     {
-        public BaseViewModel<List<DacExportVM>> GetAll()
+        public static BaseViewModel<List<DacExportVM>> GetAll()
         {
             var response = new BaseViewModel<List<DacExportVM>>();
             try
@@ -33,8 +31,9 @@ namespace DAC.Core.Services.Implements
                                          CreatedDate = i.CreatedDate,
                                          StockCode = i.StockCode,
                                          Active = i.Active,
-                                         AgencyName = a.Name,
-                                         StockName = l != null ? l.Name : null
+                                         CustomerName = a.Name,
+                                         StockName = l != null ? l.Name : null,
+                                         CustomerLevel = 1
                                      })?.OrderByDescending(x => x.CreatedDate)?.ToList();
                     response.ResponseData = queryable;
                 }
@@ -46,7 +45,7 @@ namespace DAC.Core.Services.Implements
             return response;
         }
 
-        public BaseViewModel<DacExportVM> GetDetail(int Id)
+        public static BaseViewModel<DacExportVM> GetDetail(int Id)
         {
             var response = new BaseViewModel<DacExportVM>();
             try
@@ -66,8 +65,9 @@ namespace DAC.Core.Services.Implements
                             CreatedDate = exportInfo.CreatedDate,
                             StockCode = exportInfo.StockCode,
                             Active = exportInfo.Active,
-                            AgencyName = dbContext.DacCustomer.FirstOrDefault(x => x.Code == exportInfo.CustomerCode)?.Name,
+                            CustomerName = dbContext.DacCustomer.FirstOrDefault(x => x.Code == exportInfo.CustomerCode)?.Name,
                             StockName = dbContext.DacStock.FirstOrDefault(x => x.Code == exportInfo.StockCode)?.Name,
+                            CustomerLevel = 1,
                             LstDetails = dbContext.DacExportDetail.Where(x => x.ExportId == Id)?.Select(x => new DacExportDetailVM
                             {
                                 Id = x.Id,
@@ -90,14 +90,14 @@ namespace DAC.Core.Services.Implements
             return response;
         }
 
-        public BaseViewModel<DacExportVM> Create(DacExportVM exportInfoVM)
+        public static BaseViewModel<DacExportVM> Create(DacExportVM exportInfoVM)
         {
             var response = new BaseViewModel<DacExportVM>();
             try
             {
                 using (var dbContext = new PIPTDbContext())
                 {
-                    var NewExportInfo = new DacDistributeToAgency
+                    var NewExportInfo = new DacExport
                     {
                         Id = exportInfoVM.Id,
                         OrderNumber = exportInfoVM.OrderNumber,
@@ -121,10 +121,10 @@ namespace DAC.Core.Services.Implements
                             }
                             if (exportInfoVM.LstDetails != null && exportInfoVM.LstDetails.Any())
                             {
-                                List<DacDistributeToAgencyDetails> LstNewDetail = new List<DacDistributeToAgencyDetails>();
+                                List<DacExportDetail> LstNewDetail = new List<DacExportDetail>();
                                 foreach (var detail in exportInfoVM.LstDetails)
                                 {
-                                    var newDetail = new DacDistributeToAgencyDetails();
+                                    var newDetail = new DacExportDetail();
                                     newDetail.Id = detail.Id;
                                     newDetail.ExportId = NewExportInfo.Id;
                                     newDetail.DacCode = detail.DacCode;
@@ -164,7 +164,7 @@ namespace DAC.Core.Services.Implements
             return response;
         }
 
-        public BaseViewModel<DacExportVM> Edit(DacExportVM exportInfoVM)
+        public static BaseViewModel<DacExportVM> Edit(DacExportVM exportInfoVM)
         {
             var response = new BaseViewModel<DacExportVM>();
             try
@@ -193,7 +193,7 @@ namespace DAC.Core.Services.Implements
             return response;
         }
 
-        public BaseViewModel<bool> Delete(int exportInfoId)
+        public static BaseViewModel<bool> Delete(int exportInfoId)
         {
             var response = new BaseViewModel<bool>();
             try
@@ -222,7 +222,7 @@ namespace DAC.Core.Services.Implements
             return response;
         }
 
-        public BaseViewModel<string> GenerateNewCode()
+        public static BaseViewModel<string> GenerateNewCode()
         {
             var response = new BaseViewModel<string>();
             try
@@ -232,7 +232,7 @@ namespace DAC.Core.Services.Implements
                     var LstCode = dbContext.DacExport?.Select(x => x.OrderNumber)?.ToList();
                     if (LstCode != null && LstCode.Any())
                     {
-                        var LstThisMonth = LstCode.Where(x => x.Substring(0, 4) == DateTime.Now.Year.ToString().Substring(2, 2) + DateTime.Now.Month.ToString("D2"))?.OrderByDescending(x => x)?.ToList();
+                        var LstThisMonth = LstCode.Where(x => !string.IsNullOrWhiteSpace(x) && x.Length >= 9 && x.Substring(0, 4) == DateTime.Now.Year.ToString().Substring(2, 2) + DateTime.Now.Month.ToString("D2"))?.OrderByDescending(x => x)?.ToList();
                         if (LstThisMonth != null && LstThisMonth.Any())
                         {
                             var LastCode = int.Parse(LstThisMonth.First().Substring(4, 5));
@@ -256,7 +256,7 @@ namespace DAC.Core.Services.Implements
             return response;
         }
 
-        public BaseViewModel<bool> InvalidProductCode(string DacCode, string ProductCode)
+        public static BaseViewModel<bool> InvalidProductCode(string DacCode, string ProductCode)
         {
             var response = new BaseViewModel<bool>();
             try
@@ -295,14 +295,27 @@ namespace DAC.Core.Services.Implements
             return response;
         }
 
-        public BaseViewModel<DacDistributeToAgency> GetByCode(string OrderNumber)
+        public static BaseViewModel<DacExportVM> GetByCode(string OrderNumber)
         {
-            var response = new BaseViewModel<DacDistributeToAgency>();
+            var response = new BaseViewModel<DacExportVM>();
             try
             {
                 using (var dbContext = new PIPTDbContext())
                 {
-                    response.ResponseData = dbContext.DacExport.FirstOrDefault(x => x.OrderNumber == OrderNumber);
+                    var exportData = dbContext.DacExport.FirstOrDefault(x => x.OrderNumber == OrderNumber);
+
+                    response.ResponseData = exportData != null ? new DacExportVM
+                    {
+                        Id = exportData.Id,
+                        OriginalId = exportData.OriginalId?.ToString(),
+                        OrderNumber = exportData.OrderNumber,
+                        CreatedDate = exportData.CreatedDate,
+                        CustomerCode = exportData.CustomerCode,
+                        Quantity = exportData.Quantity,
+                        Description = exportData.Description,
+                        Active = exportData.Active,
+                        StockCode = exportData.StockCode
+                    } : null;
                 }
             }
             catch (Exception ex)
@@ -312,10 +325,10 @@ namespace DAC.Core.Services.Implements
             return response;
         }
 
-        public bool RestoreData()
+        public static bool RestoreData()
         {
-            List<DacDistributeToAgency> LstExport = new List<DacDistributeToAgency>();
-            List<DacDistributeToAgencyDetails> LstExportDetail = new List<DacDistributeToAgencyDetails>();
+            List<DacExport> LstExport = new List<DacExport>();
+            List<DacExportDetail> LstExportDetail = new List<DacExportDetail>();
             try
             {
                 using (var oldVersionDbContext = new PIPTOldVerDbContext())
@@ -325,7 +338,7 @@ namespace DAC.Core.Services.Implements
                     {
                         foreach (var item in data)
                         {
-                            DacDistributeToAgency restoreData = new DacDistributeToAgency();
+                            DacExport restoreData = new DacExport();
                             restoreData.OrderNumber = item.OrderNumber;
                             restoreData.CreatedDate = item.CreatedDate;
                             restoreData.CustomerCode = item.AgencyCode;
@@ -333,7 +346,7 @@ namespace DAC.Core.Services.Implements
                             restoreData.Description = item.Description;
                             restoreData.Active = item.Active;
                             restoreData.StockCode = item.StockID;
-                            restoreData.OriginalId = item.ID;
+                            restoreData.OriginalId = item.ID.ToString();
                             LstExport.Add(restoreData);
                         }
                     }
@@ -350,12 +363,12 @@ namespace DAC.Core.Services.Implements
                         LstExportDetail.Clear();
                         using (var oldVersionDbContext = new PIPTOldVerDbContext())
                         {
-                            var details = oldVersionDbContext.DacDistributeToAgencyDetails.Where(x => x.DistributorID == item.OriginalId);
+                            var details = oldVersionDbContext.DacDistributeToAgencyDetails.Where(x => x.DistributorID.HasValue && x.DistributorID.Value.ToString() == item.OriginalId);
                             if (details != null && details.Any())
                             {
                                 foreach (var detail in details)
                                 {
-                                    DacDistributeToAgencyDetails restoreDetail = new DacDistributeToAgencyDetails();
+                                    DacExportDetail restoreDetail = new DacExportDetail();
                                     restoreDetail.ExportId = item.Id;
                                     restoreDetail.DacCode = detail.DacCode;
                                     restoreDetail.ProductCode = detail.ProductCode;
@@ -372,7 +385,7 @@ namespace DAC.Core.Services.Implements
                 }
                 return true;
             }
-            catch 
+            catch
             {
                 return false;
             }

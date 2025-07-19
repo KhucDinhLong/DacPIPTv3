@@ -18,7 +18,7 @@ namespace PIPT.Report
             if (exportInfo != null)
             {
                 lblOrderNumber.Text = exportInfo.OrderNumber;
-                lblAgencyName.Text = exportInfo.AgencyName;
+                lblAgencyName.Text = exportInfo.CustomerName;
                 lblProductName.Text = string.Join(",", exportInfo.LstDetails?.Select(x => x.ProductName)?.Distinct());
                 lblQuantity.Text = exportInfo.Quantity.HasValue ? exportInfo.Quantity.Value.ToString() : string.Empty;
                 lblStockName.Text = exportInfo.StockName;

@@ -7,7 +7,7 @@ namespace DAC.Core.Models
     public class DacDistributeToStoreViewModel
     {
         public DacExport2 DacDistributeToStore { get; set; }
-        public List<DacDistributeToStoreDetails> StoreDetailsCollection { get; set; }
+        public List<DacExportDetail2> StoreDetailsCollection { get; set; }
     }
 
     public class DacStoreViewModel
@@ -17,7 +17,7 @@ namespace DAC.Core.Models
 
     public class DacStoreDetailsViewModel
     {
-        public List<DacDistributeToStoreDetails> StoreDetailsCollection { get; set; }
+        public List<DacExportDetail2> StoreDetailsCollection { get; set; }
     }
 
     public class AgencyTrackViewModel

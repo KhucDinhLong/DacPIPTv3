@@ -1,4 +1,5 @@
 ﻿using DAC.Core;
+using DAC.Core.Common;
 using DAC.Core.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -10,64 +11,52 @@ namespace PIPT
     public partial class frmDacDeleteCode : Form
     {
         #region Variables
-        IDacExportService _exportToAgencyService;
-        IDacExportDetailService _exportToAgencyDetailService;
-        IDacExport2Service _exportToStoreService;
-        IDacDistributeToStoreDetailsService _exportToStoreDetailService;
-        IDacPackageService _packageService;
+        IDacExportDetailProcessService _exportDetailService;
         IDacPackageDetailService _packageDetailService;
-        IDacInsertToWarehouseService _importWarehouseService;
-        IDacInsertToWarehouseDetailsService _importWarehouseDetailService;
+        IDacInsertToWarehouseDetailsService _importDetailService;
         List<DacCodeItem> LstDacCode;
         // --------------------
         #endregion
         #region Form's Events
-        public frmDacDeleteCode(IDacExportService exportToAgencyService, IDacExportDetailService exportToAgencyDetailService
-            , IDacExport2Service exportToStoreService, IDacDistributeToStoreDetailsService exportToStoreDetailService
-            , IDacPackageService packageService, IDacPackageDetailService packageDetailService
-            , IDacInsertToWarehouseService importWarehouseService, IDacInsertToWarehouseDetailsService importWarehouseDetailService)
+        public frmDacDeleteCode(IDacExportDetailProcessService exportToAgencyDetailService, IDacPackageDetailService packageDetailService, IDacInsertToWarehouseDetailsService importDetailService)
         {
             InitializeComponent();
-            _exportToAgencyService = exportToAgencyService;
-            _exportToAgencyDetailService = exportToAgencyDetailService;
-            _exportToStoreService = exportToStoreService;
-            _exportToStoreDetailService = exportToStoreDetailService;
-            _packageService = packageService;
+            _exportDetailService = exportToAgencyDetailService;
             _packageDetailService = packageDetailService;
-            _importWarehouseService = importWarehouseService;
-            _importWarehouseDetailService = importWarehouseDetailService;
+            _importDetailService = importDetailService;
             LstDacCode = new List<DacCodeItem>();
             gcDacCode.DataSource = LstDacCode;
         }
         #endregion
         #region Function on form
-        private void DeleteExportToAgency()
+        private List<string> DeleteExport()
         {
+            var LstDeleted = new List<string>();
             if (LstDacCode != null && LstDacCode.Any())
             {
                 foreach (var item in LstDacCode)
                 {
-                    _exportToAgencyDetailService.DeleteByDacCode(item.DacCode);
+                    var response = _exportDetailService.DeleteByDacCode(item.DacCode, Session.CurrentUser.Level.Value);
+                    if (response.ErrorMessage == "exported")
+                    {
+                        MessageBox.Show("Không thể xóa mã " + item.DacCode + " do khách hàng đã xuất!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    else
+                    {
+                        LstDeleted.Add(item.DacCode);
+                    }
                 }
             }
+            return LstDeleted;
         }
-        private void DeleteExportToStore()
-        {
-            if (LstDacCode != null && LstDacCode.Any())
-            {
-                foreach (var item in LstDacCode)
-                {
-                    _exportToStoreDetailService.DeleteByDacCode(item.DacCode);
-                }
-            }
-        }
+        
         private void DeleteImportWarehouse()
         {
             if (LstDacCode != null && LstDacCode.Any())
             {
                 foreach (var item in LstDacCode)
                 {
-                    _importWarehouseDetailService.DeleteByDacCode(item.DacCode);
+                    _importDetailService.DeleteByDacCode(item.DacCode);
                 }
             }
         }
@@ -90,25 +79,28 @@ namespace PIPT
 
         private void buttonDetailDelete_Click(object sender, EventArgs e)
         {
+            if (Session.CurrentUser.isAdmin.HasValue && Session.CurrentUser.isAdmin.Value)
+            {
+                MessageBox.Show("Quản trị viên không thể xóa dữ liệu trong các danh sách được tạo bởi người dùng!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             if (LstDacCode == null || !LstDacCode.Any())
             {
                 MessageBox.Show("Không có danh sách các mã QR cần xóa!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            if (!chkDeleteProductFromAgency.Checked && !chkDeleteProductFromPackage.Checked && !chkDeleteProductFromStore.Checked && !chkDeleteProductFromWarehouse.Checked)
+            if (!chkDeleteProductFromAgency.Checked && !chkDeleteProductFromPackage.Checked && !chkDeleteProductFromWarehouse.Checked)
             {
-                MessageBox.Show("Bạn chưa chọn danh sách cần xóa các mã QR!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Bạn chưa chọn loại danh sách cần xóa các mã QR!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            if (MessageBox.Show("Bạn có chắc chắn muốn xóa các mã QRCode trong danh sách? Lưu ý rằng việc xóa mã có thể thay đổi số lượng chỉ thị trong danh sách.", "Xác nhận", MessageBoxButtons.OKCancel) == DialogResult.OK)
+            if (MessageBox.Show("Bạn có chắc chắn muốn xóa các mã QRCode trong danh sách? Lưu ý rằng việc xóa mã có thể thay đổi số lượng chỉ thị trong danh sách" +
+                ". Trong trường hợp tất cả mã QR trong danh sách đã bị xóa, thông tin chung về danh sách cũng sẽ bị xóa", "Xác nhận", MessageBoxButtons.OKCancel) == DialogResult.OK)
             {
+                List<string> LstDeletedExport = null;
                 if (chkDeleteProductFromAgency.Checked)
                 {
-                    DeleteExportToAgency();
-                }
-                if (chkDeleteProductFromStore.Checked)
-                {
-                    DeleteExportToStore();
+                    LstDeletedExport = DeleteExport();
                 }
                 if (chkDeleteProductFromWarehouse.Checked)
                 {
@@ -119,7 +111,10 @@ namespace PIPT
                     DeletePakaged();
                 }
                 LstDacCode.Clear();
-                MessageBox.Show("Xóa các mã QR thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (LstDeletedExport != null && LstDeletedExport.Any())
+                {
+                    MessageBox.Show("Xóa các mã QR: " + string.Join(", ", LstDeletedExport) + " thành công khỏi các đơn hàng đã xuất!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
                 gcDacCode.RefreshDataSource();
             }
         }

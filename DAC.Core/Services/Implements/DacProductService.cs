@@ -167,7 +167,7 @@ namespace DAC.Core.Services.Implements
                     bool isUsed = dbContext.DacContainer.Any(x => x.ProductCode == ProductCode)
                         || dbContext.DacExportDetail.Any(x => x.ProductCode == ProductCode)
                         || dbContext.DacExportDetail1.Any(x => x.ProductCode == ProductCode)
-                        || dbContext.DacDistributeToStoreDetails.Any(x => x.ProductCode == ProductCode)
+                        || dbContext.DacExportDetail2.Any(x => x.ProductCode == ProductCode)
                         || dbContext.DacInsertToWarehouse.Any(x => x.ProductCode == ProductCode)
                         || dbContext.DacPackage.Any(x => x.ProductCode == ProductCode);
 

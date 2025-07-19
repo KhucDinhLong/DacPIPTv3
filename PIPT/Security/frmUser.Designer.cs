@@ -58,7 +58,7 @@
             this.gvUser = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colUserName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colFullName = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colAgencyCode = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colCustomerCode = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colDeadlineOfUsing = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colLock = new DevExpress.XtraGrid.Columns.GridColumn();
             this.chkLockedUser = new DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit();
@@ -356,7 +356,7 @@
             this.gvUser.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
             this.colUserName,
             this.colFullName,
-            this.colAgencyCode,
+            this.colCustomerCode,
             this.colDeadlineOfUsing,
             this.colLock,
             this.colLockedDate,
@@ -384,13 +384,13 @@
             this.colFullName.Visible = true;
             this.colFullName.VisibleIndex = 1;
             // 
-            // colAgencyCode
+            // colCustomerCode
             // 
-            this.colAgencyCode.Caption = "Mã đại lý";
-            this.colAgencyCode.FieldName = "AgencyCode";
-            this.colAgencyCode.Name = "colAgencyCode";
-            this.colAgencyCode.Visible = true;
-            this.colAgencyCode.VisibleIndex = 2;
+            this.colCustomerCode.Caption = "Mã khách hàng";
+            this.colCustomerCode.FieldName = "CustomerCode";
+            this.colCustomerCode.Name = "colCustomerCode";
+            this.colCustomerCode.Visible = true;
+            this.colCustomerCode.VisibleIndex = 2;
             // 
             // colDeadlineOfUsing
             // 
@@ -517,7 +517,7 @@
         private DevExpress.XtraGrid.Views.Grid.GridView gvUser;
         private DevExpress.XtraGrid.Columns.GridColumn colUserName;
         private DevExpress.XtraGrid.Columns.GridColumn colFullName;
-        private DevExpress.XtraGrid.Columns.GridColumn colAgencyCode;
+        private DevExpress.XtraGrid.Columns.GridColumn colCustomerCode;
         private DevExpress.XtraGrid.Columns.GridColumn colDeadlineOfUsing;
         private DevExpress.XtraGrid.Columns.GridColumn colLock;
         private DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit chkLockedUser;

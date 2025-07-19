@@ -280,35 +280,11 @@
     <Compile Include="Report\frmReportExportInfo.Designer.cs">
       <DependentUpon>frmReportExportInfo.cs</DependentUpon>
     </Compile>
-    <Compile Include="Report\frmReportExportInfoToStore.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Report\frmReportExportInfoToStore.Designer.cs">
-      <DependentUpon>frmReportExportInfoToStore.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Report\frmReportFactory.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Report\frmReportFactory.Designer.cs">
-      <DependentUpon>frmReportFactory.cs</DependentUpon>
-    </Compile>
     <Compile Include="Report\frmReportImExStock.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Report\frmReportImExStock.Designer.cs">
       <DependentUpon>frmReportImExStock.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Report\frmReportImExStockBaseStock.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Report\frmReportImExStockBaseStock.Designer.cs">
-      <DependentUpon>frmReportImExStockBaseStock.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Report\frmReportImExStockInThisYear.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Report\frmReportImExStockInThisYear.Designer.cs">
-      <DependentUpon>frmReportImExStockInThisYear.cs</DependentUpon>
     </Compile>
     <Compile Include="Report\frmReportPackage.cs">
       <SubType>Form</SubType>
@@ -321,12 +297,6 @@
     </Compile>
     <Compile Include="Report\frmReportWarehouse.designer.cs">
       <DependentUpon>frmReportWarehouse.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Report\frmWarehouseTatal.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Report\frmWarehouseTatal.Designer.cs">
-      <DependentUpon>frmWarehouseTatal.cs</DependentUpon>
     </Compile>
     <Compile Include="Report\frmImportDetailReport.cs">
       <SubType>Form</SubType>
@@ -381,12 +351,6 @@
     </Compile>
     <Compile Include="Tools\frmDacDistributeToFactory.designer.cs">
       <DependentUpon>frmDacDistributeToFactory.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Tools\frmDacDistributeToStore.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Tools\frmDacDistributeToStore.designer.cs">
-      <DependentUpon>frmDacDistributeToStore.cs</DependentUpon>
     </Compile>
     <Compile Include="Tools\frmDacGetData.cs">
       <SubType>Form</SubType>
@@ -556,29 +520,14 @@
     <EmbeddedResource Include="Report\frmReportExportInfo.resx">
       <DependentUpon>frmReportExportInfo.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Report\frmReportExportInfoToStore.resx">
-      <DependentUpon>frmReportExportInfoToStore.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Report\frmReportFactory.resx">
-      <DependentUpon>frmReportFactory.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Report\frmReportImExStock.resx">
       <DependentUpon>frmReportImExStock.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Report\frmReportImExStockBaseStock.resx">
-      <DependentUpon>frmReportImExStockBaseStock.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Report\frmReportImExStockInThisYear.resx">
-      <DependentUpon>frmReportImExStockInThisYear.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Report\frmReportPackage.resx">
       <DependentUpon>frmReportPackage.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Report\frmReportWarehouse.resx">
       <DependentUpon>frmReportWarehouse.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Report\frmWarehouseTatal.resx">
-      <DependentUpon>frmWarehouseTatal.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Report\frmImportDetailReport.resx">
       <DependentUpon>frmImportDetailReport.cs</DependentUpon>
@@ -606,9 +555,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Tools\frmDacDistributeToFactory.resx">
       <DependentUpon>frmDacDistributeToFactory.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Tools\frmDacDistributeToStore.resx">
-      <DependentUpon>frmDacDistributeToStore.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Tools\frmDacGetData.resx">
       <DependentUpon>frmDacGetData.cs</DependentUpon>

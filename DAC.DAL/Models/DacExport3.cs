@@ -1,13 +1,11 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DAC.DAL
 {
-    [Table("DacExport")]
-    public class DacExport
+    [Table("DacExport3")]
+    public class DacExport3
     {
-        [Key]
         public int Id { get; set; }
         public string OriginalId { get; set; }
         public string OrderNumber { get; set; }

@@ -32,7 +32,7 @@ namespace PIPT.Tools
             if (cbbDataTable.EditValue != null && !string.IsNullOrWhiteSpace(cbbDataTable.EditValue.ToString()))
             {
                 restoreService = RestoreDataFactory.GetService(cbbDataTable.EditValue.ToString());
-                bool result = restoreService.RestoreData();
+                bool result = restoreService.RestoreData(0);
                 if (result)
                 {
                     MessageBox.Show("Sao chép dữ liệu thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);

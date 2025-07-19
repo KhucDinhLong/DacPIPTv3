@@ -1,10 +1,10 @@
-﻿using System;
+﻿using DAC.Core.Common;
+using DAC.Core.Security;
+using PIPT.Tools;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using DAC.Core.Common;
-using DAC.Core.Security;
-using PIPT.Tools;
 using Unity;
 
 namespace PIPT
@@ -288,9 +288,6 @@ namespace PIPT
                 case "frmDacDistributeToAgency":
                     OpenForm(typeof(frmDacDistributeToAgency));
                     break;
-                case "frmDacDistributeToStore":
-                    OpenForm(typeof(frmDacDistributeToStore));
-                    break;
                 case "frmDacDistributeToFactory":
                     frm = frmDacDistributeToFactory.Instance(this, true);
                     break;
@@ -323,29 +320,14 @@ namespace PIPT
                 case "frmReportExportInfo":
                     OpenForm(typeof(frmReportExportInfo));
                     break;
-                case "frmReportExportInfoToStore":
-                    OpenForm(typeof(frmReportExportInfoToStore));
-                    break;
                 case "frmReportImExStock":
                     frm = frmReportImExStock.Instance(this, true);
-                    break;
-                case "frmReportImExStockBaseStock":
-                    frm = frmReportImExStockBaseStock.Instance(this, true);
-                    break;
-                case "frmReportImExStockInThisYear":
-                    frm = frmReportImExStockInThisYear.Instance(this, true);
                     break;
                 case "frmCompareImportExport":
                     frm = frmCompareImportExport.Instance(this, true);
                     break;
-                case "frmWarehouseTatal":
-                    frm = frmWarehouseTatal.Instance(this, true);
-                    break;
                 case "frmReportPackage":
                     OpenForm(typeof(frmReportPackage));
-                    break;
-                case "frmReportFactory":
-                    frm = frmReportFactory.Instance(this, true);
                     break;
                 case "frmReportActivateAddingPoint":
                     frm = frmReportActivateAddingPoint.Instance(this, true);
@@ -373,9 +355,12 @@ namespace PIPT
             }
 
             // Nếu chưa có, resolve và show mới
-            var packageForm = (dynamic)Program.Container.Resolve(formType);
-            packageForm.MdiParent = this;
-            packageForm.Show();
+            dynamic childForm = (dynamic)Program.Container.Resolve(formType);
+            if (childForm != null)
+            {
+                childForm.MdiParent = this;
+                childForm.Show();
+            }
         }
     }
 }
