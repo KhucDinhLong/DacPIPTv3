@@ -150,11 +150,15 @@ namespace DAC.Core.Services.Implements
                 {
                     var info = (from d in dbContext.DacExportDetail1
                                 join e in dbContext.DacExport1 on d.ExportId equals e.Id
+                                join c in dbContext.DacCustomer on e.CustomerCode equals c.Code
                                 where d.DacCode == DacCode
                                 select new DacExportVM
                                 {
+                                    OrderNumber = e.OrderNumber,
                                     CustomerCode = e.CustomerCode,
+                                    CustomerName = c.Name,
                                     CreatedDate = e.CreatedDate,
+                                    ProductName = d.ProductCode
                                 }).FirstOrDefault();
                     response.ResponseData = info;
                 }

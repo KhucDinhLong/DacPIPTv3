@@ -12,23 +12,14 @@ namespace PIPT
         IDacPackageService _packageService;
         IDacProductService _productService;
         IDacExportDetailProcessService _exportDetailService;
-        IDacCustomerService _agencyService;
-        IDacStoreService _storeService;
-        bool visibleExportGroup;
-        bool visibleExportGroup1;
-        bool visibleExportGroup2;
-        bool visibleExportGroup3;
         #endregion
         #region Form's Events
-        public frmDacChecking(IDacPackageService packageService, IDacProductService productService, IDacExportDetailProcessService exportDetailService
-            , IDacCustomerService agencyService, IDacStoreService storeService)
+        public frmDacChecking(IDacPackageService packageService, IDacProductService productService, IDacExportDetailProcessService exportDetailService)
         {
             InitializeComponent();
             _packageService = packageService;
             _productService = productService;
             _exportDetailService = exportDetailService;
-            _agencyService = agencyService;
-            _storeService = storeService;
         }
         #endregion
 
@@ -50,8 +41,60 @@ namespace PIPT
         public void GetInfo(string sDacCode)
         {
             string ExportProductCode = string.Empty;
-            string PackageProductCode = string.Empty;
-            var ExportInfo = _exportDetailService.GetExportInfo(sDacCode)?.ResponseData;
+            int CustomerLevel = Session.CurrentUser.Level == 0 ? 4 : Session.CurrentUser.Level.Value;
+            for (int i = 1; i <= CustomerLevel; i++)
+            {
+                var ExportInfo = _exportDetailService.GetExportInfo(sDacCode, i)?.ResponseData;
+                if (ExportInfo != null)
+                {
+                    ExportProductCode = ExportInfo.ProductName;
+                    switch (i)
+                    {
+                        case 1:
+                            txtOrderNumber.Text = ExportInfo.OrderNumber;
+                            txtCustomerName.Text = ExportInfo.CustomerName;
+                            txtExportDate.Text = ExportInfo.CreatedDate.Value.ToString("dd/MM/yyyy");
+                            grExport.Visible = Session.CurrentUser.Level == 0 || Session.CurrentUser.Level == i;
+                            break;
+                        case 2:
+                            txtOrderNumber1.Text = ExportInfo.OrderNumber;
+                            txtCustomerName1.Text = ExportInfo.CustomerName;
+                            txtExportDate1.Text = ExportInfo.CreatedDate.Value.ToString("dd/MM/yyyy");
+                            grExport1.Visible = Session.CurrentUser.Level == 0 || Session.CurrentUser.Level == i;
+                            break;
+                        case 3:
+                            txtOrderNumber2.Text = ExportInfo.OrderNumber;
+                            txtCustomerName2.Text = ExportInfo.CustomerName;
+                            txtExportDate2.Text = ExportInfo.CreatedDate.Value.ToString("dd/MM/yyyy");
+                            grExport2.Visible = Session.CurrentUser.Level == 0 || Session.CurrentUser.Level == i;
+                            break;
+                        case 4:
+                            txtOrderNumber3.Text = ExportInfo.OrderNumber;
+                            txtCustomerName3.Text = ExportInfo.CustomerName;
+                            txtExportDate3.Text = ExportInfo.CreatedDate.Value.ToString("dd/MM/yyyy");
+                            grExport3.Visible = Session.CurrentUser.Level == 0 || Session.CurrentUser.Level == i;
+                            break;
+                    }
+                }
+                else
+                {
+                    switch (i)
+                    {
+                        case 1:
+                            grExport.Visible = false;
+                            break;
+                        case 2:
+                            grExport1.Visible = false;
+                            break;
+                        case 3:
+                            grExport2.Visible = false;
+                            break;
+                        case 4:
+                            grExport3.Visible = false;
+                            break;
+                    }
+                }
+            }
             var PackageInfo = _packageService.GetInfo(sDacCode)?.ResponseData;
             if (PackageInfo != null)
             {
@@ -60,69 +103,13 @@ namespace PIPT
                 txtQuantity.Text = PackageInfo.Quantity.HasValue ? PackageInfo.Quantity.Value.ToString() : string.Empty;
                 txtBatch.Text = PackageInfo.Batch;
                 txtPersonPackage.Text = PackageInfo.PersonPackaged;
+                txtPackageProductCode.Text = PackageInfo.ProductCode;
+                txtPackageProductName.Text = PackageInfo.ProductName;
                 grPackage.Visible = true;
-                sProductCode = PackageInfo.ProductCode;
             }
             else
             {
                 grPackage.Visible = false;
-            }
-            if (ExportToAgencyInfo != null)
-            {
-                txtNgayXuat.Text = ExportToAgencyInfo.CreatedDate.HasValue ? ExportToAgencyInfo.CreatedDate.Value.ToString("dd/MM/yyyy") : string.Empty;
-                txtAgencyCode.Text = ExportToAgencyInfo.CustomerCode;
-                var agency = _agencyService.GetByCode(ExportToAgencyInfo.CustomerCode)?.ResponseData;
-                if (agency != null)
-                {
-                    txtAgencyName.Text = agency.Name;
-                    txtAgencyAddress.Text = agency.Address;
-                    txtAgencyOwner.Text = agency.OwnerName;
-                    txtAgencyMobile.Text = agency.MobileNum;
-                    txtAgencyEmail.Text = agency.Email;
-                    txtAgencyProvince.Text = agency.ProvinceCode;
-
-                    txtAgencyDependCode.Text = agency.DependCode;
-                    txtAgencyJoinContact.Text = agency.JoinContact;
-                    txtAgencyPhoneNum.Text = agency.PhoneNum;
-                    txtAgencyRegion.Text = agency.Region;
-                    txtDescription.Text = agency.Description;
-                    var detail = _exportToAgencyDetailService.GetByDacCode(sDacCode)?.ResponseData;
-                    if (detail != null)
-                    {
-                        txtAgencyPCode.Text = detail.ProductCode;
-                        sProductCode = detail.ProductCode;
-                    }
-                    groupBoxAgency.Visible = true;
-                }
-            }
-            else
-            {
-                groupBoxAgency.Visible = false;
-            }
-            if (ExportToStoreInfo != null)
-            {
-                txtStoreDateExport.Text = ExportToAgencyInfo.CreatedDate.HasValue ? ExportToAgencyInfo.CreatedDate.Value.ToString("dd/MM/yyyy") : string.Empty;
-                txtStoreCode.Text = ExportToAgencyInfo.CustomerCode;
-                var store = _storeService.GetByCode(ExportToStoreInfo.CustomerCode)?.ResponseData;
-                if (store != null)
-                {
-                    txtStoreName.Text = store.Name;
-                    txtStoreAddress.Text = store.Address;
-                    txtStoreOwner.Text = store.ShopKeeper;
-                    txtStoreMobile.Text = store.MobileNum;
-                    txtStoreEmail.Text = store.Email;
-                    var detail = _exportToStoreDetailService.GetByDacCode(sDacCode)?.ResponseData;
-                    if (detail != null)
-                    {
-                        txtStorePCode.Text = detail.ProductCode;
-                        sProductCode = detail.ProductCode;
-                    }
-                    groupBoxStore.Visible = true;
-                }
-            }
-            else
-            {
-                groupBoxStore.Visible = false;
             }
             if (!string.IsNullOrWhiteSpace(ExportProductCode))
             {
@@ -147,38 +134,6 @@ namespace PIPT
             }
 
 
-        }
-
-        private void frmDacChecking_Load(object sender, EventArgs e)
-        {
-            if ((Session.CurrentUser.isAdmin.HasValue && Session.CurrentUser.isAdmin.Value) || Session.CurrentUser.Level == 4)
-            {
-                visibleExportGroup = visibleExportGroup1 = visibleExportGroup2 = visibleExportGroup3 = true;
-            }
-            else
-            {
-                switch (Session.CurrentUser.Level.Value)
-                {
-                    case 1:
-                        visibleExportGroup = true;
-                        visibleExportGroup1 = visibleExportGroup2 = visibleExportGroup3 = false;
-                        break;
-                    case 2:
-                        visibleExportGroup = visibleExportGroup1 = true;
-                        visibleExportGroup2 = visibleExportGroup3 = false;
-                        break;
-                    case 3:
-                        visibleExportGroup = visibleExportGroup1 = visibleExportGroup2 = true;
-                        visibleExportGroup3 = false;
-                        break;
-                    default:
-                        break;
-                }
-            }
-            grExport.Visible = visibleExportGroup;
-            grExport1.Visible = visibleExportGroup1;
-            grExport2.Visible = visibleExportGroup2;
-            grExport3.Visible = visibleExportGroup3;
         }
     }
 }
